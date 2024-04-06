@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/06 17:20:50 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/04/06 17:34:20 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ enum node_type
 
 typedef struct s_ast
 {
-    
+    enum node_type type;
     char **args;
     struct s_ast *right;
     struct s_ast *left;

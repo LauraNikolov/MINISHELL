@@ -2,7 +2,7 @@ CFLAGS = -Wall -Wextra -Werror -g3
 
 SRC = main.c /
 
-LIBFT = libft/libft.a
+# LIBFT = libft/libft.a
 		
 OBJ = $(SRC:.c=.o) $(LIBFT)
 

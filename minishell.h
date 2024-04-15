@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/15 10:43:25 by renard           ###   ########.fr       */
+/*   Updated: 2024/04/15 12:17:34 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+#include <string.h>
 
 typedef struct s_token
 {
-    char *token;
+    char *cmd;
+    char *pipcell;
     int type;
 }   t_token;
 
@@ -46,5 +48,10 @@ typedef struct s_ast
 // Prompt utils
 void ft_display_prompt(void);
 int main(int argc, char **argv, char **envp);
+
+//libft TODO replace b the submodule
+char	**ft_split_cmd(char *s, char *sep);
+char	*ft_strjoin(char *s1, char *s2);
+
 
 #endif

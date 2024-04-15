@@ -3,19 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/06 17:34:20 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/04/15 10:43:25 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft/libft.h"
 # include <stdio.h>
 # include <unistd.h>
+# include <stdlib.h>
+
+typedef struct s_token
+{
+    char *token;
+    int type;
+}   t_token;
 
 enum node_type
 {
@@ -24,7 +30,7 @@ enum node_type
     AND,
     OR,
     REDIR, //plusieurs type de redirections a completer
-}
+} ;
 
 typedef struct s_ast
 {
@@ -32,10 +38,13 @@ typedef struct s_ast
     char **args;
     struct s_ast *right;
     struct s_ast *left;
-}                   t_ast;
+}   t_ast;
 
 //ast utils
-void ft_build_ast_node()// ! TODO
+//void ft_build_ast_node()// ! TODO
 
+// Prompt utils
+void ft_display_prompt(void);
+int main(int argc, char **argv, char **envp);
 
 #endif

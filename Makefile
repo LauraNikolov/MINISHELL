@@ -1,6 +1,7 @@
 CFLAGS = -Wall -Wextra -Werror -g3
 
 SRC = main.c /
+	lst_utils.c /
 
 # LIBFT = libft/libft.a
 		

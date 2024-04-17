@@ -24,8 +24,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	while (s2[j] && i < total)
 		s3[i++] = s2[j++];
+    printf ("strjoin : %s\n", s3);
     s3[i] = '\0';
-    printf ("%s\n", s3);
-    free(s1);
 	return (s3);
 }

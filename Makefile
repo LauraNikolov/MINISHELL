@@ -1,28 +1,36 @@
 CFLAGS = -Wall -Wextra -Werror -g3
+CC = cc
 
-SRC = main.c /
-	lst_utils.c /
+PARSEDIR = parse
+EXECDIR = exec 
+LIBFTDIR = libft
 
-# LIBFT = libft/libft.a
-		
-OBJ = $(SRC:.c=.o) $(LIBFT)
+PARSE = $(PARSEDIR)/ft_free_split.c \
+		$(PARSEDIR)/lst_utils.c \
+		main.c \
+
+LIBFT = $(LIBFTDIR)/libft.a
+
+OBJ = $(PARSE:.c=.o)
 
 NAME = minishell
 
-all: $(NAME)
+$(NAME): $(OBJ) $(LIBFT)
+	@$(CC) $(CFLAGS) -o $@ $(OBJ) -L$(LIBFTDIR) -lft
+	@echo "Compilation successful: $@"
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
-	
 $(LIBFT):
-	make -C libft
+	@make -C $(LIBFTDIR)
+	@echo "Libft compiled successfully"
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
+	@make -C $(LIBFTDIR) clean
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@make -C $(LIBFTDIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re

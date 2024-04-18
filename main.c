@@ -12,9 +12,9 @@ int ft_get_path(char *buffer)
     int j;
 
     if (!path)
-        path = strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin");
+        path = strdup("/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin"); // ! attention regarde sur notion : on ne doit pas gerer comme ca une erreur dans l'environnement
     bin = ft_split_cmd(path, ":"); // split les paths
-    cmd = ft_split_cmd(buffer, ";"); // split les commandes
+    cmd = ft_split_cmd(buffer, ";"); // split les commandes // ! attention plusieurs cas "./minishell cat cat; echo bonjour" -> comme si on avit deux lignes de commandes et "./minishell cat cat "cat -e"
     // le but est de split la ou les commandes en plusieurs niveaux :
     // 1. les differentes commandes entres elles dans cmd. 
     // 2. la ou les comnmandes avec leur(s) option(s) dans split_cmd.

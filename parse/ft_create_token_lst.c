@@ -37,5 +37,6 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 		len++;
 		j++;
 	}
+	ft_split_cmd(lst);
 	return (0);
 }

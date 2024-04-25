@@ -7,7 +7,7 @@ int	ft_is_symb(char *cmd, char *symb)
 
 	i = 0;
 	j = 0;
-	while (symb[i] && cmd[j])
+	while (symb[i] && cmd[j]) //gerer les double chevrons et les && et les ||
 	{
 		if (cmd[j] == symb[i])
 			return (1);

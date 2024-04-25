@@ -18,11 +18,11 @@ int	main(int ac, char **av, char **envp)
 		if (buffer[0] == '\0')
 			return (0);
 		ft_create_token_lst(buffer, &lst);
-		ft_split_cmd(&lst);
 		ft_get_path(&lst);
 		// ft_exec_cmd();
 		ft_print_lst(lst);
 		free(buffer);
+		buffer = NULL;
 		ft_free_lst(lst);
 		lst = NULL;
 		

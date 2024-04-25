@@ -10,6 +10,7 @@ void	ft_free_lst(t_cmd *lst)
 	{
 		temp = curr->next;
 		ft_free_tab(curr->cmd);
+		free(curr->path);
 		free(curr);
 		curr = temp;
 	}
@@ -61,6 +62,8 @@ void	ft_print_lst(t_cmd *node)
 			printf("OR\n");
 		else if (curr->type == 4)
 			printf("REDIR\n");
+		else if (curr->type == 5)
+			printf("PRIOR\n");
 		printf("\n----\n");
 		command_num++;
 		curr = curr->next;

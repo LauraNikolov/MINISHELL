@@ -3,65 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/17 13:57:40 by renard           ###   ########.fr       */
+/*   Updated: 2024/04/25 18:21:35 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef MINISHELL_H
+#ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft/libft.h"
+# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <stdio.h>
-# include <unistd.h>
 # include <stdlib.h>
-#include <string.h>
+# include <string.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
+# include <unistd.h>
 
-typedef struct s_token
+typedef enum s_token_type
 {
-    char *cmd;
-    char *options;
-    char *envp_path;
-    char *pipcell;
-   // int envp_flag; // est ce que le binaire est dans une variable d environnement ?
-    struct s_token *next;
-}   t_token;
+	COMMAND,
+	PIPE,
+	AND,
+	OR,
+	REDIR,
+	PRIOR, // plusieurs type de redirections a completer
+}					t_token_type;
 
-enum node_type
+typedef struct s_cmd
 {
-    COMMAND,
-    PIPE,
-    AND,
-    OR,
-    REDIR, //plusieurs type de redirections a completer
-} ;
+	char			**cmd;
+	char			*path;
+	int				bool;
+	t_token_type	type;
+	struct s_cmd	*next;
+}					t_cmd;
 
 typedef struct s_ast
 {
-    enum node_type type;
-    char **args;
-    struct s_ast *right;
-    struct s_ast *left;
-}   t_ast;
+	t_token_type	type;
+	char			**args;
+	struct s_ast	*right;
+	struct s_ast	*left;
+}					t_ast;
 
-//ast utils
-//void ft_build_ast_node()// ! TODO
+// ast utils
+// void ft_build_ast_node()// ! TODO
 
-// Prompt utils
-void ft_display_prompt(void);
-int main(int argc, char **argv, char **envp);
+int					main(int argc, char **argv, char **envp);
 
-//libft TODO replace b the submodule
-char	**ft_split_cmd(char *s, char *sep);
-char	*ft_strjoin(char *s1, char *s2);
-t_token *create_node(char *cmd, char *envp_path);
+// libft TODO replace b the submodule
+t_cmd				*create_node(char **cmd);
+
+// PARSE
+char				**ft_strdup_array(char **cmd);
+int					ft_str_is_alpha(char *s);
+int					ft_is_symb(char *cmd, char *symb);
+void				ft_split_cmd(t_cmd **lst);
 
 // lst_proto
+int					ft_create_token_lst(char *buffer, t_cmd **lst);
+void				add_to_lst(t_cmd **head, t_cmd *new_node);
+t_cmd				*lst_last(t_cmd *node);
+void				ft_print_lst(t_cmd *node);
+void				ft_free_tab(char **split);
+void				ft_free_lst(t_cmd *lst);
 
-void add_to_lst(t_token **head, t_token *new_node);
-t_token *lst_last(t_token *node);
-void ft_free_split(char **split);
-
+// Faire appel a la fonction ft_get_path avant ou pendant l execution,
+// y rajouter une fonction pour la gestion d erreurs ?
+int					ft_get_path(t_cmd **lst);
 
 #endif

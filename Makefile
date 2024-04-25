@@ -1,30 +1,32 @@
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror -g
+LDFLAGS = -lreadline
 CC = cc
 
 PARSEDIR = parse
 EXECDIR = exec 
 LIBFTDIR = libft
 
-PARSE = $(PARSEDIR)/ft_free_split.c \
-		$(PARSEDIR)/lst_utils.c \
-		main.c \
+PARSE_SRCS = $(wildcard $(PARSEDIR)/*.c)
+EXEC_SRC = main.c
 
 LIBFT = $(LIBFTDIR)/libft.a
-
-OBJ = $(PARSE:.c=.o)
+PARSE_OBJS = $(PARSE_SRCS:.c=.o)
+EXEC_OBJ = $(EXEC_SRC:.c=.o)
 
 NAME = minishell
-
-$(NAME): $(OBJ) $(LIBFT)
-	@$(CC) $(CFLAGS) -o $@ $(OBJ) -L$(LIBFTDIR) -lft
-	@echo "Compilation successful: $@"
 
 $(LIBFT):
 	@make -C $(LIBFTDIR)
 	@echo "Libft compiled successfully"
 
+$(NAME): $(PARSE_OBJS) $(EXEC_OBJ) | $(LIBFT)
+	@$(CC) $(CFLAGS) -o $@ $(PARSE_OBJS) $(EXEC_OBJ) -L$(LIBFTDIR) -lft $(LDFLAGS)
+	@echo "Compilation successful: $@"
+
+all: $(NAME)
+
 clean:
-	@rm -f $(OBJ)
+	@rm -f $(PARSE_OBJS) $(EXEC_OBJ)
 	@make -C $(LIBFTDIR) clean
 
 fclean: clean

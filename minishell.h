@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/29 16:11:20 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:03:53 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,13 @@
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
-extern int			g_signal;
 
 typedef enum s_token_type
 {
@@ -66,7 +65,6 @@ typedef struct s_envp
 int					main(int argc, char **argv, char **envp);
 
 // libft TODO replace b the submodule
-t_cmd				*create_node(char **cmd);
 
 // PARSE
 char				**ft_strdup_array(char **cmd);
@@ -76,12 +74,18 @@ void				ft_split_cmd(t_cmd **lst);
 char				*ft_quote(char *s);
 
 // lst_proto
+t_envp				*ft_save_envp(char **envp_tab, t_envp **envp_lst);
 int					ft_create_token_lst(char *buffer, t_cmd **lst);
 void				add_to_lst(t_cmd **head, t_cmd *new_node);
+void				add_to_envp_lst(t_envp **head, t_envp *new_node);
 t_cmd				*lst_last(t_cmd *node);
+t_cmd				*create_cmd_node(char **cmd);
+t_envp				*create_envp_node(char *var_name);
+t_envp				*lst_envp_last(t_envp *node);
 void				ft_print_lst(t_cmd *node);
 void				ft_free_tab(char **split);
 void				ft_free_lst(t_cmd *lst);
+void				ft_free_envp_lst(t_envp *lst);
 
 char				*ft_quote(char *s);
 

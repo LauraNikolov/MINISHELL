@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/29 14:42:05 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:11:20 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
+extern int			g_signal;
 
 typedef enum s_token_type
 {
@@ -51,6 +53,13 @@ typedef struct s_ast
 	struct s_ast	*left;
 }					t_ast;
 
+typedef struct s_envp
+{
+	char			*var_path;
+	char			*var_name;
+	struct s_envp	*next;
+}					t_envp;
+
 // ast utils
 // void ft_build_ast_node()// ! TODO
 
@@ -73,6 +82,8 @@ t_cmd				*lst_last(t_cmd *node);
 void				ft_print_lst(t_cmd *node);
 void				ft_free_tab(char **split);
 void				ft_free_lst(t_cmd *lst);
+
+char				*ft_quote(char *s);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

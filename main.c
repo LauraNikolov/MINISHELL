@@ -1,15 +1,29 @@
 #include "minishell.h"
 
+void	ft_save_envp(char **envp_tab)
+{
+	t_envp	*envp;
+	int		i;
+
+	envp = malloc(sizeof(t_envp));
+	i = 0;
+	while (envp_tab[i])
+	{
+		envp->var_name = envp_tab[i];
+		i++;
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
-	char *buffer;
-	t_cmd *lst;
+	char	*buffer;
+	t_cmd	*lst;
 
 	(void)av;
-	(void)envp;
 	(void)ac;
 	buffer = NULL;
 	lst = NULL;
+	ft_save_envp(envp);
 	while (1)
 	{
 		buffer = readline("~$ ");
@@ -25,6 +39,5 @@ int	main(int ac, char **av, char **envp)
 		buffer = NULL;
 		ft_free_lst(lst);
 		lst = NULL;
-		
 	}
 }

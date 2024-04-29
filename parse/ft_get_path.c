@@ -2,9 +2,9 @@
 
 int	ft_get_path(t_cmd **lst)
 {
-	t_cmd	*curr;
-	char	*path;
-	char	**bin;
+	t_cmd *curr;
+	char *path;
+	char **bin;
 	int i;
 
 	path = getenv("PATH");
@@ -17,10 +17,10 @@ int	ft_get_path(t_cmd **lst)
 		i = 0;
 		while (bin[i])
 		{
-			if (access(ft_strjoin(bin[i], curr->cmd[0]), F_OK) == 0) // utiliser strcat pour pas malloc un truc impossible a free ? juste pour la boucle
+			if (access(ft_strjoin(bin[i], curr->cmd[0]), F_OK) == 0)
+				// utiliser strcat pour pas malloc un truc impossible a free ? juste pour la boucle
 			{
-				curr->path = ft_strjoin(bin[i],
-							curr->cmd[0]);
+				curr->path = ft_strjoin(bin[i], curr->cmd[0]);
 				break ;
 			}
 			i++;

@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/25 18:21:35 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/04/29 14:42:05 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char				**ft_strdup_array(char **cmd);
 int					ft_str_is_alpha(char *s);
 int					ft_is_symb(char *cmd, char *symb);
 void				ft_split_cmd(t_cmd **lst);
+char				*ft_quote(char *s);
 
 // lst_proto
 int					ft_create_token_lst(char *buffer, t_cmd **lst);

@@ -11,6 +11,7 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 	len = 0;
 	while (buffer[j])
 	{
+		
 		if (ft_is_symb(&buffer[j], "|><()&") || buffer[j + 1] == '\0')
 		{
 			if (buffer[j + 1] == '\0')

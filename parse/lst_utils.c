@@ -114,9 +114,11 @@ void	add_to_lst(t_cmd **head, t_cmd *new_node)
 	if (!*head)
 	{
 		*head = new_node;
+		new_node->prev = NULL;
 		return ;
 	}
 	last = lst_last(*head);
+	new_node->prev = last;
 	last->next = new_node;
 }
 
@@ -152,25 +154,29 @@ t_cmd	*create_cmd_node(char **cmd)
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
 		return (NULL);
-	// printf("Adresse de la variable pointée : %p\n", &(*(*cmd)));
-	// printf(" Contenu du double pointeur: %p\n", *cmd);
 	new_node->cmd = ft_strdup_array(cmd);
 	new_node->next = NULL;
+	new_node->prev = NULL;
 	new_node->path = NULL;
 	if (ft_str_is_alpha(cmd[0]))
-		new_node->type = COMMAND;
+		new_node->type = WORD;
 	else if (!ft_strcmp(cmd[0], "|"))
 		new_node->type = PIPE;
-	else if (!ft_strcmp(cmd[0], ">") || !ft_strcmp(cmd[0], "<")
-		|| !ft_strcmp(cmd[0], ">>") || !ft_strcmp(cmd[0], "<<"))
-		new_node->type = REDIR;
+	else if (!ft_strcmp(cmd[0], "<<"))
+		new_node->type = R_HEREDOC;
+	else if (!ft_strcmp(cmd[0], "<"))
+		new_node->type = R_IN;
+	else if (!ft_strcmp(cmd[0], ">"))
+		new_node->type = R_OUT;
+	else if (!ft_strcmp(cmd[0], ">>"))
+		new_node->type = R_APPEND;
 	else if (!ft_strcmp(cmd[0], "||"))
 		new_node->type = OR;
 	else if (!ft_strcmp(cmd[0], "&&"))
 		new_node->type = AND;
 	else if (!ft_strcmp(cmd[0], "("))
-		new_node->type = PRIOR;
+		new_node->type = O_BRACKET;
 	else if (!ft_strcmp(cmd[0], ")"))
-		new_node->type = PRIOR;
+		new_node->type = C_BRACKET;
 	return (new_node);
 }

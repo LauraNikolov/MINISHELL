@@ -1,13 +1,29 @@
 #include "minishell.h"
 
-int		g_signal = 0;
+int			g_signal = 0;
+
+static int	ft_tokenize(char *buffer, t_cmd **lst)
+{
+	t_cmd	*curr;
+
+	ft_create_token_lst(buffer, lst);
+	curr = *lst;
+	while (curr)
+	{
+		if (ft_check_syntax(curr) == -1)
+			return (-1);
+		curr = curr->next;
+	}
+	return (0);
+}
 
 void	ft_handler_signals(int signal)
 {
-	
 	if (signal == SIGINT)
+	{
+		ft_putchar_fd('\n', 2);
 		g_signal = 1;
-	return ;
+	}
 }
 
 int	main(int ac, char **av, char **envp)
@@ -25,19 +41,12 @@ int	main(int ac, char **av, char **envp)
 	signal(SIGINT, ft_handler_signals);
 	while (1)
 	{
-		buffer = readline("~$ ");
-		if (g_signal == 1)
-		{
-			
-			g_signal = 0;
-			free(buffer);
-			continue;
-		}
+		buffer = readline(CYAN "MINISHELL> "RESET);
 		if (!buffer)
 			return (0);
 		if (buffer[0] == '\0')
 			return (0);
-		ft_create_token_lst(buffer, &lst);
+		ft_tokenize(buffer, &lst);
 		ft_get_path(&lst);
 		// ft_exec_cmd();
 		ft_print_lst(lst);

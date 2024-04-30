@@ -32,6 +32,7 @@ char	**ft_strdup_array(char **cmd)
 	while (cmd[i])
 	{
 		cpy[i] = ft_strdup(cmd[i]);
+		printf ("coucou\n");
 		if (!cpy[i])
 		{
 			while (i > 0)
@@ -41,6 +42,7 @@ char	**ft_strdup_array(char **cmd)
 		}
 		i++;
 	}
+	
 	cpy[i] = NULL;
 	return (cpy);
 }

@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/04/29 19:03:53 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:27:19 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,21 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# define CYAN "\x1b[36m"
+# define RESET "\x1b[0m"
 
 typedef enum s_token_type
 {
-	COMMAND,
+	WORD,
 	PIPE,
 	AND,
 	OR,
-	REDIR,
-	PRIOR, // plusieurs type de redirections a completer
+	R_IN,
+	R_OUT,
+	R_APPEND,
+	R_HEREDOC,
+	O_BRACKET,
+	C_BRACKET,
 }					t_token_type;
 
 typedef struct s_cmd
@@ -42,6 +48,7 @@ typedef struct s_cmd
 	int				bool;
 	t_token_type	type;
 	struct s_cmd	*next;
+	struct s_cmd	*prev;
 }					t_cmd;
 
 typedef struct s_ast
@@ -66,12 +73,15 @@ int					main(int argc, char **argv, char **envp);
 
 // libft TODO replace b the submodule
 
-// PARSE
+// tokenisation
 char				**ft_strdup_array(char **cmd);
 int					ft_str_is_alpha(char *s);
 int					ft_is_symb(char *cmd, char *symb);
 void				ft_split_cmd(t_cmd **lst);
 char				*ft_quote(char *s);
+int					ft_check_syntax(t_cmd *node);
+
+// PARSE
 
 // lst_proto
 t_envp				*ft_save_envp(char **envp_tab, t_envp **envp_lst);

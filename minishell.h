@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/02 13:56:44 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:50:49 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int					ft_create_token_lst(char *buffer, t_cmd **lst);
 void				add_to_lst(t_cmd **head, t_cmd *new_node);
 void				add_to_envp_lst(t_envp **head, t_envp *new_node);
 t_cmd				*lst_last(t_cmd *node);
-t_cmd				*create_cmd_node(char **cmd);
+t_cmd				*create_cmd_node(char *cmd);
 t_envp				*create_envp_node(char *var_name);
 t_envp				*lst_envp_last(t_envp *node);
 void				ft_print_lst(t_cmd *node);

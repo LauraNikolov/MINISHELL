@@ -23,16 +23,14 @@ char	**ft_strdup_array(char **cmd)
 
 	cpy = NULL;
 	i = 0;
-	while (cmd[i] != NULL)
+	while (cmd[i])
 		i++;
-	printf ("i = %d\n", i);
 	cpy = malloc((i + 1) * sizeof(char *));
 	if (!cpy)
 		return (NULL);
 	i = 0;
 	while (cmd[i])
 	{
-		
 		cpy[i] = ft_strdup(cmd[i]);
 		if (!cpy[i])
 		{

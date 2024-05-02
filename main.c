@@ -14,7 +14,7 @@ static int	ft_tokenize(char *buffer, t_cmd **lst)
 	// 		return (-1);
 	// 	curr = curr->next;
 	// }
-	return (0);
+	 return (0);
 }
 
 void	ft_handler_signals(int signal)
@@ -41,7 +41,7 @@ int	main(int ac, char **av, char **envp)
 	signal(SIGINT, ft_handler_signals);
 	while (1)
 	{
-		buffer = readline(CYAN "MINISHELL> " RESET);
+		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
 			return (0);
 		if (buffer[0] == '\0')

@@ -42,8 +42,7 @@ void	ft_split_cmd(t_cmd **lst)
 	{
 		split_cmd = ft_split(*(curr)->cmd, " ");
 		ft_free_tab(curr->cmd);
-		curr->cmd = ft_strdup_array(split_cmd);
-		ft_free_tab(split_cmd);
+		curr->cmd = split_cmd;
 		curr = curr->next;
 	}
 }
@@ -76,10 +75,18 @@ void	ft_print_lst(t_cmd *node)
 			printf("AND\n");
 		else if (curr->type == 3)
 			printf("OR\n");
-		// else if (curr->type == 4)
-		// 	printf("REDIR\n");
-		// else if (curr->type == 5)
-		// 	printf("PRIOR\n");
+		else if (curr->type == 4)
+			printf("R_IN\n");
+		else if (curr->type == 5)
+			printf("R_OUT\n");
+		else if (curr->type == 6)
+			printf("R_APPEND\n");
+		else if (curr->type == 7)
+			printf("HEREDOC\n");
+		else if (curr->type == 8)
+			printf("O_BRACKET\n");
+		else if (curr->type == 9)
+			printf("C_BRACKET\n");
 		printf("\n----\n");
 		command_num++;
 		curr = curr->next;
@@ -147,37 +154,42 @@ t_envp	*create_envp_node(char *var_name)
 	envp->var_path = ft_strdup(&var_name[i + 1]);
 	return (envp);
 }
-t_cmd	*create_cmd_node(char **cmd)
+t_cmd	*create_cmd_node(char *cmd)
 {
 	t_cmd	*new_node;
+	char **command;
 
+	command = NULL;
+
+	command = malloc(2 * sizeof(char *));
+	command[0] = ft_strdup(cmd);
+	command[1] = NULL;
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
 		return (NULL);
-	new_node->cmd = ft_strdup_array(cmd);
-	printf ("cmd[0] : %s\n", cmd[0]);
+	new_node->cmd = command;
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
-	if (ft_str_is_alpha(cmd[0]))
+	if (ft_str_is_alpha(cmd))
 		new_node->type = WORD;
-	else if (!ft_strcmp(cmd[0], "|"))
+	else if (!ft_strcmp(cmd, "|"))
 		new_node->type = PIPE;
-	// else if (!ft_strcmp(cmd[0], "<<"))
-	// 	new_node->type = R_HEREDOC;
-	else if (!ft_strcmp(cmd[0], "<"))
+	else if (!ft_strcmp(cmd, "<<"))
+		new_node->type = R_HEREDOC;
+	else if (!ft_strcmp(cmd, "<"))
 		new_node->type = R_IN;
-	else if (!ft_strcmp(cmd[0], ">"))
+	else if (!ft_strcmp(cmd, ">"))
 		new_node->type = R_OUT;
-	// else if (!ft_strcmp(cmd[0], ">>"))
-	// 	new_node->type = R_APPEND;
-	// else if (!ft_strcmp(cmd[0], "||"))
-	// 	new_node->type = OR;
-	// else if (!ft_strcmp(cmd[0], "&&"))
-		// new_node->type = AND;
-	else if (!ft_strcmp(cmd[0], "("))
+	else if (!ft_strcmp(cmd, ">>"))
+		new_node->type = R_APPEND;
+	else if (!ft_strcmp(cmd, "||"))
+		new_node->type = OR;
+	else if (!ft_strcmp(cmd, "&&"))
+		new_node->type = AND;
+	else if (!ft_strcmp(cmd, "("))
 		new_node->type = O_BRACKET;
-	else if (!ft_strcmp(cmd[0], ")"))
+	else if (!ft_strcmp(cmd, ")"))
 		new_node->type = C_BRACKET;
 	return (new_node);
 }

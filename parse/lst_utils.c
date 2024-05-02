@@ -69,17 +69,17 @@ void	ft_print_lst(t_cmd *node)
 		}
 		printf("Path = %s\n", curr->path);
 		if (curr->type == 0)
-			printf("COMMAND\n");
+			printf("WORD\n");
 		else if (curr->type == 1)
 			printf("PIPE\n");
 		else if (curr->type == 2)
 			printf("AND\n");
 		else if (curr->type == 3)
 			printf("OR\n");
-		else if (curr->type == 4)
-			printf("REDIR\n");
-		else if (curr->type == 5)
-			printf("PRIOR\n");
+		// else if (curr->type == 4)
+		// 	printf("REDIR\n");
+		// else if (curr->type == 5)
+		// 	printf("PRIOR\n");
 		printf("\n----\n");
 		command_num++;
 		curr = curr->next;
@@ -155,6 +155,7 @@ t_cmd	*create_cmd_node(char **cmd)
 	if (!new_node)
 		return (NULL);
 	new_node->cmd = ft_strdup_array(cmd);
+	printf ("cmd[0] : %s\n", cmd[0]);
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
@@ -162,18 +163,18 @@ t_cmd	*create_cmd_node(char **cmd)
 		new_node->type = WORD;
 	else if (!ft_strcmp(cmd[0], "|"))
 		new_node->type = PIPE;
-	else if (!ft_strcmp(cmd[0], "<<"))
-		new_node->type = R_HEREDOC;
+	// else if (!ft_strcmp(cmd[0], "<<"))
+	// 	new_node->type = R_HEREDOC;
 	else if (!ft_strcmp(cmd[0], "<"))
 		new_node->type = R_IN;
 	else if (!ft_strcmp(cmd[0], ">"))
 		new_node->type = R_OUT;
-	else if (!ft_strcmp(cmd[0], ">>"))
-		new_node->type = R_APPEND;
-	else if (!ft_strcmp(cmd[0], "||"))
-		new_node->type = OR;
-	else if (!ft_strcmp(cmd[0], "&&"))
-		new_node->type = AND;
+	// else if (!ft_strcmp(cmd[0], ">>"))
+	// 	new_node->type = R_APPEND;
+	// else if (!ft_strcmp(cmd[0], "||"))
+	// 	new_node->type = OR;
+	// else if (!ft_strcmp(cmd[0], "&&"))
+		// new_node->type = AND;
 	else if (!ft_strcmp(cmd[0], "("))
 		new_node->type = O_BRACKET;
 	else if (!ft_strcmp(cmd[0], ")"))

@@ -11,7 +11,6 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 	len = 0;
 	while (buffer[j])
 	{
-		
 		if (ft_is_symb(&buffer[j], "|><()&") || buffer[j + 1] == '\0')
 		{
 			if (buffer[j + 1] == '\0')
@@ -25,7 +24,7 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 			cmd = NULL;
 			if (buffer[j + 1] != '\0')
 			{
-				cmd = ft_strndup(&buffer[j], 1);
+				cmd = ft_strndup(&buffer[j], 2);
 				if (!cmd)
 					return (-1);
 				add_to_lst(lst, create_cmd_node(&cmd));

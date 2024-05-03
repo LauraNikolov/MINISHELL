@@ -32,7 +32,7 @@ int	ft_check_double_symbols(char *s, char **cmd)
 		*cmd = ft_strdup("|");
 		return (1);
 	}
-	else
+	else if (s[0] == '>' && s[1] != '>')
 	{
 		*cmd = ft_strdup(">");
 		return (1);
@@ -54,15 +54,21 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 		if (ft_is_symb(&buffer[j], "|><()&") || buffer[j + 1] == '\0')
 		{
 			if (buffer[j + 1] == '\0')
+			{
 				cmd = ft_strndup(&buffer[j - len], len + 1);
+				printf("cas 1 : %s\n", cmd);
+			}
 			else
+			{
 				cmd = ft_strndup(&buffer[j - len], len);
+				printf("cas 2 : %s\n", cmd);
+			}
 			if (!cmd)
 				return (-1);
-			if (cmd)
+			if (cmd && cmd[0])
 			{
 				add_to_lst(lst, create_cmd_node(cmd));
-				free(cmd);
+				printf("cas 3 : %s\n", cmd);
 			}
 			if (buffer[j + 1] != '\0')
 			{
@@ -71,9 +77,10 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 				if (!cmd)
 					return (-1);
 				add_to_lst(lst, create_cmd_node(cmd));
+				printf("cas 4 : %s\n", cmd);
 				j++;
 			}
-			free(cmd);
+			//free(cmd);
 			len = 0;
 		}
 		len++;

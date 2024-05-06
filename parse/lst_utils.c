@@ -20,32 +20,38 @@ void	ft_free_lst(t_cmd *lst)
 {
 	t_cmd	*curr;
 	t_cmd	*temp;
+	int		i;
 
 	curr = lst;
 	while (curr)
 	{
+		i = 0;
 		temp = curr->next;
-		ft_free_tab(curr->cmd);
+		while (curr->cmd[i])
+		{
+			free(curr->cmd[i]);
+			i++;
+		}
+		free(curr->cmd);
 		free(curr->path);
 		free(curr);
 		curr = temp;
 	}
 }
 
-void	ft_split_cmd(t_cmd **lst)
-{
-	t_cmd	*curr;
-	char	**split_cmd;
 
-	curr = *lst;
-	while (curr)
-	{
-		split_cmd = ft_split(*(curr)->cmd, " ");
-		ft_free_tab(curr->cmd);
-		curr->cmd = split_cmd;
-		curr = curr->next;
-	}
-}
+// void	ft_split_cmd(t_cmd **lst)
+// {
+// 	t_cmd	*curr;
+
+// 	curr = *lst;
+// 	while (curr)
+// 	{
+// 		free(curr->cmd);
+// 		curr->cmd = split_cmd;
+// 		curr = curr->next;
+// 	}
+// }
 
 void	ft_print_lst(t_cmd *node)
 {
@@ -157,17 +163,11 @@ t_envp	*create_envp_node(char *var_name)
 t_cmd	*create_cmd_node(char *cmd)
 {
 	t_cmd	*new_node;
-	char **command;
 
-	command = NULL;
-
-	command = malloc(2 * sizeof(char *));
-	command[0] = ft_strdup(cmd);
-	command[1] = NULL;
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
 		return (NULL);
-	new_node->cmd = command;
+	new_node->cmd = ft_split(cmd, " ");
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;

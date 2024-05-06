@@ -18,24 +18,22 @@ void	ft_free_envp_lst(t_envp *lst)
 
 void	ft_free_lst(t_cmd *lst)
 {
-	t_cmd	*curr;
 	t_cmd	*temp;
 	int		i;
 
-	curr = lst;
-	while (curr)
+	while (lst)
 	{
 		i = 0;
-		temp = curr->next;
-		while (curr->cmd[i])
+		temp = lst->next;
+		while (lst->cmd[i])
 		{
-			free(curr->cmd[i]);
+			free(lst->cmd[i]);
 			i++;
 		}
-		free(curr->cmd);
-		free(curr->path);
-		free(curr);
-		curr = temp;
+		free(lst->cmd);
+		free(lst->path);
+		free(lst);
+		lst = temp;
 	}
 }
 
@@ -59,8 +57,6 @@ void	ft_print_lst(t_cmd *node)
 	int		i;
 	int		command_num;
 
-	if (!node->cmd)
-		return ;
 	i = 1;
 	command_num = 1;
 	curr = node;
@@ -72,7 +68,7 @@ void	ft_print_lst(t_cmd *node)
 			printf("Options n%d : %s\n", i, curr->cmd[i]);
 			i++;
 		}
-		printf("Path = %s\n", curr->path);
+		// printf("Path = %s\n", curr->path);
 		if (curr->type == 0)
 			printf("WORD\n");
 		else if (curr->type == 1)

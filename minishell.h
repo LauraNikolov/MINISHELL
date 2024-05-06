@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/02 17:50:49 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/06 15:26:27 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,47 +24,9 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include "struct.h"
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
-
-typedef enum s_token_type
-{
-	WORD,
-	PIPE,
-	AND,
-	OR,
-	R_IN,
-	R_OUT,
-	R_APPEND,
-	R_HEREDOC,
-	O_BRACKET,
-	C_BRACKET,
-}					t_token_type;
-
-typedef struct s_cmd
-{
-	char			**cmd;
-	char			*path;
-	int				bool;
-	t_token_type	type;
-	struct s_cmd	*next;
-	struct s_cmd	*prev;
-}					t_cmd;
-
-typedef struct s_ast
-{
-	t_token_type	type;
-	char			**args;
-	struct s_ast	*right;
-	struct s_ast	*left;
-}					t_ast;
-
-typedef struct s_envp
-{
-	char			*var_path;
-	char			*var_name;
-	struct s_envp	*next;
-}					t_envp;
 
 // ast utils
 // void ft_build_ast_node()// ! TODO

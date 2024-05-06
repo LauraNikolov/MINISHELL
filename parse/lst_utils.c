@@ -167,6 +167,12 @@ t_cmd	*create_cmd_node(char *cmd)
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
+	int i = 0;
+	while(new_node->cmd[i])
+	{
+		printf("SPLIT = %s\n", new_node->cmd[i]);
+		i++;
+	}
 	if (ft_str_is_alpha(cmd))
 		new_node->type = WORD;
 	else if (!ft_strcmp(cmd, "|"))

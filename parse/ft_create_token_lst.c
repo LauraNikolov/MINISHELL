@@ -61,16 +61,18 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 				cmd = ft_strndup(&buffer[j - len], len);
 			if (!cmd)
 				return (-1);
-			add_to_lst(lst, create_cmd_node(cmd));
+			if(len != 0)
+				add_to_lst(lst, create_cmd_node(cmd));
 			free(cmd);
+			cmd = NULL;
 			if (buffer[j + 1] != '\0')
 			{
 				if (ft_check_double_symbols(&buffer[j], &cmd) == 2)
 					j++;
 				if (!cmd)
 					return (-1);
-				add_to_lst(lst, create_cmd_node(cmd));
 				j++;
+				add_to_lst(lst, create_cmd_node(cmd));
 				free(cmd);
 			}
 			len = 0;
@@ -80,3 +82,4 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 	}
 	return (0);
 }
+

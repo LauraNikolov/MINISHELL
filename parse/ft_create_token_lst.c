@@ -1,46 +1,15 @@
 #include "../minishell.h"
 
-int	ft_check_double_symbols(char *s, char **cmd)
+static int	ft_get_symb(t_cmd **lst, char *buff, char **cmd, int j)
 {
-	if (s[0] == '<' && s[1] == '<')
+	j = ft_check_double_symbols(&buff[j], cmd);
+	if (j)
 	{
-		*cmd = ft_strdup("<<");
-		return (2);
+		add_to_lst(lst, create_cmd_node(*cmd));
+		free(*cmd);
 	}
-	else if (s[0] == '<' && s[1] != '<')
-	{
-		*cmd = ft_strdup("<");
-		return (1);
-	}
-	else if (s[0] == '>' && s[1] == '>')
-	{
-		*cmd = ft_strdup(">>");
-		return (2);
-	}
-	else if (s[0] == '&' && s[1] == '&')
-	{
-		*cmd = ft_strdup("&&");
-		return (2);
-	}
-	else if (s[0] == '|' && s[1] == '|')
-	{
-		*cmd = ft_strdup("||");
-		return (2);
-	}
-	else if (s[0] == '|' && s[1] != '|')
-	{
-		*cmd = ft_strdup("|");
-		return (1);
-	}
-	else if (s[0] == '>' && s[1] != '>')
-	{
-		*cmd = ft_strdup(">");
-		return (1);
-	}
-	return (0);
+	return (j);
 }
-
-
 
 int	ft_create_token_lst(char *buffer, t_cmd **lst)
 {
@@ -48,38 +17,21 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 	int		j;
 	int		len;
 
-	cmd = NULL;
 	j = 0;
-	len = 0;
 	while (buffer[j])
 	{
-		if (ft_is_symb(&buffer[j], "|><()&") || buffer[j + 1] == '\0')
+		len = 0;
+		while (buffer[j] && !ft_is_symb(&buffer[j], "|><()&"))
 		{
-			if (buffer[j + 1] == '\0')
-				cmd = ft_strndup(&buffer[j - len], len + 1);
-			else
-				cmd = ft_strndup(&buffer[j - len], len);
-			if (!cmd)
-				return (-1);
-			if(len != 0)
-				add_to_lst(lst, create_cmd_node(cmd));
-			free(cmd);
-			cmd = NULL;
-			if (buffer[j + 1] != '\0')
-			{
-				if (ft_check_double_symbols(&buffer[j], &cmd) == 2)
-					j++;
-				if (!cmd)
-					return (-1);
-				j++;
-				add_to_lst(lst, create_cmd_node(cmd));
-				free(cmd);
-			}
-			len = 0;
+			j++;
+			len++;
 		}
-		len++;
-		j++;
+		cmd = strndup(&buffer[j - len], len);
+		add_to_lst(lst, create_cmd_node(cmd));
+		free(cmd);
+		if (ft_is_symb(&buffer[j], "|><()&"))
+			j += ft_get_symb(lst, buffer, &cmd, j);
 	}
+	ft_remove_null_node(lst);
 	return (0);
 }
-

@@ -1,5 +1,34 @@
 #include "../minishell.h"
 
+void ft_remove_null_node(t_cmd **lst)
+{
+    t_cmd *curr;
+    t_cmd *next;
+
+	curr = *lst;
+    while (curr)
+    {
+        next = curr->next;
+        if (curr->cmd[0] == NULL)
+        {
+            if (curr == *lst)
+            {
+                *lst = next;
+                if (next)
+                    next->prev = NULL;
+            }
+            else
+            {
+                curr->prev->next = next;
+                if (next)
+                    next->prev = curr->prev;
+            }
+            ft_free_node(curr);
+        }
+        curr = next;
+    }
+}
+
 void	ft_free_envp_lst(t_envp *lst)
 {
 	t_envp	*curr;
@@ -16,27 +45,32 @@ void	ft_free_envp_lst(t_envp *lst)
 	}
 }
 
+
+void ft_free_node(t_cmd *node)
+{
+	int i;
+
+	i = 0;
+	while (node->cmd[i])
+	{
+		free(node->cmd[i]);
+		i++;
+	}
+	free(node->cmd);
+	free(node->path);
+	free(node);
+}
 void	ft_free_lst(t_cmd *lst)
 {
 	t_cmd	*temp;
-	int		i;
 
 	while (lst)
 	{
-		i = 0;
 		temp = lst->next;
-		while (lst->cmd[i])
-		{
-			free(lst->cmd[i]);
-			i++;
-		}
-		free(lst->cmd);
-		free(lst->path);
-		free(lst);
+		ft_free_node(lst);
 		lst = temp;
 	}
 }
-
 
 // void	ft_split_cmd(t_cmd **lst)
 // {
@@ -167,15 +201,7 @@ t_cmd	*create_cmd_node(char *cmd)
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
-	int i = 0;
-	while(new_node->cmd[i])
-	{
-		printf("SPLIT = %s\n", new_node->cmd[i]);
-		i++;
-	}
-	if (ft_str_is_alpha(cmd))
-		new_node->type = WORD;
-	else if (!ft_strcmp(cmd, "|"))
+	if (!ft_strcmp(cmd, "|"))
 		new_node->type = PIPE;
 	else if (!ft_strcmp(cmd, "<<"))
 		new_node->type = R_HEREDOC;
@@ -193,5 +219,7 @@ t_cmd	*create_cmd_node(char *cmd)
 		new_node->type = O_BRACKET;
 	else if (!ft_strcmp(cmd, ")"))
 		new_node->type = C_BRACKET;
+	else
+		new_node->type = WORD;
 	return (new_node);
 }

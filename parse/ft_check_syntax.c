@@ -1,5 +1,6 @@
 #include "../minishell.h"
 
+
 static int	ft_check_syntax_2(t_cmd *node)
 {
 	if (node->type == WORD && (node->prev->type == AND
@@ -23,7 +24,7 @@ static int	ft_check_syntax_2(t_cmd *node)
 }
 // RAJOUTER UN sTART ???
 
-int	ft_check_syntax(t_cmd *node)
+int	ft_check_syntax(t_cmd *node) // check if the disposition of the operator are ok
 {
 	if (!node)
 		return (-1);

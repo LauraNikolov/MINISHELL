@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/13 14:12:21 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:25:31 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,12 @@ void				ft_all_free(save_struct *t_struct);
 int 				ft_lst_size(t_cmd *cmd);
 
 char				*ft_quote(char *s);
+
+
+//exec
+void ft_build_ast(save_struct *t_struct, char **envp);
+void ft_exec(save_struct *t_struct, char **envp);
+int ft_exec_single_cmd(save_struct *t_struct, char **envp);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

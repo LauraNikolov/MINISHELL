@@ -39,7 +39,6 @@ int	main(int ac, char **av, char **envp)
 	
 	(void)av;
 	(void)ac;
-	(void)envp;
 	buffer = NULL;
 	save_struct *t_struct;
 	signal(SIGINT, ft_handler_signals);
@@ -52,7 +51,7 @@ int	main(int ac, char **av, char **envp)
 			return(free(buffer), ft_all_free(t_struct), 0);
 		ft_tokenize(buffer, &(t_struct->cmd));
 		ft_print_lst(t_struct->cmd);
-		//ft_exec(t_struct);
+		ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);
 		buffer = NULL;

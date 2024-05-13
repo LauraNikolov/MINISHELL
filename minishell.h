@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/13 12:57:20 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:12:21 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int					ft_check_double_symbols(char *s, char **cmd);
 
 // PARSE
 int					ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
-int					ft_get_path(t_cmd **lst);
+int					ft_get_path(t_cmd *node);
 
 
 // lst_proto
@@ -72,6 +72,5 @@ char				*ft_quote(char *s);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?
-int					ft_get_path(t_cmd **lst);
 
 #endif

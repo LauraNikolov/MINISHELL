@@ -118,7 +118,7 @@ void	ft_print_lst(t_cmd *node)
 			printf("Options n%d : %s\n", i, curr->cmd[i]);
 			i++;
 		}
-		// printf("Path = %s\n", curr->path);
+		printf("Path = %s\n", curr->path);
 		if (curr->type == 0)
 			printf("WORD\n");
 		else if (curr->type == 1)
@@ -195,7 +195,7 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 }
 t_envp	*create_envp_node(char *var_name)
 {
-	t_envp	e*envp;
+	t_envp	*envp;
 	int		i;
 
 	envp = malloc(sizeof(t_envp));

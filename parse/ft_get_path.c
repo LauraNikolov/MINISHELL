@@ -7,9 +7,7 @@ int	ft_get_path(t_cmd *node)
 	char	**bin;
 	int		i;
 
-	path = getenv("PATH");
-	if (!path)
-		return (-1);           // Error type TODO !
+	path = getenv("PATH");       // if no environment TODO !
 	bin = ft_split(path, ":"); // split les paths
 	i = 0;
 	while (bin[i])
@@ -18,7 +16,6 @@ int	ft_get_path(t_cmd *node)
 		if (access(absolute_path, F_OK) == 0)
 		{
 			node->path = absolute_path;
-			free(absolute_path);
 			break ;
 		}
 		free(absolute_path);

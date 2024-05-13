@@ -3,14 +3,18 @@
 
 int			g_signal = 0;
 
-static int	ft_tokenize(char *buffer, t_cmd **lst)
+static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
 {
-	int	(*ft_tab[10])(t_cmd *);
-
+	int		(*ft_tab[10])(t_cmd *);
 	t_cmd	*curr;
-	ft_create_token_lst(buffer, lst);
+
+	(void)envp;
+	// ft_save_envp(envp, &(t_struct->envp));
+	if (ft_check_quote(buffer) == -1)
+		return (-1);
+	ft_create_token_lst(buffer, &(t_struct->cmd));
 	ft_init_ft_tab(ft_tab);
-	curr = *lst;
+	curr = t_struct->cmd;
 	while (curr)
 	{
 		ft_tab[curr->type](curr);
@@ -27,7 +31,7 @@ void	ft_handler_signals(int signal)
 		g_signal = 1;
 	}
 }
-void ft_all_free(save_struct *t_struct)
+void	ft_all_free(save_struct *t_struct)
 {
 	ft_free_lst(t_struct->cmd);
 	free(t_struct);
@@ -35,12 +39,12 @@ void ft_all_free(save_struct *t_struct)
 
 int	main(int ac, char **av, char **envp)
 {
-	char	*buffer;
-	
+	char		*buffer;
+	save_struct	*t_struct;
+
 	(void)av;
 	(void)ac;
 	buffer = NULL;
-	save_struct *t_struct;
 	signal(SIGINT, ft_handler_signals);
 	while (1)
 	{
@@ -48,9 +52,10 @@ int	main(int ac, char **av, char **envp)
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return(free(buffer), ft_all_free(t_struct), 0);
-		ft_tokenize(buffer, &(t_struct->cmd));
+			return (free(buffer), ft_all_free(t_struct), 0);
+		ft_tokenize(envp, buffer, t_struct);
 		ft_print_lst(t_struct->cmd);
+		ft_print_envp(t_struct->envp);
 		ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);

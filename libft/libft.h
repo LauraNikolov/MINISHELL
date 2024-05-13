@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 16:15:04 by melmarti          #+#    #+#             */
-/*   Updated: 2024/04/25 12:30:47 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:28:01 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ int					ft_memcmp(const void *string1, const void *string2,
 void				*ft_memcpy(void *dest, const void *s, size_t n);
 void				*ft_memmove(void *dst, const void *src, size_t n);
 void				*ft_memset(void *p, int value, size_t count);
-char				*ft_strchr(const char *s, int c);
+int					ft_strchr(const char *s, int c);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 size_t				ft_strlcpy(char *dest, const char *src, size_t n);
 size_t				ft_strlen(const char *s);
 int					ft_strcmp(char *s1, char *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 char				*ft_strnstr(const char *s1, const char *s2, size_t n);
-char				*ft_strrchr(const char *s, int c);
+int					ft_strrchr(const char *s, int c);
 int					ft_tolower(int c);
 int					ft_toupper(int c);
 char				*ft_strdup(const char *src);

@@ -21,15 +21,11 @@ int	ft_check_pipe(t_cmd *node)
 
 int	ft_check_word(t_cmd *node)
 {
-	if (!node->prev || !node->next)
-		return (-1);
-	if (node->type == WORD && (node->prev->type == AND
-			|| node->prev->type == WORD || node->prev->type == O_BRACKET
-			|| node->prev->type == OR || node->prev->type == PIPE)
-		&& (node->next->type == AND || node->next->type == WORD
-			|| node->next->type == O_BRACKET || node->next->type == OR
-			|| node->next->type == PIPE))
-		return (-1);
+	if (node->prev && node->next)
+	{
+		if (node->prev->type == C_BRACKET)
+			return (-2);
+	}
 	ft_get_path(node);
 	return (0);
 	// faire une fonction qui interprete en renvoit le bon code d erreur
@@ -37,15 +33,15 @@ int	ft_check_word(t_cmd *node)
 
 int	ft_init_ft_tab(int (*ft_tab[9])(t_cmd *))
 {
-	ft_tab[0] = ft_check_word;
-	ft_tab[1] = ft_check_pipe;
-	ft_tab[2] = NULL;
-	ft_tab[3] = NULL;
-	ft_tab[4] = NULL;
-	ft_tab[5] = NULL;
-	ft_tab[6] = NULL;
-	ft_tab[7] = NULL;
-	ft_tab[8] = NULL;
-	ft_tab[9] = NULL;
+	ft_tab[WORD] = ft_check_word;
+	ft_tab[PIPE] = ft_check_pipe;
+	ft_tab[AND] = NULL;
+	ft_tab[OR] = NULL;
+	ft_tab[R_IN] = NULL;
+	ft_tab[R_OUT] = NULL;
+	ft_tab[R_APPEND] = NULL;
+	ft_tab[R_HEREDOC] = NULL;
+	ft_tab[O_BRACKET] = NULL;
+	ft_tab[C_BRACKET] = NULL;
 	return (0);
 }

@@ -1,48 +1,48 @@
 #include "../minishell.h"
 
-void ft_remove_null_node(t_cmd **lst)
+void	ft_remove_null_node(t_cmd **lst)
 {
-    t_cmd *curr;
-    t_cmd *next;
+	t_cmd	*curr;
+	t_cmd	*next;
 
 	curr = *lst;
-    while (curr)
-    {
-        next = curr->next;
-        if (curr->cmd[0] == NULL)
-        {
-            if (curr == *lst)
-            {
-                *lst = next;
-                if (next)
-                    next->prev = NULL;
-            }
-            else
-            {
-                curr->prev->next = next;
-                if (next)
-                    next->prev = curr->prev;
-            }
-            ft_free_node(curr);
-        }
-        curr = next;
-    }
+	while (curr)
+	{
+		next = curr->next;
+		if (curr->cmd[0] == NULL)
+		{
+			if (curr == *lst)
+			{
+				*lst = next;
+				if (next)
+					next->prev = NULL;
+			}
+			else
+			{
+				curr->prev->next = next;
+				if (next)
+					next->prev = curr->prev;
+			}
+			ft_free_node(curr);
+		}
+		curr = next;
+	}
 }
 
-int ft_lst_size(t_cmd *cmd)
+int	ft_lst_size(t_cmd *cmd)
 {
-	t_cmd *save;
-	int i;
+	t_cmd	*save;
+	int		i;
 
 	i = 0;
 	save = cmd;
-	while(cmd)
+	while (cmd)
 	{
 		cmd = cmd->next;
 		i++;
 	}
 	cmd = save;
-	return(i);
+	return (i);
 }
 
 void	ft_free_envp_lst(t_envp *lst)
@@ -61,10 +61,9 @@ void	ft_free_envp_lst(t_envp *lst)
 	}
 }
 
-
-void ft_free_node(t_cmd *node)
+void	ft_free_node(t_cmd *node)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (node->cmd[i])
@@ -100,6 +99,19 @@ void	ft_free_lst(t_cmd *lst)
 // 		curr = curr->next;
 // 	}
 // }
+
+void	ft_print_envp(t_envp *envp)
+{
+	t_envp	*curr;
+
+	curr = envp;
+	while (curr)
+	{
+		printf("var_name = %s\n", curr->var_name);
+		printf("path = %s\n***\n", curr->var_path);
+		curr = curr->next;
+	}
+}
 
 void	ft_print_lst(t_cmd *node)
 {
@@ -208,7 +220,7 @@ t_envp	*create_envp_node(char *var_name)
 }
 t_cmd	*create_cmd_node(char *cmd)
 {
-	t_cmd	*new_node;
+	t_cmd *new_node;
 
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)

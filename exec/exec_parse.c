@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/13 13:09:45 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:01:03 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@ void ft_build_ast(save_struct *t_struct)
     int cmd_size;
 
     //je check si y'a des operateurs
+    ft_get_path(t_struct->cmd);
     cmd_size = ft_lst_size(t_struct->cmd);
     if(cmd_size == 1)
     {
-        //recuperer le path;
-        //ft_get_path // ! todo;
         ft_exec_single_cmd(t_struct);
     }
     //je construit l'ast

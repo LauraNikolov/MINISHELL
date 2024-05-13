@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:24:22 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/06 15:38:42 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/13 11:13:46 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,13 @@ typedef struct s_all_struct
     struct t_all_struct *prev;
     struct t_all_struct *next;
 } t_all_struct;
+
+typedef struct save_struct 
+{
+    struct s_cmd *cmd;
+    struct s_ast *ast;
+    struct s_envp *envp;
+    struct s_all_struct *all_struct;
+} save_struct;
 
 #endif

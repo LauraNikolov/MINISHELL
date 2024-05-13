@@ -25,6 +25,12 @@ void	ft_handler_signals(int signal)
 	}
 }
 
+void ft_free(save_struct *t_struct)
+{
+	ft_free_lst((t_struct->cmd));
+	free(t_struct);
+}
+
 
 int	main(int ac, char **av, char **envp)
 {

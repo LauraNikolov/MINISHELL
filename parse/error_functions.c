@@ -21,15 +21,10 @@ int	ft_check_pipe(t_cmd *node)
 
 int	ft_check_word(t_cmd *node)
 {
-	//contexte debut
-	if(!node->prev && node->next)
-
-	//contexte fin
-	else if(node->prev && !node->next)
-
-
-	//contexte middle
-	if ((node->prev->type == AND || node->prev->type == O_BRACKET
+	if (!node->prev || !node->next)
+		return (-1);
+	if (node->type == WORD && (node->prev->type == AND
+			|| node->prev->type == WORD || node->prev->type == O_BRACKET
 			|| node->prev->type == OR || node->prev->type == PIPE)
 		&& (node->next->type == AND || node->next->type == WORD
 			|| node->next->type == O_BRACKET || node->next->type == OR
@@ -37,7 +32,6 @@ int	ft_check_word(t_cmd *node)
 		return (-1);
 	ft_get_path(node);
 	return (0);
-	// appel a la fonction get_path ?
 	// faire une fonction qui interprete en renvoit le bon code d erreur
 }
 

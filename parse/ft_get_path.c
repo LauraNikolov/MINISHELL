@@ -2,9 +2,10 @@
 
 int	ft_get_path(t_cmd *node)
 {
-	char *path;
-	char **bin;
-	int i;
+	char	*path;
+	char	*absolute_path;
+	char	**bin;
+	int		i;
 
 	path = getenv("PATH");
 	if (!path)
@@ -13,15 +14,16 @@ int	ft_get_path(t_cmd *node)
 	i = 0;
 	while (bin[i])
 	{
-		if (access(ft_strjoin(bin[i], node->cmd[0]), F_OK) == 0)
-		// utiliser strcat pour pas malloc un truc impossible a free ? juste pour la boucle
+		absolute_path = ft_strjoin(bin[i], node->cmd[0]);
+		if (access(absolute_path, F_OK) == 0)
 		{
-			node->path = ft_strjoin(bin[i], node->cmd[0]);
+			node->path = absolute_path;
+			free(absolute_path);
 			break ;
 		}
+		free(absolute_path);
 		i++;
 	}
-
 	ft_free_tab(bin);
 	return (0);
 }

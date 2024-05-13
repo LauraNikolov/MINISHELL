@@ -29,6 +29,22 @@ void ft_remove_null_node(t_cmd **lst)
     }
 }
 
+int ft_lst_size(t_cmd *cmd)
+{
+	t_cmd *save;
+	int i;
+
+	i = 0;
+	save = cmd;
+	while(cmd)
+	{
+		cmd = cmd->next;
+		i++;
+	}
+	cmd = save;
+	return(i);
+}
+
 void	ft_free_envp_lst(t_envp *lst)
 {
 	t_envp	*curr;
@@ -179,7 +195,7 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 }
 t_envp	*create_envp_node(char *var_name)
 {
-	t_envp	*envp;
+	t_envp	e*envp;
 	int		i;
 
 	envp = malloc(sizeof(t_envp));

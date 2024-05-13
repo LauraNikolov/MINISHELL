@@ -1,29 +1,29 @@
 #include "../minishell.h"
 
-int ft_heaven_quote(char *buff)
-{
-	int i;
-	int j;
-	int count;
-	char c;
+// int ft_heaven_quote(char *buff)
+// {
+// 	int i;
+// 	int j;
+// 	int count;
+// 	char c;
 
-	count = 0;
-	i = 0;
-	while(buff[i] != '\"' && buff[i] != '\'')
-		i++;
-	j = ft_strrchr(&buff[i], buff[i]);
-	c = buff[i];
-	i++;
-	while(i < j)
-	{
-		if (buff[i] == c)
-			count++;
-		i++;
-	}
-	if (count % 2 == 0)
-		return (1);
-	return (0);
-}
+// 	count = 0;
+// 	i = 0;
+// 	while(buff[i] != '\"' && buff[i] != '\'')
+// 		i++;
+// 	j = ft_strrchr(&buff[i], buff[i]);
+// 	c = buff[i];
+// 	i++;
+// 	while(i < j)
+// 	{
+// 		if (buff[i] == c)
+// 			count++;
+// 		i++;
+// 	}
+// 	if (count % 2 == 0)
+// 		return (1);
+// 	return (0);
+// }
 
 static int	ft_get_symb(t_cmd **lst, char *buff, char **cmd, int j)
 {

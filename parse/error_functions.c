@@ -30,6 +30,7 @@ int	ft_check_word(t_cmd *node)
 			|| node->next->type == O_BRACKET || node->next->type == OR
 			|| node->next->type == PIPE))
 		return (-1);
+	node->path = ft_get
 	return (0);
 	// appel a la fonction get_path ?
 	// faire une fonction qui interprete en renvoit le bon code d erreur

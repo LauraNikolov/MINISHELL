@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/08 16:29:21 by renard           ###   ########.fr       */
+/*   Updated: 2024/05/13 12:57:20 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,48 +24,10 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include "struct.h"
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
-typedef enum s_token_type
-{
-	WORD,
-	PIPE,
-	AND,
-	OR,
-	R_IN,
-	R_OUT,
-	R_APPEND,
-	R_HEREDOC,
-	O_BRACKET,
-	C_BRACKET,
-	NOT_FOUND,
-}					t_token_type;
-
-typedef struct s_cmd
-{
-	char			**cmd;
-	char			*path;
-	int				bool;
-	t_token_type	type;
-	struct s_cmd	*next;
-	struct s_cmd	*prev;
-}					t_cmd;
-
-typedef struct s_ast
-{
-	t_token_type	type;
-	char			**args;
-	struct s_ast	*right;
-	struct s_ast	*left;
-}					t_ast;
-
-typedef struct s_envp
-{
-	char			*var_path;
-	char			*var_name;
-	struct s_envp	*next;
-}					t_envp;
 
 // ast utils
 // void ft_build_ast_node()// ! TODO
@@ -103,6 +65,8 @@ void				ft_print_lst(t_cmd *node);
 void				ft_free_tab(char **split);
 void				ft_free_lst(t_cmd *lst);
 void				ft_free_envp_lst(t_envp *lst);
+void				ft_all_free(save_struct *t_struct);
+int 				ft_lst_size(t_cmd *cmd);
 
 char				*ft_quote(char *s);
 

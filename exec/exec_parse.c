@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/13 14:50:54 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:56:19 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void ft_exec(save_struct *t_struct, char **envp)
 {
     int cmd_size;
     cmd_size = ft_lst_size(t_struct->cmd);
-    //ft_get_path(t_struct->cmd);
+    ft_get_path(t_struct->cmd);
     if(cmd_size == 1)
     {
         ft_exec_single_cmd(t_struct, envp);

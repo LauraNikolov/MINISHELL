@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   struct.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/06 15:24:22 by lnicolof          #+#    #+#             */
+/*   Updated: 2024/05/14 17:03:18 by lnicolof         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #ifndef STRUCT_H
 # define STRUCT_H
 
@@ -15,7 +28,6 @@ typedef enum s_token_type
 	R_HEREDOC,
 	O_BRACKET,
 	C_BRACKET,
-	NO_TYPE,
 }					t_token_type;
 
 typedef struct s_cmd
@@ -23,25 +35,11 @@ typedef struct s_cmd
 	char			**cmd;
 	char			*path;
 	int				bool;
+	int 			prev_fd;
 	t_token_type	type;
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 }					t_cmd;
-
-typedef struct s_ast
-{
-	t_token_type	type;
-	char			**args;
-	struct s_ast	*right;
-	struct s_ast	*left;
-}					t_ast;
-
-typedef struct s_envp
-{
-	char			*var_path;
-	char			*var_name;
-	struct s_envp	*next;
-}					t_envp;
 
 typedef struct ope {
     char *content;
@@ -57,20 +55,25 @@ typedef struct commands {
     char *cmd_path;
 } commands;
 
-
-typedef struct s_all_struct
+typedef struct s_ast
 {
-    enum s_token_type token;
-    union data
+	t_token_type	type;
+	union data
     {
-        struct ope ope;
-        struct commands commands;
+        struct ope operator;
+        struct commands command;
     } data;
-    t_ast *ast;
-    t_ast *root_ast;
-    struct t_all_struct *prev;
-    struct t_all_struct *next;
-} t_all_struct;
+	struct s_ast	*right;
+	struct s_ast	*left;
+	struct s_ast    *parent;
+}					t_ast;
+
+typedef struct s_envp
+{
+	char			*var_path;
+	char			*var_name;
+	struct s_envp	*next;
+}					t_envp;
 
 typedef struct save_struct 
 {

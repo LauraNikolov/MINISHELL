@@ -5,17 +5,17 @@ int			g_signal = 0;
 
 static int	ft_tokenize(char *buffer, t_cmd **lst)
 {
-	int	(*ft_tab[10])(t_cmd *);
+	//int	(*ft_tab[10])(t_cmd *);
 
-	t_cmd	*curr;
+	//t_cmd	*curr;
 	ft_create_token_lst(buffer, lst);
-	ft_init_ft_tab(ft_tab);
-	curr = *lst;
-	while (curr)
-	{
-		ft_tab[curr->type](curr);
-		curr = curr->next;
-	}
+	//ft_init_ft_tab(ft_tab);
+	//curr = *lst;
+	// while (curr)
+	// {
+	// 	ft_tab[curr->type](curr);
+	// 	curr = curr->next;
+	// }
 	return (0);
 }
 
@@ -39,6 +39,7 @@ int	main(int ac, char **av, char **envp)
 	
 	(void)av;
 	(void)ac;
+	(void)envp;
 	buffer = NULL;
 	save_struct *t_struct;
 	signal(SIGINT, ft_handler_signals);

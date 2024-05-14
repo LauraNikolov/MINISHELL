@@ -11,6 +11,7 @@ EXEC_SRC = main.c \
 exec/child.c \
 exec/exec_parse.c \
 exec/fork.c \
+exec/ast_utils.c \
 
 LIBFT = $(LIBFTDIR)/libft.a
 PARSE_OBJS = $(PARSE_SRCS:.c=.o)

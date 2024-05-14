@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/13 14:25:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:35:54 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <stdio.h>
+# include <string.h>
+# include <errno.h>
 # include "struct.h"
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
@@ -72,9 +75,12 @@ char				*ft_quote(char *s);
 
 
 //exec
-void ft_build_ast(save_struct *t_struct, char **envp);
+//void ft_build_ast(save_struct *t_struct, char **envp);
 void ft_exec(save_struct *t_struct, char **envp);
 int ft_exec_single_cmd(save_struct *t_struct, char **envp);
+void ft_exec_multi_cmds(save_struct *t_struct, char **envp);
+void build_ast(save_struct *t_struct);
+t_ast *create_ast_node(t_cmd *node);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

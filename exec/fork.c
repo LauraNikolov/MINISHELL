@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/13 14:27:12 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:41:08 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int ft_exec_single_cmd(save_struct *t_struct, char **envp)
 {
-    int return_value;
+    int return_value = 0;
     pid_t pid;
     pid = fork();
     if(pid == 0)
@@ -25,9 +25,16 @@ int ft_exec_single_cmd(save_struct *t_struct, char **envp)
     {
         wait(NULL);
     }
-    else
+    if(return_value < 0)
     {
-        perror("execve\n");
+        printf("%s\n", strerror(errno));
     }
-    return(0);    
+    return(0); 
+}
+void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
+{
+    (void)envp;
+    build_ast(t_struct);
+    //exec_multi_cmds
+    
 }

@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/13 18:25:44 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:41:14 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
+# define NO_QUOTE 0
+# define S_QUOTE 1
+# define D_QUOTE 2
+
 // ast utils
 // void ft_build_ast_node()// ! TODO
 
@@ -48,7 +52,7 @@ int		ft_check_double_symbols(char *s, char **cmd);
 // PARSE
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
-int		ft_check_quote(char *s);
+int		ft_handle_quote(char *s, char **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);

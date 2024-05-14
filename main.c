@@ -10,8 +10,6 @@ static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
 
 	(void)envp;
 	// ft_save_envp(envp, &(t_struct->envp));
-	if (ft_check_quote(buffer) == -1)
-		return (-1);
 	ft_create_token_lst(buffer, &(t_struct->cmd));
 	ft_init_ft_tab(ft_tab);
 	curr = t_struct->cmd;

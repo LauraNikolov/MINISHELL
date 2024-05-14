@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:45:40 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/14 19:11:38 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:20:22 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,4 +136,17 @@ droite : ls | cat -e
 ls -la       cat        ls         cat -e
 
 * si il y a un && et un ||, recommencer l'operation jusqu'a arriver a la condition du haut
+
+
+
+
+
+ex : ls -l | grep "file" && cat file.txt
+
+           &&
+         /    \
+     PIPE     cat file.txt
+    /    \
+ls -l   grep "file"
+
 */

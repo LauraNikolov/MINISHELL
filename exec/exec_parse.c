@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/14 16:55:09 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:12:57 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void ft_exec(save_struct *t_struct, char **envp)
 {
+    t_cmd *last;
     int cmd_size;
     
     cmd_size = ft_lst_size(t_struct->cmd);
@@ -25,6 +26,6 @@ void ft_exec(save_struct *t_struct, char **envp)
     }
     else
     {
-        ft_exec_multi_cmds(t_struct, envp);
+        
     }
 }

@@ -1,56 +1,87 @@
 #include "../minishell.h"
 
-int	ft_simple_quote(char *s, char **cmd, char c)
+int	ft_simple_quote(char *s, char **cmd, char c, int *cmd_index,
+		char **save_spaces)
 {
 	int	i;
 
-	i = 0;
+	i = 1;
 	while (s[i] != c)
 	{
-		*cmd[i] = s[i];
+		if (s[i] == ' ')
+		{
+			(*cmd)[*cmd_index] = '%';
+			(*save_spaces)[*cmd_index] = '1';
+			(*cmd_index)++;
+			i++;
+			continue ;
+		}
+		(*cmd)[*cmd_index] = s[i];
+		(*save_spaces)[*cmd_index] = '0';
+		(*cmd_index)++;
 		i++;
 	}
+	(*cmd)[*cmd_index] = '\0';
 	return (i + 1);
 }
 
-int	ft_double_quote(char *s, char **cmd, char c)
+int	ft_double_quote(char *s, char **cmd, char c, int *cmd_index,
+		char **save_spaces)
 {
-	(void)s;
-	(void)c;
-	(void)cmd;
-	return (0);
+	int	i;
+
+	i = 1;
+	while (s[i] != c)
+	{
+		if (s[i] == ' ')
+		{
+			(*cmd)[*cmd_index] = '%';
+			(*save_spaces)[*cmd_index] = '1';
+			(*cmd_index)++;
+			i++;
+			continue ;
+		}
+		(*cmd)[*cmd_index] = s[i];
+		(*save_spaces)[*cmd_index] = '0';
+		(*cmd_index)++;
+		i++;
+	}
+	(*cmd)[*cmd_index] = '\0';
+	return (i + 1);
 }
 
 int	ft_handle_quote(char *s, char **cmd)
 {
 	int		i;
-	int		j;
+	int		cmd_index;
 	int		quote_status;
-	int		(*ft_quote_functions[2])(char *, char **, char c);
+	char	*save_spaces;
 
-	ft_quote_functions[0] = ft_simple_quote;
-	ft_quote_functions[1] = ft_double_quote;
+	cmd_index = 0;
 	quote_status = 0;
+	save_spaces = ft_calloc(ft_quote_len(s) + 1, sizeof(char));
+	if (!save_spaces)
+		return (0);
+	*cmd = malloc(sizeof(char) * ft_quote_len(s) + 1);
+	if (!cmd)
+		return (0);
 	i = 0;
-	j = 0;
-	*cmd = malloc(sizeof(char) * 200);
 	while (s[i])
 	{
 		if (s[i] == '\'')
-			i+= ft_quote_functions[0](&s[i], cmd, s[i]);
-		if (s[i] == '\"')
-			i+= ft_quote_functions[1](&s[i], cmd, s[i]);
-		while (s[i] && s[i] == ' ')
+			i += ft_simple_quote(&s[i], cmd, s[i], &cmd_index, &save_spaces);
+		else if (s[i] == '\"')
+			i += ft_double_quote(&s[i], cmd, s[i], &cmd_index, &save_spaces);
+		else
+		{
+			(*cmd)[cmd_index] = s[i];
+			save_spaces[cmd_index] = '0';
+			cmd_index++;
 			i++;
-			//cat
-		*cmd[j] = ' ';
-		*cmd[j] = s[i];
-		i++;
-		j++;
+		}
 	}
-	*cmd[j] = '\0';
-	printf ("cmd = %s\n", *cmd);
-	exit(0);
+	(*cmd)[cmd_index] = '\0';
+	save_spaces[cmd_index] = '\0';
 	return (i);
 }
 
@@ -67,18 +98,24 @@ int	ft_create_token_lst(char *buffer, t_cmd **lst)
 	char	*cmd;
 	int		j;
 	int		len;
+	int		quote_flag;
 
 	j = 0;
 	cmd = NULL;
+	quote_flag = -1;
 	while (buffer[j])
 	{
 		len = 0;
-		while (buffer[j] && !ft_is_symb(&buffer[j], "|><()&"))
+		while ((buffer[j] && !ft_is_symb(&buffer[j], "|><()&")) || (buffer[j]
+				&& quote_flag == 1 && ft_is_symb(&buffer[j], "|><()&")))
 		{
+			if (buffer[j] == '\'' || buffer[j] == '\"')
+				quote_flag *= -1;
 			j++;
 			len++;
 		}
-		ft_handle_quote(&buffer[j - len], &cmd);
+		// printf("len = %d\n", len);
+		ft_handle_quote(buffer, &cmd);
 		add_to_lst(lst, create_cmd_node(cmd));
 		free(cmd);
 		if (ft_is_symb(&buffer[j], "|><()&"))

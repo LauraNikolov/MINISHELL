@@ -1,54 +1,30 @@
 #include "../minishell.h"
 
-// int	ft_quote_len(char *s)
-// {
-// 	int	i;
-// 	int	len;
-
-// 	i = 0;
-// 	len = 0;
-// 	while (s[i])
-// 	{
-// 		while ((s[i] != '\"' || s[i] != '\'') && s[i] != '\'')
-// 		{
-// 			len++;
-// 			i++;
-// 		}
-// 		while (s[i] == ' ')
-// 		{
-// 			if (s[i] && s[i + 1] != ' ')
-// 				len--;
-// 			len++;
-// 			i++;
-// 		}
-// 		i++;
-// 	}
-// 	return (i - len);
-// }
-
-
-
-
-int	ft_heaven_quote(char *buff, char c)
+int	ft_quote_len(char *s)
 {
 	int		i;
-	char	j;
-	int		count;
+	int		len;
+	int		quote_flag;
+	char	c;
 
-	count = 0;
+	quote_flag = -1;
 	i = 0;
-	while (buff[i] != c)
-		i++;
-	j = ft_strrchr(&buff[i], buff[i]);
-	c = buff[i];
-	i++;
-	while (i < j)
+	len = 0;
+	c = '\0';
+	while (s[i])
 	{
-		if (buff[i] == c && buff[i - 1] != '\\')
-			count++;
+		if ((quote_flag == -1 && s[i] == '\"') || (quote_flag == -1
+				&& s[i] == '\'') || (s[i] == c))
+		{
+			quote_flag *= -1;
+			c = s[i];
+			len++;
+		}
 		i++;
 	}
-	if (count % 2 == 0)
-		return (1);
-	return (-1);
+	if (len % 2 != 0)
+	{
+		exit (printf("WARNING quote are odd !\n"));
+	}
+	return (i - len);
 }

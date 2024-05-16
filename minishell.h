@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/15 14:06:45 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/16 14:53:39 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,11 @@ int		ft_check_double_symbols(char *s, char **cmd);
 // PARSE
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
-int		ft_handle_quote(char *s, char **cmd);
+int		ft_handle_quote(char *s, char **cmd, int len, char **save_spaces);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
-int		ft_create_token_lst(char *buffer, t_cmd **lst);
+void	ft_create_token_lst(char *buffer, t_cmd **lst, char **save_spaces);
 void	add_to_lst(t_cmd **head, t_cmd *new_node);
 void	add_to_envp_lst(t_envp **head, t_envp *new_node);
 void	ft_remove_null_node(t_cmd **lst);

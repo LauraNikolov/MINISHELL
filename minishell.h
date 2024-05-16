@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/14 16:35:54 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/16 14:46:43 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ char				*ft_quote(char *s);
 void ft_exec(save_struct *t_struct, char **envp);
 int ft_exec_single_cmd(save_struct *t_struct, char **envp);
 void ft_exec_multi_cmds(save_struct *t_struct, char **envp);
-void build_ast(save_struct *t_struct);
+t_ast *build_ast_recursive(t_cmd *start, t_cmd *end);
 t_ast *create_ast_node(t_cmd *node);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,

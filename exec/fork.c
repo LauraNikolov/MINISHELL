@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/14 16:41:08 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:36:33 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,17 @@ int ft_exec_single_cmd(save_struct *t_struct, char **envp)
     }
     return(0); 
 }
+
 void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
 {
     (void)envp;
-    build_ast(t_struct);
-    //exec_multi_cmds
+    t_cmd *start; 
+    t_cmd *end;
+
+    start = t_struct->cmd;
+    while(t_struct->cmd->next)
+        t_struct->cmd = t_struct->cmd->next;
+    end = t_struct->cmd;
+    t_struct->cmd = start;
     
 }

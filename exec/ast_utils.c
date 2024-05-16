@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:45:40 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/14 19:20:22 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:36:42 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,50 +75,6 @@ t_cmd *find_root_nods(t_cmd *start, t_cmd *end)
     return(current = NULL);
 }
 
-
-t_ast *build_ast_recursive(t_cmd *start, t_cmd *end)
-{
-    t_cmd *current = end;
-    t_cmd *root = NULL;
-    t_cmd *left_end = NULL;
-    t_cmd *right_start = NULL;
-
-    // * Trouver le dernier opérateur le plus à droite
-     while (current != start) {
-        if (current->type == AND || current->type == OR) {
-            root = current;
-            break;
-        }
-        current = current->prev;
-    }
-
-    if (!root) {
-        // Si aucun opérateur && ou || n'a été trouvé, trouvez le dernier pipe
-        current = end;
-        while (current != start) {
-            if (current->type == PIPE) {
-                root = current;
-                break;
-            }
-            current = current->prev;
-        }
-    }
-    // * definir le point d'arret
-    if(!root)
-         return build_ast_recursive(start, end);
-    // * determiner les points d'arrets
-    left_end = root->prev;
-    right_start = root->next;
-    // * constuire les arbres
-    t_ast *gauche = build_ast_recursive(start, left_end);
-    t_ast *droit = build_ast_recursive(right_start, end);
-    
-    // * join les arbres
-    t_ast *root_node = create_ast_node(root);
-    root_node->left = gauche;
-    root_node->right = droit;
-    return(root_node);
-}
 
 /* 
 

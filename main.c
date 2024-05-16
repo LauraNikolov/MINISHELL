@@ -15,7 +15,7 @@ void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
 	i = 0;
 	j = 0;
 	k = 0;
-	printf("save_spaces %s\n", *save_spaces);
+	printf("save_spaces%s\n", *save_spaces);
 	while (curr)
 	{
 		i = 0;
@@ -24,11 +24,8 @@ void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
 			j = 0;
 			while (curr->cmd[i][j])
 			{
-				if (curr->cmd[i][j] == '%' && *save_spaces[k] == '1')
-				{
-					printf ("Save_spaces[k] = %c\n", *save_spaces[k]);
+				if (curr->cmd[i][j] == '%' && (*save_spaces)[k] == '1')
 					curr->cmd[i][j] = ' ';
-				}
 				j++;
 				k++;
 			}

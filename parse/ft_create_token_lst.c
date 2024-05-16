@@ -11,13 +11,13 @@ int	ft_simple_quote(char *s, char **cmd, char c, int *cmd_index,
 		if (s[i] == ' ')
 		{
 			(*cmd)[*cmd_index] = '%';
-			(*save_spaces)[*cmd_index + ft_strlen(*save_spaces)] = '1';
+			strcat(*save_spaces, "1");
 			(*cmd_index)++;
 			i++;
 			continue ;
 		}
 		(*cmd)[*cmd_index] = s[i];
-		(*save_spaces)[*cmd_index + ft_strlen(*save_spaces)] = '0';
+		strcat(*save_spaces, "0");
 		(*cmd_index)++;
 		i++;
 	}
@@ -29,26 +29,22 @@ int	ft_double_quote(char *s, char **cmd, char c, int *cmd_index,
 		char **save_spaces)
 {
 	int	i;
-	int	j;
 
-	j = ft_strlen(*save_spaces);
 	i = 1;
 	while (s[i] != c)
 	{
 		if (s[i] == ' ')
 		{
 			(*cmd)[*cmd_index] = '%';
-			(*save_spaces)[j] = '1';
+			strcat(*save_spaces, "1");
 			(*cmd_index)++;
 			i++;
-			j++;
 			continue ;
 		}
 		(*cmd)[*cmd_index] = s[i];
-		(*save_spaces)[j] = '0';
+		strcat(*save_spaces, "0");
 		(*cmd_index)++;
 		i++;
-		j++;
 	}
 	(*cmd)[*cmd_index] = '\0';
 	return (i + 1);
@@ -57,7 +53,6 @@ int	ft_double_quote(char *s, char **cmd, char c, int *cmd_index,
 int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 {
 	int	i;
-	int	j;
 	int	cmd_index;
 	int	quote_status;
 
@@ -65,7 +60,6 @@ int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 		*save_spaces = ft_calloc(ft_quote_len(s) + 1, sizeof(char));
 	if (!*save_spaces)
 		return (0);
-	j = ft_strlen(*save_spaces);
 	cmd_index = 0;
 	quote_status = 0;
 	*cmd = malloc(sizeof(char) * ft_quote_len(s) + 1);
@@ -75,22 +69,19 @@ int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 	while (s[i] && i < len)
 	{
 		if (s[i] == '\'')
-			i += ft_simple_quote(&s[i], cmd, s[i], &cmd_index,
-					&save_spaces[ft_strlen(*save_spaces)]);
+			i += ft_simple_quote(&s[i], cmd, s[i], &cmd_index, save_spaces);
 		else if (s[i] == '\"')
 			i += ft_double_quote(&s[i], cmd, s[i], &cmd_index, save_spaces);
 		else
 		{
 			(*cmd)[cmd_index] = s[i];
-			(*save_spaces)[j] = '2';
+			strcat(*save_spaces, "2");
 			cmd_index++;
 			i++;
-			j++;
 		}
 	}
 	(*cmd)[cmd_index] = '\0';
-	(*save_spaces)[cmd_index] = '\0';
-	printf("%s\n", *save_spaces);
+	strcat(*save_spaces, "\0");
 	return (i);
 }
 

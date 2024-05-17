@@ -1,5 +1,18 @@
 #include "../minishell.h"
 
+int	ft_safe_malloc(char **s, int size)
+{
+	if (!s)
+		return (0);
+	*s = ft_calloc(size, sizeof(char));
+	if (!*s)
+	{
+		ft_putstr_fd("Malloc error\n", 2);
+		return (-1);
+	}
+	return (0);
+}
+
 int	ft_is_symb(char *cmd, char *symb)
 {
 	int	i;
@@ -67,4 +80,18 @@ int	ft_str_is_alpha(char *s)
 		i++;
 	}
 	return (1);
+}
+
+void	ft_putstr_cmd_fd(char *s, int fd, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+	write(fd, str, ft_strlen(str));
+	write(2, "\'\n", 3);
 }

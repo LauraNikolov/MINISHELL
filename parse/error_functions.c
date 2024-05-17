@@ -28,7 +28,40 @@ int	ft_check_word(t_cmd *node)
 	}
 	ft_get_path(node);
 	return (0);
-	// faire une fonction qui interprete en renvoit le bon code d erreur
+}
+
+int	ft_check_Cbracket(t_cmd *node)
+{
+	if (!node->next || node->prev->type == C_BRACKET
+		|| node->next->type == O_BRACKET || node->next->type == C_BRACKET)
+	{
+		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+			node->cmd[0]);
+		return (-1);
+	}
+	// else if (node->type == O_BRACKET && (node->prev->type == AND
+	// 		|| node->prev->type == OR || node->prev->type == O_BRACKET)
+	// 	&& (node->next->type == R_OUT || node->next->type == R_IN
+	// 		|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
+	// 		|| node->next->type == WORD || node->next->type == O_BRACKET))
+	return (0);
+}
+
+int	ft_check_Obracket(t_cmd *node)
+{
+	if (!node->next || node->prev->type == C_BRACKET
+		|| node->next->type == O_BRACKET || node->next->type == C_BRACKET)
+	{
+		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+			node->cmd[0]);
+		return (-1);
+	}
+	// else if (node->type == O_BRACKET && (node->prev->type == AND
+	// 		|| node->prev->type == OR || node->prev->type == O_BRACKET)
+	// 	&& (node->next->type == R_OUT || node->next->type == R_IN
+	// 		|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
+	// 		|| node->next->type == WORD || node->next->type == O_BRACKET))
+	return (0);
 }
 
 int	ft_init_ft_tab(int (*ft_tab[9])(t_cmd *))
@@ -41,7 +74,7 @@ int	ft_init_ft_tab(int (*ft_tab[9])(t_cmd *))
 	ft_tab[R_OUT] = NULL;
 	ft_tab[R_APPEND] = NULL;
 	ft_tab[R_HEREDOC] = NULL;
-	ft_tab[O_BRACKET] = NULL;
-	ft_tab[C_BRACKET] = NULL;
+	ft_tab[O_BRACKET] = ft_check_Obracket;
+	ft_tab[C_BRACKET] = ft_check_Cbracket;
 	return (0);
 }

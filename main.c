@@ -11,29 +11,25 @@ void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
 	int		k;
 
 	curr = *lst;
-	ft_remove_null_node(lst);
-	i = 0;
-	j = 0;
 	k = 0;
-	printf("save_spaces%s\n", *save_spaces);
 	while (curr)
 	{
-		i = 0;
-		while (curr->cmd[i])
+		i = -1;
+		while (curr->cmd[++i])
 		{
 			j = 0;
 			while (curr->cmd[i][j])
 			{
-				if (curr->cmd[i][j] == '%' && (*save_spaces)[k] == '1')
+				while ((*save_spaces)[k] == '2')
+					k++;
+				if ((curr->cmd[i][j] == '%' && (*save_spaces)[k] == '1'))
 					curr->cmd[i][j] = ' ';
 				j++;
 				k++;
 			}
-			i++;
 		}
 		curr = curr->next;
 	}
-	free(*save_spaces);
 }
 
 static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
@@ -46,6 +42,7 @@ static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
 	(void)envp;
 	// ft_save_envp(envp, &(t_struct->envp));
 	ft_create_token_lst(buffer, &(t_struct->cmd), &save_spaces);
+	ft_remove_null_node(&(t_struct->cmd));
 	ft_clean_cmd_lst(&(t_struct->cmd), &save_spaces);
 	ft_init_ft_tab(ft_tab);
 	curr = t_struct->cmd;
@@ -54,6 +51,7 @@ static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
 		ft_tab[curr->type](curr);
 		curr = curr->next;
 	}
+	free(save_spaces);
 	return (0);
 }
 

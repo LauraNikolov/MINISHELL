@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/16 14:53:39 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:16:46 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, char **save_spaces);
+void	ft_putstr_cmd_fd(char *s, int fd, char *str);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
@@ -71,6 +72,9 @@ void	ft_free_lst(t_cmd *lst);
 void	ft_free_envp_lst(t_envp *lst);
 void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
+
+// General utils
+int		ft_safe_malloc(char **s, int size);
 
 // exec
 void	ft_build_ast(save_struct *t_struct, char **envp);

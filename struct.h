@@ -22,7 +22,7 @@ typedef struct s_cmd
 {
 	char				**cmd;
 	char				*path;
-	int					bool;
+	int					*bool_bracket;
 	t_token_type		type;
 	struct s_cmd		*next;
 	struct s_cmd		*prev;
@@ -39,9 +39,10 @@ typedef struct s_ast
 
 typedef struct s_envp
 {
-	char				*var_path;
 	char				*var_name;
+	char				*var_value;
 	struct s_envp		*next;
+	struct s_envp		*prev;
 }						t_envp;
 
 typedef struct ope

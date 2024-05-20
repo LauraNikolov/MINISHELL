@@ -24,6 +24,7 @@ int	ft_inside_quote(char *s, char **cmd, char c, int *cmd_index,
 	(*cmd)[*cmd_index] = '\0';
 	return (i + 1);
 }
+
 int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 {
 	int	i;
@@ -42,7 +43,7 @@ int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 		{
 			(*cmd)[cmd_index] = s[i];
 			if ((*cmd)[cmd_index] != ' ')
-				strcat(*save_spaces, "3");
+				strcat(*save_spaces, "3"); //change fonctions
 			else
 				strcat(*save_spaces, "2");
 			cmd_index++;

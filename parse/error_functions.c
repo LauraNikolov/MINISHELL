@@ -32,35 +32,47 @@ int	ft_check_word(t_cmd *node)
 
 int	ft_check_Cbracket(t_cmd *node)
 {
-	if (!node->next || node->prev->type == C_BRACKET
-		|| node->next->type == O_BRACKET || node->next->type == C_BRACKET)
+	t_cmd	*curr;
+
+	curr = node;
+	while (curr)
 	{
-		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-			node->cmd[0]);
-		return (-1);
+		if (curr->prev == NULL)
+			ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+				node->cmd[0]);
+		if (curr->prev->type == O_BRACKET)
+			break ;
+		curr = curr->prev;
 	}
-	// else if (node->type == O_BRACKET && (node->prev->type == AND
-	// 		|| node->prev->type == OR || node->prev->type == O_BRACKET)
-	// 	&& (node->next->type == R_OUT || node->next->type == R_IN
-	// 		|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
-	// 		|| node->next->type == WORD || node->next->type == O_BRACKET))
 	return (0);
 }
 
 int	ft_check_Obracket(t_cmd *node)
 {
-	if (!node->next || node->prev->type == C_BRACKET
-		|| node->next->type == O_BRACKET || node->next->type == C_BRACKET)
+	t_cmd	*curr;
+	int		i;
+
+	if (*(node->bool_bracket) == 0)
 	{
-		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-			node->cmd[0]);
-		return (-1);
+		curr = node;
+		i = 0;
+		while (curr && curr->type == O_BRACKET)
+		{
+			i++;
+			curr = curr->next;
+		}
+		while (curr && curr->type != C_BRACKET && curr->type != O_BRACKET)
+			curr = curr->next;
+		while (curr && curr->type == C_BRACKET && curr->type != O_BRACKET)
+		{
+			i--;
+			curr = curr->next;
+		}
+		if (i != 0 || !node->next || curr->type == O_BRACKET)
+			ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+				node->cmd[0]);
+		*(node->bool_bracket) = 1;
 	}
-	// else if (node->type == O_BRACKET && (node->prev->type == AND
-	// 		|| node->prev->type == OR || node->prev->type == O_BRACKET)
-	// 	&& (node->next->type == R_OUT || node->next->type == R_IN
-	// 		|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
-	// 		|| node->next->type == WORD || node->next->type == O_BRACKET))
 	return (0);
 }
 

@@ -55,7 +55,7 @@ void	ft_free_envp_lst(t_envp *lst)
 	{
 		temp = curr->next;
 		free(curr->var_name);
-		free(curr->var_path);
+		free(curr->var_value);
 		free(curr);
 		curr = temp;
 	}
@@ -87,19 +87,6 @@ void	ft_free_lst(t_cmd *lst)
 	}
 }
 
-// void	ft_split_cmd(t_cmd **lst)
-// {
-// 	t_cmd	*curr;
-
-// 	curr = *lst;
-// 	while (curr)
-// 	{
-// 		free(curr->cmd);
-// 		curr->cmd = split_cmd;
-// 		curr = curr->next;
-// 	}
-// }
-
 void	ft_print_envp(t_envp *envp)
 {
 	t_envp	*curr;
@@ -108,7 +95,7 @@ void	ft_print_envp(t_envp *envp)
 	while (curr)
 	{
 		printf("var_name = %s\n", curr->var_name);
-		printf("path = %s\n***\n", curr->var_path);
+		printf("path = %s\n***\n", curr->var_value);
 		curr = curr->next;
 	}
 }
@@ -200,9 +187,11 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 	if (!*head)
 	{
 		*head = new_node;
+		new_node->prev = NULL;
 		return ;
 	}
 	last = lst_envp_last(*head);
+	new_node->prev = last;
 	last->next = new_node;
 }
 t_envp	*create_envp_node(char *var_name)
@@ -215,7 +204,9 @@ t_envp	*create_envp_node(char *var_name)
 	while (var_name[i] && var_name[i] != '=')
 		i++;
 	envp->var_name = ft_strndup(var_name, i);
-	envp->var_path = ft_strdup(&var_name[i + 1]);
+	envp->var_value = ft_strdup(&var_name[i + 1]);
+	envp->next = NULL;
+	envp->prev = NULL;
 	return (envp);
 }
 t_cmd	*create_cmd_node(char *cmd)

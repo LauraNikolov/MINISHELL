@@ -20,7 +20,7 @@ int	ft_is_symb(char *cmd, char *symb)
 
 	i = 0;
 	j = 0;
-	while (symb[i] && cmd[j]) //gerer les double chevrons et les && et les ||
+	while (symb[i] && cmd[j]) // gerer les double chevrons et les && et les ||
 	{
 		if (cmd[j] == symb[i])
 			return (1);
@@ -92,6 +92,8 @@ void	ft_putstr_cmd_fd(char *s, int fd, char *str)
 		write(fd, &s[i], 1);
 		i++;
 	}
-	write(fd, str, ft_strlen(str));
-	write(2, "\'\n", 3);
+	if (str)
+		write(fd, str, ft_strlen(str));
+	exit(-1);
+	// write(2, "\'\n", 3);
 }

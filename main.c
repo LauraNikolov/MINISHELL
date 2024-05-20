@@ -32,25 +32,67 @@ void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
 	}
 }
 
+int	ft_check_brackets(t_cmd **cmd)
+{
+	t_cmd	*curr;
+	int		i;
+
+	if (!*cmd || !cmd)
+		return (0);
+	curr = *cmd;
+	i = -1;
+	while (curr && curr->type != O_BRACKET)
+		curr = curr->next;
+	while (curr && curr->type == O_BRACKET)
+	{
+		i++;
+		curr = curr->next;
+	}
+	while (curr && curr->type != C_BRACKET && curr->type != O_BRACKET)
+		curr = curr->next;
+	while (curr && curr->next && curr->type == C_BRACKET
+		&& curr->type != O_BRACKET)
+	{
+		i--;
+		curr = curr->next;
+	}
+	if (i != 0 || !(*cmd)->next || curr->type == O_BRACKET)
+		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+			curr->cmd[0]);
+	return (0);
+}
+
 static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
 {
 	int		(*ft_tab[10])(t_cmd *);
 	t_cmd	*curr;
 	char	*save_spaces;
+	int		bool_bracket;
 
+	bool_bracket = 0;
+	curr = t_struct->cmd;
+	while (curr)
+	{
+		curr->bool_bracket = &bool_bracket;
+		curr = curr->next;
+	}
 	save_spaces = NULL;
-	(void)envp;
-	// ft_save_envp(envp, &(t_struct->envp));
+	ft_save_envp(envp, &(t_struct->envp));
 	ft_create_token_lst(buffer, &(t_struct->cmd), &save_spaces);
 	ft_remove_null_node(&(t_struct->cmd));
+	// ft_export_cmd(&(t_struct->envp));
 	ft_clean_cmd_lst(&(t_struct->cmd), &save_spaces);
+	// ft_check_brackets(&(t_struct->cmd));
 	ft_init_ft_tab(ft_tab);
 	curr = t_struct->cmd;
 	while (curr)
 	{
+		while (curr && ft_tab[curr->type] == NULL)
+			curr = curr->next;
 		ft_tab[curr->type](curr);
 		curr = curr->next;
 	}
+	bool_bracket = 0;
 	free(save_spaces);
 	return (0);
 }
@@ -87,7 +129,6 @@ int	main(int ac, char **av, char **envp)
 			return (free(buffer), ft_all_free(t_struct), 0);
 		ft_tokenize(envp, buffer, t_struct);
 		ft_print_lst(t_struct->cmd);
-		ft_print_envp(t_struct->envp);
 		ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);

@@ -5,8 +5,10 @@ CC = cc
 PARSEDIR = parse
 EXECDIR = exec 
 LIBFTDIR = libft
+BUILTINSDIR = builtins
 
 PARSE_SRCS = $(wildcard $(PARSEDIR)/*.c)
+BUILTINS_SRC = $(wildcard $(BUILTINSDIR)/*.c)
 EXEC_SRC = main.c \
 exec/child.c \
 exec/exec_parse.c \
@@ -22,8 +24,8 @@ $(LIBFT):
 	@make -C $(LIBFTDIR)
 	@echo "Libft compiled successfully"
 
-$(NAME): $(PARSE_OBJS) $(EXEC_OBJ) | $(LIBFT)
-	@$(CC) $(CFLAGS) -o $@ $(PARSE_OBJS) $(EXEC_OBJ) -L$(LIBFTDIR) -lft $(LDFLAGS)
+$(NAME): $(PARSE_OBJS) $(EXEC_OBJ) $(BUILTINS_SRC) | $(LIBFT)
+	@$(CC) $(CFLAGS) -o $@ $(PARSE_OBJS) $(EXEC_OBJ) $(BUILTINS_SRC) -L$(LIBFTDIR) -lft $(LDFLAGS)
 	@echo "Compilation successful: $@"
 
 all: $(NAME)

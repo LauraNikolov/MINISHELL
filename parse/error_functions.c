@@ -52,7 +52,9 @@ int	ft_check_Obracket(t_cmd *node)
 	t_cmd	*curr;
 	int		i;
 
-	if (*(node->bool_bracket) == 0)
+	if (!node)
+		return (0);
+	if ((*node->bool_bracket) == 0)
 	{
 		curr = node;
 		i = 0;
@@ -74,6 +76,20 @@ int	ft_check_Obracket(t_cmd *node)
 		*(node->bool_bracket) = 1;
 	}
 	return (0);
+}
+
+void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *))
+{
+	t_cmd	*curr;
+
+	curr = *cmd;
+	while (curr)
+	{
+		while (curr && !ft_tab[curr->type])
+			curr = curr->next;
+		ft_tab[curr->type](curr);
+		curr = curr->next;
+	}
 }
 
 int	ft_init_ft_tab(int (*ft_tab[9])(t_cmd *))

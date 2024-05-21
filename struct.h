@@ -22,6 +22,7 @@ typedef struct s_cmd
 {
 	char				**cmd;
 	char				*path;
+	char				*infile;
 	int					*bool_bracket;
 	t_token_type		type;
 	struct s_cmd		*next;
@@ -41,6 +42,7 @@ typedef struct s_envp
 {
 	char				*var_name;
 	char				*var_value;
+	int					add_variables;
 	struct s_envp		*next;
 	struct s_envp		*prev;
 }						t_envp;

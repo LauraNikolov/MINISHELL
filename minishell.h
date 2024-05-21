@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/20 21:10:22 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/21 15:18:33 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,16 @@ t_cmd	*create_cmd_node(char *cmd);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
-int		ft_heaven_quote(char *buff, char c);
 int		ft_quote_len(char *s);
 int		ft_check_syntax(t_cmd *node);
 int		ft_check_double_symbols(char *s, char **cmd);
-
-// PARSE
+void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *));
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, char **save_spaces);
 int		ft_check_brackets(t_cmd **cmd);
 void	ft_putstr_cmd_fd(char *s, int fd, char *str);
+void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
@@ -65,7 +64,7 @@ void	ft_remove_null_node(t_cmd **lst);
 t_cmd	*lst_last(t_cmd *node);
 t_envp	*lst_envp_last(t_envp *node);
 void	ft_free_node(t_cmd *node);
-t_envp	*create_envp_node(char *var_name);
+t_envp	*create_envp_node(char *var_name, int flag);
 void	ft_print_lst(t_cmd *node);   // A SUPP A LA FIN
 void	ft_print_envp(t_envp *envp); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
@@ -73,6 +72,7 @@ void	ft_free_lst(t_cmd *lst);
 void	ft_free_envp_lst(t_envp *lst);
 void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
+void	ft_print_env(t_envp **env);
 
 // General utils
 int		ft_safe_malloc(char **s, int size);
@@ -83,7 +83,7 @@ void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
 
 // BUILTINS
-int		ft_export_cmd(t_envp **env);
+int		ft_export_cmd(t_envp **env, char **var);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

@@ -1,34 +1,5 @@
 #include "../minishell.h"
 
-void	ft_remove_null_node(t_cmd **lst)
-{
-	t_cmd	*curr;
-	t_cmd	*next;
-
-	curr = *lst;
-	while (curr)
-	{
-		next = curr->next;
-		if (curr->cmd[0] == NULL)
-		{
-			if (curr == *lst)
-			{
-				*lst = next;
-				if (next)
-					next->prev = NULL;
-			}
-			else
-			{
-				curr->prev->next = next;
-				if (next)
-					next->prev = curr->prev;
-			}
-			ft_free_node(curr);
-		}
-		curr = next;
-	}
-}
-
 int	ft_lst_size(t_cmd *cmd)
 {
 	t_cmd	*save;
@@ -194,7 +165,7 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 	new_node->prev = last;
 	last->next = new_node;
 }
-t_envp	*create_envp_node(char *var_name)
+t_envp	*create_envp_node(char *var_name, int flag)
 {
 	t_envp	*envp;
 	int		i;
@@ -205,6 +176,7 @@ t_envp	*create_envp_node(char *var_name)
 		i++;
 	envp->var_name = ft_strndup(var_name, i);
 	envp->var_value = ft_strdup(&var_name[i + 1]);
+	envp->add_variables = flag;
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);

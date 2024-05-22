@@ -94,6 +94,7 @@ void	ft_putstr_cmd_fd(char *s, int fd, char *str)
 	}
 	if (str)
 		write(fd, str, ft_strlen(str));
-	exit(-1);
+	write(2, "\'", 2);
 	write(2, "\n", 2);
+	exit(-1);
 }

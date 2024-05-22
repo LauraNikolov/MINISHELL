@@ -52,9 +52,7 @@ int	ft_check_Obracket(t_cmd *node)
 	t_cmd	*curr;
 	int		i;
 
-	if (!node)
-		return (0);
-	if ((*node->bool_bracket) == 0)
+	if (node && *(node->bool_bracket) == 0)
 	{
 		curr = node;
 		i = 0;
@@ -70,7 +68,7 @@ int	ft_check_Obracket(t_cmd *node)
 			i--;
 			curr = curr->next;
 		}
-		if (i != 0 || !node->next || curr->type == O_BRACKET)
+		if (i != 0 || !node->next || (curr && curr->type == O_BRACKET))
 			ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
 				node->cmd[0]);
 		*(node->bool_bracket) = 1;
@@ -85,7 +83,7 @@ void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *))
 	curr = *cmd;
 	while (curr)
 	{
-		while (curr && !ft_tab[curr->type])
+		while (curr && ft_tab[curr->type] == NULL)
 			curr = curr->next;
 		ft_tab[curr->type](curr);
 		curr = curr->next;

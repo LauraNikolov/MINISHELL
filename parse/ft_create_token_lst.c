@@ -43,7 +43,7 @@ int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 		{
 			(*cmd)[cmd_index] = s[i];
 			if ((*cmd)[cmd_index] != ' ')
-				strcat(*save_spaces, "3"); //change fonctions
+				strcat(*save_spaces, "3"); // change fonctions
 			else
 				strcat(*save_spaces, "2");
 			cmd_index++;
@@ -54,18 +54,49 @@ int	ft_handle_quote(char *s, char **cmd, int len, char **save_spaces)
 	return (i);
 }
 
-static int	ft_get_symb(t_cmd **lst, char *buff, char **cmd, int j,
-		char **save_spaces)
+static int	ft_add_redir(t_cmd **lst, char *buff, char **cmd)
 {
+	int	spaces;
+	int	len;
 	int	i;
 
-	i = ft_check_double_symbols(&buff[j], cmd);
-	j = i;
+	len = 0;
+	i = 0;
+	spaces = 0;
+	while (buff[i] && buff[i] == ' ')
+	{
+		spaces++;
+		i++;
+	}
+	while (buff[i] && (buff[i] != ' ' || buff[i] == '\0'))
+	{
+		len++;
+		i++;
+	}
+	add_to_lst(lst, create_cmd_node(*cmd, ft_strndup(&buff[spaces + 1], len
+				+ 1)));
+	return (i);
+}
+
+static int	ft_get_symb(t_cmd **lst, char *buff, char **cmd, char **save_spaces)
+{
+	int	i;
+	int	j;
+	int	len;
+
+	i = ft_check_double_symbols(buff, cmd);
+	len = 0;
+	j = 0;
+	if (buff[j] && ((buff[j] == '>' && buff[j + 1] != '>') || (buff[j] == '<'
+				&& buff[j + 1] != '<')))
+		j = ft_add_redir(lst, &buff[i], cmd);
+	else
+		add_to_lst(lst, create_cmd_node(*cmd, NULL));
+	free(*cmd);
+	j += i;
 	while (i--)
 		strcat(*save_spaces, "0");
-	add_to_lst(lst, create_cmd_node(*cmd));
-	free(*cmd);
-	return (j);
+	return (len + j);
 }
 
 void	ft_create_token_lst(char *buffer, t_cmd **lst, char **save_spaces)
@@ -90,9 +121,9 @@ void	ft_create_token_lst(char *buffer, t_cmd **lst, char **save_spaces)
 			len++;
 		}
 		ft_handle_quote(&buffer[j - len], &cmd, len, save_spaces);
-		add_to_lst(lst, create_cmd_node(cmd));
+		add_to_lst(lst, create_cmd_node(cmd, NULL));
 		free(cmd);
 		if (ft_is_symb(&buffer[j], "|><()&"))
-			j += ft_get_symb(lst, buffer, &cmd, j, save_spaces);
+			j += ft_get_symb(lst, &buffer[j], &cmd, save_spaces);
 	}
 }

@@ -88,7 +88,8 @@ void	ft_print_lst(t_cmd *node)
 			printf("Options n%d : %s\n", i, curr->cmd[i]);
 			i++;
 		}
-		printf("Path = %s\n", curr->path);
+		// printf("Path = %s\n", curr->path);
+		printf ("redir = %s\n", curr->redir);
 		if (curr->type == 0)
 			printf("WORD\n");
 		else if (curr->type == 1)
@@ -181,7 +182,7 @@ t_envp	*create_envp_node(char *var_name, int flag)
 	envp->prev = NULL;
 	return (envp);
 }
-t_cmd	*create_cmd_node(char *cmd)
+t_cmd	*create_cmd_node(char *cmd, char *redir)
 {
 	t_cmd *new_node;
 
@@ -192,6 +193,8 @@ t_cmd	*create_cmd_node(char *cmd)
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
+	new_node->bool_bracket = NULL;
+	new_node->redir = redir;
 	if (!ft_strcmp(cmd, "|"))
 		new_node->type = PIPE;
 	else if (!ft_strcmp(cmd, "<<"))

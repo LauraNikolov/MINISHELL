@@ -30,33 +30,6 @@
 // 	return (0);
 // }
 
-static int	ft_tokenize(char **envp, char *buffer, save_struct *t_struct)
-{
-	int		(*ft_tab[10])(t_cmd *);
-	t_cmd	*curr;
-	char	*save_spaces;
-	int		bool_bracket;
-
-	bool_bracket = 0;
-	curr = t_struct->cmd;
-	while (curr)
-	{
-		curr->bool_bracket = &bool_bracket;
-		curr = curr->next;
-	}
-	save_spaces = NULL;
-	ft_save_envp(envp, &(t_struct->envp));
-	ft_create_token_lst(buffer, &(t_struct->cmd), &save_spaces);
-	ft_remove_null_node(&(t_struct->cmd));
-	ft_export_cmd(&(t_struct->envp), t_struct->cmd->cmd);
-	ft_clean_cmd_lst(&(t_struct->cmd), &save_spaces);
-	// ft_check_brackets(&(t_struct->cmd));
-	ft_init_ft_tab(ft_tab);
-	ft_exec_syntax_functions(&(t_struct->cmd), ft_tab);
-	bool_bracket = 0;
-	free(save_spaces);
-	return (0);
-}
 
 void	ft_handler_signals(int signal)
 {
@@ -69,26 +42,29 @@ void	ft_handler_signals(int signal)
 void	ft_all_free(save_struct *t_struct)
 {
 	ft_free_lst(t_struct->cmd);
-	// free(t_struct);
+	free(t_struct);
 }
 
 int	main(int ac, char **av, char **envp)
 {
 	char		*buffer;
+	t_envp		*env;
 	save_struct	*t_struct;
 
 	(void)av;
 	(void)ac;
 	buffer = NULL;
+	env = NULL;
 	signal(SIGINT, ft_handler_signals);
+	ft_save_envp(envp, &env);
 	while (1)
 	{
 		t_struct = malloc(sizeof(save_struct));
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return (free(buffer), ft_all_free(t_struct), free(t_struct), 0);
-		ft_tokenize(envp, buffer, t_struct);
+			return (free(buffer), ft_all_free(t_struct), 0);
+		ft_tokenize(buffer, t_struct);
 		ft_print_lst(t_struct->cmd);
 		ft_exec(t_struct, envp);
 		ft_all_free(t_struct);

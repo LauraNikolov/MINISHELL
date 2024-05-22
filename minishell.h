@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/21 15:18:33 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/22 18:02:13 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ int		main(int argc, char **argv, char **envp);
 // libft TODO replace b the submodule
 
 // tokenisation
-t_cmd	*create_cmd_node(char *cmd);
+t_cmd	*create_cmd_node(char *cmd, char *redir);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
 int		ft_quote_len(char *s);
 int		ft_check_syntax(t_cmd *node);
+int		ft_tokenize(char *buffer, save_struct *t_struct);
 int		ft_check_double_symbols(char *s, char **cmd);
 void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *));
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
@@ -84,6 +85,7 @@ int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
 
 // BUILTINS
 int		ft_export_cmd(t_envp **env, char **var);
+void	ft_env(char **envp);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

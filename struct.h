@@ -18,11 +18,17 @@ typedef enum s_token_type
 	NO_TYPE,
 }						t_token_type;
 
+// typedef struct s_redir
+// {
+// 	enum				type;
+// 	char				*file;
+// }						t_redir;
+
 typedef struct s_cmd
 {
 	char				**cmd;
 	char				*path;
-	char				*infile;
+	char				*redir;
 	int					*bool_bracket;
 	t_token_type		type;
 	struct s_cmd		*next;
@@ -81,7 +87,6 @@ typedef struct save_struct
 {
 	struct s_cmd		*cmd;
 	struct s_ast		*ast;
-	struct s_envp		*envp;
 	struct s_all_struct	*all_struct;
 }						save_struct;
 

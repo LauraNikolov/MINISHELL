@@ -1,0 +1,17 @@
+builtins
+exec
+kaka.txt
+libft
+lolo
+main.c
+main.o
+Makefile
+minishell
+minishell.h
+new_file.txt
+parse
+RT
+struct.h
+TODO
+tyu
+valgrind.txt

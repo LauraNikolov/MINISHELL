@@ -51,11 +51,18 @@ int	ft_check_Cbracket(t_cmd *node)
 	return (0);
 }
 
-int	ft_is_enum(t_cmd *node)
+int	ft_is_enum(t_cmd *node, char **error_node)
 {
+	if (!node)
+	{
+		*error_node = node->cmd[0];
+		return (0);
+	}
 	if (node->type == R_OUT)
 		return (1);
 	else if (node->type == O_BRACKET)
+		return (1);
+	else if (node->type == C_BRACKET)
 		return (1);
 	else if (node->type == AND)
 		return (1);
@@ -64,10 +71,11 @@ int	ft_is_enum(t_cmd *node)
 	else if (node->type == WORD)
 		return (1);
 	else
-		return (0);
+		*error_node = node->prev->cmd[0];
+	return (0);
 }
 
-int	ft_is_enum2(t_cmd *node)
+int	ft_is_enum2(t_cmd *node, char **error_node)
 {
 	if (!node)
 		return (1);
@@ -79,70 +87,75 @@ int	ft_is_enum2(t_cmd *node)
 		return (1);
 	else if (node->type == C_BRACKET)
 		return (1);
+	else if (node->type == PIPE)
+		return (1);
 	else
+		*error_node = node->prev->prev->cmd[0];
+	return (0);
+}
+
+// static int	ft_one_elem(t_cmd *node)
+// {
+// 	if (node->next->type == O_BRACKET && node->next->next->type == WORD
+// 		&& node->next->next->next->type == C_BRACKET
+// 		&& node->next->next->next->next->type == C_BRACKET)
+// 		return (1);
+// 	return (0);
+// }
+
+int	ft_bad_expression(t_cmd *node)
+{
+	t_cmd	*curr;
+
+	curr = node;
+	if (!curr->prev || !curr->prev->prev)
 		return (0);
+	if (!node->next->cmd[1])
+		return (0);
+	while (curr)
+	{
+		if (curr->type == O_BRACKET && curr->prev->type == O_BRACKET
+			&& curr->prev->prev->type == O_BRACKET)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
 }
 
 int	ft_check_Obracket(t_cmd *node)
 {
 	t_cmd	*curr;
+	char	*error_cmd;
 	int		p_counter;
 
+	error_cmd = NULL;
 	curr = NULL;
 	p_counter = 0;
+	if (ft_bad_expression(node))
+	{
+		printf("Bad expression syntax\n");
+		exit(-1);
+	}
 	if (*(node->bool_bracket) == 0)
 	{
 		curr = node;
 		while (curr)
 		{
-			if (curr->type == O_BRACKET && ft_is_enum(curr->next))
+			if (curr->type == O_BRACKET && ft_is_enum(curr->next, &error_cmd))
 				p_counter++;
-			if (curr->type == C_BRACKET && ft_is_enum2(curr->next))
+			if (curr->type == C_BRACKET && ft_is_enum2(curr->next, &error_cmd))
 				p_counter--;
 			curr = curr->next;
 		}
 		if (p_counter != 0)
 		{
-			// printf("p_counter = %d\n", p_counter);
-			// printf("curr->next = %s\n", curr->cmd[0]);
 			printf("Parenthesis error\n");
 			exit(-1);
 		}
 		*(node->bool_bracket) = 1;
-		printf ("good number of parenthesis\n");
-		// printf("p_counter = %d\n", p_counter);
-		// printf("curr->next = %s\n", curr->cmd[0]);
 	}
-	exit(0);
 	return (0);
 }
-
-// t_cmd	*curr;
-// int		i;
-
-// if (node && *(node->bool_bracket) == 0)
-// {
-// 	curr = node;
-// 	i = 0;
-// 	while (curr && curr->type == O_BRACKET)
-// 	{
-// 		i++;
-// 		curr = curr->next;
-// 	}
-// 	while (curr && curr->type != C_BRACKET && curr->type != O_BRACKET)
-// 		curr = curr->next;
-// 	while (curr && curr->type == C_BRACKET && curr->type != O_BRACKET)
-// 	{
-// 		if (curr->type == C_BRACKET)
-// 			i--;
-// 		curr = curr->next;
-// 	}
-// 	if (i != 0 || !node->next || (curr && curr->type == O_BRACKET))
-// 		ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-// 			node->cmd[0]);
-// 	*(node->bool_bracket) = 1;
-// }
-// return (0);
 
 void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *))
 {
@@ -151,8 +164,8 @@ void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *))
 	curr = *cmd;
 	while (curr)
 	{
-		// while (curr && ft_tab[curr->type] == NULL)
-		// 	curr = curr->next;
+		while (curr && ft_tab[curr->type] == NULL)
+			curr = curr->next;
 		ft_tab[curr->type](curr);
 		curr = curr->next;
 	}

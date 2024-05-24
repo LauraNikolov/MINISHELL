@@ -1,29 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_parse.c                                       :+:      :+:    :+:   */
+/*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/22 13:47:23 by lnicolof         ###   ########.fr       */
+/*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
+/*   Updated: 2024/05/24 16:04:21 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-void ft_exec(save_struct *t_struct, char **envp)
-{
-    int cmd_size;
-    
-    cmd_size = ft_lst_size(t_struct->cmd);
-    ft_get_path(t_struct->cmd);
-    if(cmd_size == 1)
-    {
-        ft_exec_single_cmd(t_struct, envp);
-        return ;
-    }
-    else
-       ft_exec_multi_cmds(t_struct, envp);
-}

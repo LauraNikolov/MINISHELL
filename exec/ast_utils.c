@@ -6,103 +6,101 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:45:40 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/16 15:36:42 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:43:20 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_ast *create_ast_node(t_cmd *node)
-{
-    t_ast *astNode;
-    
-    astNode = (t_ast *)malloc(sizeof(t_ast));
-    astNode->type = node->type;
-    astNode->left = NULL;
-    astNode->right = NULL;
-    astNode->parent = NULL;
-    if(astNode->type == PIPE || astNode->type == AND || astNode->type == OR)
-    {
-        if(astNode->type == AND || astNode->type == OR)
-            astNode->data.operator.prior = 2;
-        else
-            astNode->data.operator.prior = 1;
+t_ast *create_ast_node(t_cmd *cmd) {
+    t_ast *node = (t_ast *)malloc(sizeof(t_ast));
+    node->cmd = cmd;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+const char* cmd_type_to_string(enum s_token_type type) {
+    switch (type) {
+        case AND: return "AND";
+        case OR: return "OR";
+        case PIPE: return "PIPE";
+        case WORD: return "COMMAND";
+        default: return "UNKNOWN";
     }
-    else
-    {
-        if(astNode->type == WORD)
-        {
-            astNode->data.command.cmds = node->cmd;
-            astNode->data.command.cmd_path = node->path;
-            astNode->data.command.infile = NULL;
-            astNode->data.command.outfile = NULL;
-            astNode->data.command.std_in = 0;
-            astNode->data.command.std_out = 0;
+}
+
+void join_tree(t_ast *left, t_ast *right, t_ast *root) {
+    root->left = left;
+    root->right = right;
+}
+
+void print_ast(t_ast *root, int depth, char prefix) {
+    if (root == NULL) {
+        return;
+    }
+
+    // Imprimer le préfixe pour les branches
+    if (depth > 0) {
+        printf("%*s", depth * 4, "");
+        printf("%c--- ", prefix);
+    }
+
+    // Imprimer le nœud courant
+    if (root->cmd->cmd[0] && root->cmd->type == WORD) {
+        printf("%s: %s\n", cmd_type_to_string(root->cmd->type), root->cmd->cmd[0]);
+    } else {
+        printf("%s\n", cmd_type_to_string(root->cmd->type));
+    }
+
+    // Appel récursif pour les sous-arbres gauche et droit
+    print_ast(root->left, depth + 1, '|');
+    print_ast(root->right, depth + 1, '`');
+}
+
+t_ast *build_ast_recursive(t_cmd *start, t_cmd *end) 
+{
+    t_cmd *current = end;
+    t_cmd *root = NULL;
+    t_cmd *left_end = NULL;
+    t_cmd *right_start = NULL;
+
+    // Trouver le root => opérateur le plus à droite + opérateur le plus fort
+    while (current != start) {
+        if (current->type == AND || current->type == OR) {
+            root = current;
+            break;
         }
-        //is_it_redir() // ! TODO
-    }
-    return(astNode);
-}
-
-
-t_ast *join_tree(t_ast *left, t_ast *right, t_ast *parent)
-{
-    parent->left = left;
-    parent->right = right;
-    left->parent = parent;
-    right->parent = parent;
-    return(parent);
-}
-
-t_cmd *find_root_nods(t_cmd *start, t_cmd *end)
-{
-    t_cmd *current;
-
-    current = end;
-    while(current != start)
-    {
-        if(current->type == AND || current->type == OR)
-            return(current);
         current = current->prev;
     }
-    current = end;
-    while(current != start)
-    {
-        if(current->type == PIPE)
-            return(current);
-        current = current->prev;
+
+    if (!root) {
+        // Si aucun opérateur && ou || n'a été trouvé, trouvez le dernier pipe
+        current = end;
+        while (current != start) {
+            if (current->type == PIPE) {
+                root = current;
+                break;
+            }
+            current = current->prev;
+        }
     }
-    return(current = NULL);
+
+    // Si aucun opérateur n'a été trouvé, retourner un noeud AST simple
+    if (!root) {
+        return create_ast_node(start);
+    }
+
+    // Déterminer les points d'arrêt
+    left_end = root->prev;
+    right_start = root->next;
+
+    // Construire les sous-arbres gauche et droit
+    t_ast *gauche = build_ast_recursive(start, left_end);
+    t_ast *droit = build_ast_recursive(right_start, end);
+
+    // Créer le noeud racine et joindre les sous-arbres
+    t_ast *root_node = create_ast_node(root);
+    join_tree(gauche, droit, root_node);
+    return root_node;
 }
-
-
-/* 
-
-* trouver le root => le root = operateur le plus a droite + operateur le plus fort
-ex : ls -la | cat && ls | cat -e
-root = &&
-
-* separer la liste chainee en deux 
-gauche : ls -la | cat
-droite : ls | cat -e
-
-* si il n'y a pas de && || join tous les sous arbres entre eux
-        |                     |
-
-ls -la       cat        ls         cat -e
-
-* si il y a un && et un ||, recommencer l'operation jusqu'a arriver a la condition du haut
-
-
-
-
-
-ex : ls -l | grep "file" && cat file.txt
-
-           &&
-         /    \
-     PIPE     cat file.txt
-    /    \
-ls -l   grep "file"
-
-*/

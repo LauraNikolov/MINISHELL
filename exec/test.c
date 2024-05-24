@@ -40,8 +40,6 @@ void join_tree(t_ast *left, t_ast *right, t_ast *root) {
     root->right = right;
 }
 
-
-
 t_ast *create_ast_node(t_cmd *cmd) {
     t_ast *node = (t_ast *)malloc(sizeof(t_ast));
     node->cmd = cmd;

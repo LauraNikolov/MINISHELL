@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/22 18:32:22 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/24 18:24:43 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
 // BUILTINS
 int		ft_export_cmd(t_envp **env, char **var);
 void	ft_env(char **envp);
+int		ft_echo(char **cmd);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

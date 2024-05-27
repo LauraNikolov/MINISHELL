@@ -5,30 +5,36 @@ static void	ft_echo_str(char **cmd, int option)
 	int	i;
 
 	i = 0;
-	while (cmd[++i])
-		ft_putstr_fd(cmd[i], 1);
 	if (option)
-		ft_putstr_fd("\n", 1);
+		i = 1;
+	while (cmd[++i])
+	{
+		ft_putstr_fd(cmd[i], 1);
+		if (cmd[i + 1])
+			ft_putchar_fd(' ', 1);
+	}
+	if (!option)
+		ft_putchar_fd('\n', 1);
 }
 
 int	ft_echo(char **cmd)
 {
+	int	option;
+	int	i;
+
 	if (!cmd[1])
 		return (0);
-	int i = 1;
 
-	if (cmd[1][0] == '-' && cmd[1][0] == 'n')
+	option = 0;
+	if (cmd[1][0] == '-' && cmd[1][1] == 'n')
 	{
-		while (cmd[1][i])
-		{
-			if (cmd[1][i] != 'n')
-			{
-				ft_echo_str(cmd, 0);
-				return (0);
-			}
+		option = 1;
+		i = 2;
+		while (cmd[1][i] == 'n')
 			i++;
-		}
+		if (cmd[1][i] != '\0')
+			option = 0;
 	}
-	ft_echo_str(cmd, 1);
+	ft_echo_str(cmd, option);
 	return (0);
 }

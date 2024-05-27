@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/24 18:24:43 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/27 20:08:10 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,21 +44,22 @@ t_cmd	*create_cmd_node(char *cmd, char *redir);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
-int		ft_quote_len(char *s);
+int		ft_quote_len(char *s, t_envp **env);
 int		ft_check_syntax(t_cmd *node);
-int		ft_tokenize(char *buffer, t_cmd **lst);
+int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
 void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *));
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
-int		ft_handle_quote(char *s, char **cmd, int len, char **save_spaces);
+int		ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
 int		ft_check_brackets(t_cmd **cmd);
 void	ft_putstr_cmd_fd(char *s, int fd, char *str);
-void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces);
+void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
+char	*ft_search_var(char *var, t_envp **env);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
-void	ft_create_token_lst(char *buffer, t_cmd **lst, char **save_spaces);
+void	ft_create_token_lst(char *buffer, save_struct *t_struct);
 void	add_to_lst(t_cmd **head, t_cmd *new_node);
 void	add_to_envp_lst(t_envp **head, t_envp *new_node);
 void	ft_remove_null_node(t_cmd **lst);

@@ -29,7 +29,7 @@ void	ft_remove_null_node(t_cmd **lst)
 	}
 }
 
-void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
+void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct)
 {
 	t_cmd	*curr;
 	int		i;
@@ -46,9 +46,9 @@ void	ft_clean_cmd_lst(t_cmd **lst, char **save_spaces)
 			j = 0;
 			while (curr->cmd[i][j])
 			{
-				while ((*save_spaces)[k] == '2')
+				while (t_struct->save_spaces[k] && t_struct->save_spaces[k] == '2')
 					k++;
-				if ((curr->cmd[i][j] == '%' && (*save_spaces)[k] == '1'))
+				if ((curr->cmd[i][j] == '%' && t_struct->save_spaces[k] == '1'))
 					curr->cmd[i][j] = ' ';
 				j++;
 				k++;

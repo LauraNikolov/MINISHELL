@@ -93,8 +93,10 @@ void	ft_putstr_cmd_fd(char *s, int fd, char *str)
 		i++;
 	}
 	if (str)
+	{
 		write(fd, str, ft_strlen(str));
-	write(2, "\'", 2);
+		write(2, "\'", 2);
+	}
 	write(2, "\n", 2);
 	exit(-1);
 }

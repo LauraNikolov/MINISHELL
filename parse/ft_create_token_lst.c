@@ -25,7 +25,7 @@
 // 	return (0);
 // }
 
-static int	ft_get_symb(t_cmd **lst, char *buff, char **cmd, int j)
+static int ft_get_symb(t_cmd **lst, char *buff, char **cmd, int j)
 {
 	j = ft_check_double_symbols(&buff[j], cmd);
 	add_to_lst(lst, create_cmd_node(*cmd));

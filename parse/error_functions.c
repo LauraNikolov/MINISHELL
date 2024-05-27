@@ -7,7 +7,7 @@ int	ft_check_pipe(t_cmd *node)
 		printf("syntax error near unexpected token '%s'\n", node->cmd[0]);
 		return (-1);
 	}
-	if (!(node->prev->type == WORD || node->prev->type == C_BRACKET)
+	if (!(node->prev->type == WORD|| node->prev->type == C_BRACKET)
 		&& (node->next->type == R_OUT || node->next->type == R_IN
 			|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
 			|| node->next->type == WORD))

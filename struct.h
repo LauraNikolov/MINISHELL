@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:24:22 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/14 17:03:18 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:49:54 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,26 @@ typedef struct commands {
     char *cmd_path;
 } commands;
 
-typedef struct s_ast
-{
-	t_token_type	type;
-	union data
-    {
-        struct ope operator;
-        struct commands command;
-    } data;
-	struct s_ast	*right;
-	struct s_ast	*left;
-	struct s_ast    *parent;
-}					t_ast;
+typedef struct t_ast {
+    t_cmd *cmd;
+    struct t_ast *left;
+    struct t_ast *right;
+} t_ast;
+
+// typedef struct s_ast
+// {
+// 	t_token_type	type;
+// 	char *cmd_str;
+// 	union data
+//     {
+//         struct ope operator;
+//         struct commands command;
+//     } data;
+// 	struct s_ast	*right;
+// 	struct s_ast	*left;
+// 	struct s_ast    *parent;
+// }					t_ast;
+
 
 typedef struct s_envp
 {
@@ -78,7 +86,7 @@ typedef struct s_envp
 typedef struct save_struct 
 {
     struct s_cmd *cmd;
-    struct s_ast *ast;
+    struct t_ast *ast;
     struct s_envp *envp;
     struct s_all_struct *all_struct;
 } save_struct;

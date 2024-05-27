@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/24 18:44:59 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:21:03 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,29 @@ int ft_exec_single_cmd(save_struct *t_struct, char **envp)
     return(0); 
 }
 
-// ! dernier entre, dernier sorti
-// ? d'abord la gauche ou les deux en meme temps?
-void exec_ast(t_ast *root, int pfd[2])
+int ft_exec_tree(t_ast *root)
 {
-    enum t_token_type ope;
-    t_ast *current_tree_left;
-    t_ast *current_tree_right;
-    int pfd[2];
+    int i;
+    i = 0;
     
-    if(!root->left)
-        return ;
+    (void)root;
+    printf("CECI EST LE ROOT : \n");
+    print_ast(root, 0 ,' ');
+    return(i);
+}
+int exec_ast_recursive(t_ast *root)
+{
+    int return_value;
+    return_value = -25;
 
-    if(!root->right)
-        return ;
-        
-    current_tree_left = root->left;
-    current_tree_right = root->right;
-    
-    if(!current_tree_left->left)
-        exec_ast(current_tree_left);
-    if(!current_tree_right->right)
-        exec_ast(current_tree_right);
-    // ? est ce qie y'a un pipe?
-
-    // ? est ce que je dois analyser la valeur de retour de gauche avant d'exec le droit                                                                                                                                                                                                                                                                                                                                                                                   
+    if(!root)
+        return(0);
+    if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
+        exec_ast_recursive(root->left);
+    if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
+        exec_ast_recursive(root->right);
+    ft_exec_tree(root);
+    return(return_value);                                                                                                                                                                                                                                                                                                                                                                        
 }
 
 void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
@@ -66,5 +64,5 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
     t_struct->cmd = start;
     t_struct->ast = build_ast_recursive(start, end);
     print_ast(t_struct->ast, 0, ' ');
-    exec_ast(t_struct);
+    exec_ast_recursive(t_struct->ast);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 }

@@ -19,12 +19,14 @@ static void	ft_echo_str(char **cmd, int option)
 
 int	ft_echo(char **cmd)
 {
-	int	option;
-	int	i;
+	int option;
+	int i;
 
 	if (!cmd[1])
+	{
+		ft_putchar_fd('\n', 2);
 		return (0);
-
+	}
 	option = 0;
 	if (cmd[1][0] == '-' && cmd[1][1] == 'n')
 	{

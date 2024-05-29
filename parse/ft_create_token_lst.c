@@ -7,19 +7,19 @@ int	ft_check_braces(char *s)
 
 	i = 0;
 	counter = 0;
-	while (s[i] && s[i] == '{')
+	if (s[i] && s[i] == '{' && ft_isalnum(s[i + 1]))
 	{
 		counter++;
 		i++;
 	}
 	while (s[i] && s[i] != '}')
 		i++;
-	while (s[i] && s[i] == '}')
+	if (s[i] == '}' && ft_isalnum(s[i - 1]))
 	{
 		counter++;
 		i++;
 	}
-	if (counter != 2)
+	if (counter != 2 || i < 3)
 		ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 	return (i);
 }
@@ -29,7 +29,7 @@ char	*ft_search_var(char *var, t_envp **env)
 	t_envp	*curr;
 
 	curr = *env;
-	if (!var)
+	if (!var || !*var)
 		return (NULL);
 	while (curr)
 	{
@@ -58,37 +58,27 @@ int	ft_replace_var(char **cmd, int *cmd_index, char *var_value,
 	return (0);
 }
 
-int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct,
-		char c)
+int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 {
 	int		i;
 	char	*var;
 	char	*var_value;
 
 	i = 0;
-	if (c == '\'')
-		return (0);
-	else
-	{
-		if (s[i] == '{')
-		{
-			i = ft_check_braces(&s[i]);
-			var = ft_strndup(&s[1], i - 2);
-		}
-		else
-		{
-			while (s[i] && (((s[i] >= 'A' && s[i] <= 'Z') || (s[i] >= 'a'
-							&& s[i] <= 'z') || (s[i] >= '0'
-							&& s[i] <= '9'))))
-				i++;
-			var = ft_strndup(s, i);
-		}
-		var_value = ft_search_var(var, &(t_struct->envp));
-		ft_replace_var(cmd, cmd_index, var_value, t_struct);
-	}
-	free(var);
-	if (s[i] == '\"')
+	// if (s[i] == '{')
+	// {
+	// 	i = ft_check_braces(&s[i]);
+	// 	var = ft_strndup(&s[1], i - 2);
+	// }
+	// else
+	// {
+	while (s[i] && (ft_isalnum(s[i]) || (s[i] == '_')))
 		i++;
+	var = ft_strndup(s, i);
+	// }
+	var_value = ft_search_var(var, &(t_struct->envp));
+	ft_replace_var(cmd, cmd_index, var_value, t_struct);
+	free(var);
 	return (i + 1);
 }
 
@@ -97,11 +87,11 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 	int		i;
 	char	c;
 
-	c = s[0];
-	i = 1;
+	c = s[-1];
+	i = 0;
 	while (s[i] && s[i] != c)
 	{
-		if (s[i] == ' ')
+		if (s[i] == ' ' && s)
 		{
 			(*cmd)[*cmd_index] = '%';
 			strcat(t_struct->save_spaces, "1");
@@ -109,14 +99,15 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 			i++;
 			continue ;
 		}
-		if (s[i] == '$')
-			i += ft_expand(cmd, &s[i + 1], cmd_index, t_struct, c);
+		if (s[i] == '$' && s[i + 1] != ' ' && c != '\'')
+			i += ft_expand(cmd, &s[i + 1], cmd_index, t_struct);
+		if (s[i] == '\"')
+			continue ;
 		(*cmd)[*cmd_index] = s[i];
 		strcat(t_struct->save_spaces, "0");
 		(*cmd_index)++;
 		i++;
 	}
-	(*cmd)[*cmd_index] = '\0';
 	return (i + 1);
 }
 
@@ -133,8 +124,8 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	i = 0;
 	while (s[i] && i < len)
 	{
-		if (s[i] == '\'' || s[i] == '\"')
-			i += ft_inside_quote(&s[i], cmd, &cmd_index, t_struct);
+		if (s[i] == '\'' || s[i] == '\"' || (s[i] != '\"' && s[i + 1] == '$'))
+			i += ft_inside_quote(&s[i + 1], cmd, &cmd_index, t_struct);
 		else
 		{
 			(*cmd)[cmd_index] = s[i];
@@ -143,10 +134,9 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 			else
 				strcat(t_struct->save_spaces, "2");
 			cmd_index++;
-			i++;
 		}
+		i++;
 	}
-	(*cmd)[cmd_index] = '\0';
 	return (i);
 }
 
@@ -222,5 +212,4 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
-	// printf("savespaces %s\n", t_struct->save_spaces);
 }

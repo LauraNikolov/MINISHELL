@@ -79,7 +79,7 @@ int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 	var_value = ft_search_var(var, &(t_struct->envp));
 	ft_replace_var(cmd, cmd_index, var_value, t_struct);
 	free(var);
-	return (i + 1);
+	return (i);
 }
 
 int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
@@ -91,7 +91,7 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 	i = 0;
 	while (s[i] && s[i] != c)
 	{
-		if (s[i] == ' ' && s)
+		if (s[i] == ' ')
 		{
 			(*cmd)[*cmd_index] = '%';
 			strcat(t_struct->save_spaces, "1");
@@ -99,13 +99,16 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 			i++;
 			continue ;
 		}
-		if (s[i] == '$' && s[i + 1] != ' ' && c != '\'')
+		else if (s[i] == '$' && ft_isalnum(s[i + 1]) && c != '\'')
 			i += ft_expand(cmd, &s[i + 1], cmd_index, t_struct);
-		if (s[i] == '\"')
+		else if (s[i] == '\"')
 			continue ;
-		(*cmd)[*cmd_index] = s[i];
-		strcat(t_struct->save_spaces, "0");
-		(*cmd_index)++;
+		else
+		{
+			(*cmd)[*cmd_index] = s[i];
+			strcat(t_struct->save_spaces, "0");
+			(*cmd_index)++;
+		}
 		i++;
 	}
 	return (i + 1);
@@ -124,8 +127,10 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	i = 0;
 	while (s[i] && i < len)
 	{
-		if (s[i] == '\'' || s[i] == '\"' || (s[i] != '\"' && s[i + 1] == '$'))
+		if (s[i] == '\'' || s[i] == '\"')
 			i += ft_inside_quote(&s[i + 1], cmd, &cmd_index, t_struct);
+		else if (s[i] == '$' && ft_isalnum(s[i + 1]))
+			i += ft_expand(cmd, &s[i + 1], &cmd_index, t_struct);
 		else
 		{
 			(*cmd)[cmd_index] = s[i];
@@ -212,4 +217,5 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
+	printf("savespaces %s\n", t_struct->save_spaces);
 }

@@ -2,6 +2,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+ #include <sys/types.h>
+#include <sys/wait.h>
+
 
 
 typedef enum {
@@ -16,6 +19,8 @@ typedef struct t_cmd {
     struct t_cmd *prev;
     struct t_cmd *next;
     char *cmd_str;
+    char *path;
+    char **args;
 } t_cmd;
 
 typedef struct t_ast {
@@ -23,6 +28,16 @@ typedef struct t_ast {
     struct t_ast *left;
     struct t_ast *right;
 } t_ast;
+
+typedef struct s_exec
+{
+	int pipe[2];
+    int std_in;
+    int std_out;
+    int return_value;
+    int prev;
+	char **envp;
+} t_exec;
 
 
 const char* cmd_type_to_string(t_cmd_type type) {
@@ -123,18 +138,125 @@ t_ast *build_ast_recursive(t_cmd *start, t_cmd *end) {
 }
 
 
-int main() {
+int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
+{
+    int return_value = 0;
+    pid_t pid;
+    int status;
+    pid = fork();
+    if (pid == 0)
+    {
+        close(exec->pipe[0]);
+        if(exec->std_in != STDIN_FILENO)
+        {
+            dup2(exec->std_in, STDIN_FILENO);
+            close(exec->std_in);
+        }
+        if(exec->std_out != STDOUT_FILENO)
+        {
+            dup2(exec->std_out, STDOUT_FILENO);
+            close(exec->std_out);
+        }
+        return_value = execve(cmd->path, cmd->args, envp);
+    }
+    else
+    {
+        close(exec->pipe[1]);
+        exec->prev = exec->pipe[0];
+    }
+    return (return_value);
+}
+
+int ft_execve_single_cmds(t_cmd *cmd, char **envp, t_exec *exec)
+{
+    int return_value = 0;
+    pid_t pid;
+    int status;
+    pid = fork();
+
+    if(pid == -1)
+    {
+        perror("fork");
+        return (1);
+    }
+    if(pid == 0)
+        exec->return_value = execve(cmd->path, cmd->args, envp);
+    else
+    {
+        wait(NULL);
+    }
+    return (exec->return_value);
+    
+}
+
+
+int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec) {
+    if (root == NULL) {
+        return(0);
+    }
+
+    if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
+        exec_ast_recursive(root->left, envp, 0);
+    if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
+        exec_ast_recursive(root->right, envp, 0);
+
+    // Exécuter le nœud courant
+   if(root->left->cmd->type == COMMAND && root->right->cmd->type == COMMAND)
+   {
+        t_cmd *cmd1 = root->left->cmd;
+        t_cmd *cmd2 = root->right->cmd;
+        int pfd[2];
+        pipe(pfd);
+        if(root->cmd->type == PIPE)
+        {
+            exec->std_in = 0;
+            exec->std_out = pfd[1];
+            ft_execve_pipe(cmd1, envp, exec);
+            pipe(pfd);
+            exec->std_in = exec->prev;
+            exec->std_out = STDOUT_FILENO;
+            exec->return_value = ft_execve_pipe(cmd2, envp, exec);
+        }
+
+        if(root->cmd->type == AND)
+        {
+            t_cmd *cmd1 = root->left->cmd;
+            t_cmd *cmd2 = root->right->cmd;
+            exec->std_in = 0;
+            exec->std_out = 1;
+            exec->return_value = ft_execve_single_cmds(cmd1, envp, exec);
+            if(exec->return_value == 0)
+            {
+                exec->std_in = 0;
+                exec->std_out = 1;
+                exec->return_value = ft_execve_single_cmds(cmd2, envp, exec);
+            }
+            else
+            {
+                exec->return_value = 1;
+                printf("error\n");
+            }
+        }
+
+    }
+    return (exec->return_value);
+}
+
+int main(int argc, char **argv, char **envp) 
+{
+    char* cmd1_args[] = {"echo", "bonjour", NULL};
+    char* cmd3_args[] = {"ls", NULL};
     // Création d'exemple de commandes
-    t_cmd cmd1 = {COMMAND, NULL, NULL, "ls -la"};
-    t_cmd cmd2 = {PIPE, &cmd1, NULL, NULL};
-    t_cmd cmd3 = {COMMAND, &cmd2, NULL, "cat"};
+    t_cmd cmd1 = {COMMAND, NULL, NULL, "echo", "/bin/echo", cmd1_args};
+    t_cmd cmd2 = {AND, &cmd1, NULL, NULL, NULL, NULL};
+    t_cmd cmd3 = {COMMAND, &cmd2, NULL, "ls", "/bin/ls", cmd3_args};
     t_cmd cmd4 = {AND, &cmd3, NULL, NULL};
     t_cmd cmd5 = {COMMAND, &cmd4, NULL, "ls"};
     t_cmd cmd6 = {PIPE, &cmd5, NULL, NULL};
     t_cmd cmd7 = {COMMAND, &cmd6, NULL, "cat -e"};
     t_cmd cmd8 = {AND, &cmd7, NULL, NULL};
     t_cmd cmd9 = {COMMAND, &cmd8, NULL, "echo bonjour"};
-    
+
     cmd1.next = &cmd2;
     cmd2.next = &cmd3;
     cmd3.next = &cmd4;
@@ -145,10 +267,17 @@ int main() {
     cmd8.next = &cmd9;
 
     // Construction de l'AST
-    t_ast *ast = build_ast_recursive(&cmd1, &cmd9);
+    t_ast *ast = build_ast_recursive(&cmd1, &cmd3);
 
     // Impression de l'AST
       print_ast(ast, 0, ' ');
+
+    t_exec *exec;
+    exec = (t_exec *)malloc(sizeof(t_exec));
+    exec->std_in = STDIN_FILENO;
+    exec->std_out = STDOUT_FILENO;
+    exec->prev = -1;
+    exec_ast_recursive(ast, envp, exec);
 
     return 0;
 }

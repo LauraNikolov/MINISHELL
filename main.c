@@ -28,6 +28,31 @@ int	main(int ac, char **av, char **envp)
 	env = NULL;
 	signal(SIGINT, ft_handler_signals);
 	ft_save_envp(envp, &env);
+
+	char **str;
+	int i = 0;
+	char *tab1[4];
+	{
+		tab1[0] = "Hello";
+		tab1[1] = "ca";
+		tab1[2] = "va";
+		tab1[3] = NULL;
+	}
+	char *tab2[4];
+	{
+		tab2[0] = "Yo";
+		tab2[1] = "la";
+		tab2[2] = "mif";
+		tab2[3] = NULL;
+	}
+	
+	str = ft_jointab(tab1, tab2);
+	while(str[i])
+	{
+		printf ("str[%d] = %s\n", i, str[i]);
+		i++;
+	}
+	exit(0);
 	while (1)
 	{
 		t_struct = malloc(sizeof(save_struct));
@@ -38,8 +63,8 @@ int	main(int ac, char **av, char **envp)
 				ft_all_free(t_struct), 0);
 		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
-		ft_echo(t_struct->cmd->cmd);
-		// ft_print_lst(t_struct->cmd);
+		// ft_echo(t_struct->cmd->cmd);
+		ft_print_lst(t_struct->cmd);
 		// ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);

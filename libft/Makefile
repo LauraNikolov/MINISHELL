@@ -32,6 +32,7 @@ FILES = ft_memset \
 		ft_calloc \
 		ft_substr \
 		ft_strjoin \
+		ft_jointab \
 		ft_strtrim \
 		ft_split \
 		ft_itoa \

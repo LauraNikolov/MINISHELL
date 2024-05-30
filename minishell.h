@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/30 17:08:25 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/30 17:29:11 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		ft_quote_len(char *s, t_envp **env);
 int		ft_check_syntax(t_cmd *node);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
-void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *));
+void	ft_exec_syntax_functions(t_cmd **cmd);
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
@@ -56,6 +56,7 @@ char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
 int		ft_check_braces(char *s);
+char	**ft_wildcard(t_cmd **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);

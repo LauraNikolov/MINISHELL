@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 16:15:04 by melmarti          #+#    #+#             */
-/*   Updated: 2024/05/13 17:28:01 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/30 18:54:25 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ char				*ft_strdup(const char *src);
 char				*ft_strndup(char *src, int n);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);
+char				**ft_jointab(char **t1, char **t2);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char *s, char *c);
 char				*ft_itoa(int n);

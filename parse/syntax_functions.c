@@ -157,10 +157,12 @@ int	ft_check_Obracket(t_cmd *node)
 	return (0);
 }
 
-void	ft_exec_syntax_functions(t_cmd **cmd, int (*ft_tab[9])(t_cmd *))
+void	ft_exec_syntax_functions(t_cmd **cmd)
 {
 	t_cmd	*curr;
+	int		(*ft_tab[10])(t_cmd *);
 
+	ft_init_ft_tab(ft_tab);
 	curr = *cmd;
 	while (curr)
 	{

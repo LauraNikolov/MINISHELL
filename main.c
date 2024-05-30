@@ -34,10 +34,11 @@ int	main(int ac, char **av, char **envp)
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return (free(buffer), ft_all_free(t_struct), 0);
+			return (free(buffer), ft_free_envp_lst(t_struct->envp),
+				ft_all_free(t_struct), 0);
+		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
 		ft_echo(t_struct->cmd->cmd);
-		add_history(buffer);
 		// ft_print_lst(t_struct->cmd);
 		// ft_exec(t_struct, envp);
 		ft_all_free(t_struct);

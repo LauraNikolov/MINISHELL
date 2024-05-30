@@ -2,25 +2,17 @@
 
 int	ft_check_braces(char *s)
 {
-	int	counter;
 	int	i;
 
-	i = 0;
-	counter = 0;
-	if (s[i] && s[i] == '{' && ft_isalnum(s[i + 1]))
+	i = 1;
+	while (s[i])
 	{
-		counter++;
+		if (s[i] == '}')
+			break ;
+		if (!ft_isalnum(s[i]))
+			ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 		i++;
 	}
-	while (s[i] && s[i] != '}')
-		i++;
-	if (s[i] == '}' && ft_isalnum(s[i - 1]))
-	{
-		counter++;
-		i++;
-	}
-	if (counter != 2 || i < 3)
-		ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 	return (i);
 }
 
@@ -65,22 +57,24 @@ int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 	char	*var_value;
 
 	i = 0;
-	// if (s[i] == '{')
-	// {
-	// 	i = ft_check_braces(&s[i]);
-	// 	var = ft_strndup(&s[1], i - 2);
-	// }
-	// else
-	// {
-	while (s[i] && (ft_isalnum(s[i]) || (s[i] == '_')))
+	if (s[i] == '{')
+	{
+		i = ft_check_braces(&s[i]);
+		var = ft_strndup(&s[1], i - 1);
 		i++;
-	var = ft_strndup(s, i);
-	// }
+	}
+	else
+	{
+		while (s[i] && (ft_isalnum(s[i]) || (s[i] == '_')))
+			i++;
+		var = ft_strndup(s, i);
+	}
 	var_value = ft_search_var(var, &(t_struct->envp));
 	ft_replace_var(cmd, cmd_index, var_value, t_struct);
 	free(var);
 	return (i);
 }
+
 
 int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 {
@@ -96,13 +90,9 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 			(*cmd)[*cmd_index] = '%';
 			strcat(t_struct->save_spaces, "1");
 			(*cmd_index)++;
-			i++;
-			continue ;
 		}
-		else if (s[i] == '$' && ft_isalnum(s[i + 1]) && c != '\'')
+		else if (s[i] == '$' && c != '\'')
 			i += ft_expand(cmd, &s[i + 1], cmd_index, t_struct);
-		else if (s[i] == '\"')
-			continue ;
 		else
 		{
 			(*cmd)[*cmd_index] = s[i];
@@ -129,7 +119,7 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	{
 		if (s[i] == '\'' || s[i] == '\"')
 			i += ft_inside_quote(&s[i + 1], cmd, &cmd_index, t_struct);
-		else if (s[i] == '$' && ft_isalnum(s[i + 1]))
+		else if (s[i] == '$')
 			i += ft_expand(cmd, &s[i + 1], &cmd_index, t_struct);
 		else
 		{
@@ -217,5 +207,4 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
-	printf("savespaces %s\n", t_struct->save_spaces);
 }

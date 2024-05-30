@@ -41,7 +41,7 @@ FILES = ft_memset \
 		ft_putstr_fd \
 		ft_putendl_fd \
 		ft_putnbr_fd \
-		
+
 FILES_BONUS = ft_lstnew \
 			ft_lstadd_front \
 			ft_lstsize \
@@ -61,20 +61,25 @@ OBJS = $(addprefix $(OBJS_DIR), $(addsuffix .o, $(FILES)))
 OBJS_BONUS = $(addprefix $(OBJS_DIR), $(addsuffix .o, $(FILES_BONUS)))
 
 all: $(NAME)
+	@echo "libft compiled"
 
 .o: .c 
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(AR) $(NAME) $(OBJS) 
+	@$(AR) $(NAME) $(OBJS) 
 
 bonus: $(OBJS_BONUS)
-	$(AR) $(NAME) $(OBJS_BONUS)
+	@$(AR) $(NAME) $(OBJS_BONUS)
+	@echo "libft bonus compiled"
 	
 clean:
-	$(RM) $(OBJS) $(OBJS_BONUS)
+	@$(RM) $(OBJS) $(OBJS_BONUS)
+	@echo "cleaned"
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
+	@echo "fully cleaned"
 
-re: clean all
+re: fclean all
+	@echo "recompiled"

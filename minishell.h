@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/29 13:51:36 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/30 17:08:25 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <dirent.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
-
-# define NO_QUOTE 0
-# define S_QUOTE 1
-# define D_QUOTE 2
 
 // ast utils
 // void ft_build_ast_node()// ! TODO

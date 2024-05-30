@@ -22,7 +22,7 @@ int	ft_echo(char **cmd)
 	int option;
 	int i;
 
-	if (!cmd[1])
+	if (!(cmd[1] || cmd || *cmd))
 	{
 		ft_putchar_fd('\n', 2);
 		return (0);

@@ -1,18 +1,18 @@
 #include "../minishell.h"
 
-int	ft_check_braces(char *s)
+int	ft_check_braces(char *s, int brace_flag)
 {
 	int	i;
 
-	i = 1;
-	while (s[i])
+	i = 0;
+	while (s[i] && s[i] != ' ' && s[i] == '}')
 	{
-		if (s[i] == '}')
-			break ;
 		if (!ft_isalnum(s[i]))
 			ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 		i++;
 	}
+	if (s[i] != '}' && brace_flag)
+		ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 	return (i);
 }
 
@@ -53,14 +53,14 @@ int	ft_replace_var(char **cmd, int *cmd_index, char *var_value,
 int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 {
 	int		i;
-	char	*var;
+	char	*var = NULL;
 	char	*var_value;
 
 	i = 0;
 	if (s[i] == '{')
 	{
-		i = ft_check_braces(&s[i]);
-		var = ft_strndup(&s[1], i - 1);
+		i = ft_check_braces(&s[i], 1);
+		var = ft_strndup(&s[1], i);
 		i++;
 	}
 	else
@@ -72,9 +72,8 @@ int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 	var_value = ft_search_var(var, &(t_struct->envp));
 	ft_replace_var(cmd, cmd_index, var_value, t_struct);
 	free(var);
-	return (i);
+	return (i + 1);
 }
-
 
 int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 {
@@ -207,4 +206,5 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
+	printf ("%s\n", t_struct->save_spaces);
 }

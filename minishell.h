@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/30 17:29:11 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/05/31 16:19:12 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
-int		ft_check_braces(char *s);
+int		ft_check_braces(char *s, int brace_flag);
 char	**ft_wildcard(t_cmd **cmd);
 
 // lst_proto

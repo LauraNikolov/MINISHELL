@@ -7,7 +7,7 @@ int	ft_var_len(char *s, int brace_flag)
 	i = 0;
 	while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
 		i++;
-	if (s[i] != '}' && brace_flag)
+	if ((brace_flag && s[i] != '}') || (brace_flag && i == 0))
 		ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
 	return (i);
 }
@@ -23,7 +23,6 @@ char	*ft_search_var(char *var, t_envp **env)
 	{
 		if (!ft_strcmp(curr->var_name, var))
 			return (curr->var_value);
-		
 		curr = curr->next;
 	}
 	return (NULL);
@@ -114,7 +113,7 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	{
 		if (s[i] == '\'' || s[i] == '\"')
 			i += ft_inside_quote(&s[i + 1], cmd, &cmd_index, t_struct);
-		else if (s[i] == '$')
+		else if (s[i] == '$' && s[i + 1])
 			i += ft_expand(cmd, &s[i + 1], &cmd_index, t_struct);
 		else
 		{

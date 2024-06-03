@@ -18,9 +18,8 @@ int	ft_cmd_len(char *s, t_envp **env, int *i)
 		(*i)++;
 		var_len = ft_var_len(&s[*i], 1);
 		var = ft_strndup(&s[*i], var_len);
-		*i += var_len;
+		*i += var_len + 1;
 		var_len += 3;
-		(*i)++;
 	}
 	else
 	{
@@ -57,8 +56,7 @@ int	ft_quote_len(char *s, t_envp **env, int len)
 			c = s[i];
 			quote_len++;
 		}
-		else if (s[i] == '$' && c != '\'' && (ft_isalnum(s[i + 1]) || s[i
-			+ 1] == '_' || s[i + 1] == '{'))
+		else if (s[i] == '$' && c != '\'' && s[i + 1])
 			var_size += ft_cmd_len(s, env, &i);
 	}
 	if (quote_len % 2 != 0)

@@ -166,8 +166,11 @@ void	ft_exec_syntax_functions(t_cmd **cmd)
 	curr = *cmd;
 	while (curr)
 	{
-		while (curr && ft_tab[curr->type] == NULL)
+		if (curr->type < 0 || ft_tab[curr->type] == NULL)
+		{
 			curr = curr->next;
+			continue;
+		}
 		ft_tab[curr->type](curr);
 		curr = curr->next;
 	}

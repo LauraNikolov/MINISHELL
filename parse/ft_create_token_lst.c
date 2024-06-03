@@ -23,6 +23,7 @@ char	*ft_search_var(char *var, t_envp **env)
 	{
 		if (!ft_strcmp(curr->var_name, var))
 			return (curr->var_value);
+		
 		curr = curr->next;
 	}
 	return (NULL);
@@ -105,8 +106,8 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 
 	if (!t_struct->save_spaces)
 		ft_safe_malloc(&(t_struct->save_spaces), ft_quote_len(s,
-				&(t_struct->envp) + 100, len));
-	ft_safe_malloc(cmd, ft_quote_len(s, &(t_struct->envp) + 100, len));
+				&(t_struct->envp), len));
+	ft_safe_malloc(cmd, ft_quote_len(s, &(t_struct->envp), len));
 	cmd_index = 0;
 	i = 0;
 	while (s[i] && i < len)

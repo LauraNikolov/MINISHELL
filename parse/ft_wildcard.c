@@ -1,93 +1,83 @@
 #include "../minishell.h"
 
-/* char	*ft_find_match(char *s, char *d_name)
+char	*ft_find_dir(char *cmd, DIR *dir)
 {
-}
-
-char	**ft_stars(char *s)
-{
+	struct dirent	*entry;
 	int				i;
 	int				j;
-	int				k;
-	DIR				*dir;
-	struct dirent	*entry;
-	char			*match;
-	int				match;
 
-	match = 0;
-	if (!s)
-		return (NULL);
-	printf("s = %s\n", s);
+	j = 0;
 	i = 0;
-	if (!dir)
-		dir = readdir(".");
+	entry = readdir(dir);
+	if (!entry)
+	{
+		dir = opendir(".");
+		entry = readdir(dir);
+	}
+	while (cmd[i] && cmd[i] != '*')
+		i++;
+	if (!ft_strncmp(cmd, entry->d_name, i))
+	{
+		while (cmd[i] != entry->d_name[j])
+			j++;
+		ft_find_dir(&cmd[i + 1], &entry->d_name[j]);
+	}
+	if (!cmd)
+		return (ft_strdup(entry->d_name));
+	return (NULL);
+}
+
+int	ft_count_dir(DIR *dir)
+{
+	int				i;
+	struct dirent	*entry;
+
+	i = 0;
 	entry = readdir(dir);
 	while (entry)
 	{
-		i = 0;
-		while (entry->d_name[j])
-		{
-			if (s[i] == entry->d_name[j] && s[i] != '*')
-			{
-				while (s[i] == entry->d_name[j])
-				{
-					i++;
-					j++;
-				}
-				if (s[i] == '*')
-				{
-					match = 1;
-					i++;
-				}
-			}
-			if (s[i - 1] == '*' && !match)
-				break ;
-			j++;
-		}
+		i++;
 		entry = readdir(dir);
 	}
-	printf("match = %s\n", match);
+	return (i);
 }
 
-char	**ft_extand_dir(t_cmd **lst, struct dirent *entry, DIR *dir)
+char	**ft_wildcard(t_cmd **lst)
 {
-	char	**wildcard;
+	DIR		*dir;
 	t_cmd	*curr;
 	int		i;
 	int		j;
+	int		k;
+	char	**wildcard;
 
 	curr = *lst;
+	dir = opendir(".");
+	if (dir == NULL)
+		return (ft_putstr_cmd_fd("Error while accessing directory\n", 2, NULL),
+			NULL);
+	wildcard = malloc(sizeof(char *) * ft_count_dir(dir) + 1);
+	wildcard[ft_count_dir(dir) + 1] = NULL;
+	i = 0;
+	k = -1;
 	while (curr)
 	{
-		i = 0;
 		while (curr->cmd[i])
 		{
+			j = 0;
 			while (curr->cmd[i][j])
 			{
 				if (curr->cmd[i][j] == '*')
-					wildcard = ft_stars(curr->cmd[i]);
+				{
+					wildcard[++k] = ft_find_dir(curr->cmd[i], dir);
+					break ;
+				}
 				j++;
 			}
 			i++;
 		}
 		curr = curr->next;
 	}
-	return (wildcard);
-}
-
-char	**ft_wildcard(t_cmd **lst)
-{
-	DIR				*dir;
-	struct dirent	*entry;
-	char			**wildcard;
-	int				i;
-
-	dir = opendir(".");
-	if (dir == NULL)
-		return (ft_putstr_cmd_fd("Error while accessing directory\n", 2, NULL),
-			NULL);
-	entry = readdir(dir);
-	wildcard = ft_extand_dir(lst, entry);
 	i = 0;
 	while (wildcard[i])
 	{
@@ -95,5 +85,6 @@ char	**ft_wildcard(t_cmd **lst)
 		i++;
 	}
 	closedir(dir);
+	exit(0);
 	return (wildcard);
-} */
+}

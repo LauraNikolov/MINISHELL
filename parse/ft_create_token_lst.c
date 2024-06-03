@@ -85,7 +85,8 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 			strcat(t_struct->save_spaces, "1");
 			(*cmd_index)++;
 		}
-		else if (s[i] == '$' && c != '\'')
+		else if (s[i] == '$' && c != '\'' && (ft_isalnum(s[i + 1]) || s[i
+			+ 1] == '{' || s[i + 1] == '_'))
 			i += ft_expand(cmd, &s[i + 1], cmd_index, t_struct);
 		else
 		{
@@ -113,7 +114,8 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	{
 		if (s[i] == '\'' || s[i] == '\"')
 			i += ft_inside_quote(&s[i + 1], cmd, &cmd_index, t_struct);
-		else if (s[i] == '$' && s[i + 1])
+		else if (s[i] == '$' && (ft_isalnum(s[i + 1]) || s[i + 1] == '{' || s[i
+				+ 1] == '_'))
 			i += ft_expand(cmd, &s[i + 1], &cmd_index, t_struct);
 		else
 		{
@@ -182,10 +184,10 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 	int		quote_flag;
 
 	j = 0;
-	cmd = NULL;
 	quote_flag = -1;
 	while (buffer[j])
 	{
+		cmd = NULL;
 		len = 0;
 		while (((buffer[j] && quote_flag == 1)) || ((buffer[j]
 					&& !ft_is_symb(&buffer[j], "|><()&") && quote_flag == -1)))

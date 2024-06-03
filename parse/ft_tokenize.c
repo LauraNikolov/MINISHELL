@@ -18,7 +18,7 @@ int	ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env)
 	ft_remove_null_node(&(t_struct->cmd));
 	ft_clean_cmd_lst(&(t_struct->cmd), t_struct);
 	ft_exec_syntax_functions(&(t_struct->cmd));
-	// ft_wildcard(&(t_struct->cmd));
+	ft_wildcard(&(t_struct->cmd));
 	bool_bracket = 0;
 	// free(t_struct->save_spaces);
 	return (0);

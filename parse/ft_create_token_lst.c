@@ -57,22 +57,22 @@ int	ft_expand(char **cmd, char *s, int *cmd_index, save_struct *t_struct)
 	char	*var_value;
 
 	i = 0;
-	if (s[i] == '{')
-	{
-		i = ft_check_braces(&s[i], 1);
-		var = ft_strndup(&s[1], i);
-		i++;
-	}
-	else
-	{
+	// if (s[i] == '{')
+	// {
+	// 	i = ft_check_braces(&s[i], 1);
+	// 	var = ft_strndup(&s[1], i);
+	// 	i++;
+	// }
+	// else
+	// {
 		while (s[i] && (ft_isalnum(s[i]) || (s[i] == '_')))
 			i++;
 		var = ft_strndup(s, i);
-	}
+	// }
 	var_value = ft_search_var(var, &(t_struct->envp));
 	ft_replace_var(cmd, cmd_index, var_value, t_struct);
 	free(var);
-	return (i + 1);
+	return (i);
 }
 
 int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
@@ -110,8 +110,8 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 
 	if (!t_struct->save_spaces)
 		ft_safe_malloc(&(t_struct->save_spaces), ft_quote_len(s,
-				&(t_struct->envp)));
-	ft_safe_malloc(cmd, ft_quote_len(s, &(t_struct->envp)));
+				&(t_struct->envp)) + 100);
+	ft_safe_malloc(cmd, ft_quote_len(s, &(t_struct->envp)) +100);
 	cmd_index = 0;
 	i = 0;
 	while (s[i] && i < len)

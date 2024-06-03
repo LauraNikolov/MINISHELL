@@ -27,17 +27,15 @@ int	ft_var_strlen(char *s, t_envp **env, int *len, int *i)
 int	ft_quote_len(char *s, t_envp **env, int len)
 {
 	int		i;
-	int		len;
 	int		var_size;
 	int		quote_flag;
 	int		quote_len;
 	char	c;
 
 	quote_flag = -1;
-	quote_len = 0;
 	var_size = 0;
 	i = 0;
-	len = 0;
+	quote_len = 0;
 	c = '\0';
 	while (s[i] && i < len)
 	{
@@ -58,5 +56,5 @@ int	ft_quote_len(char *s, t_envp **env, int len)
 	}
 	if (quote_len % 2 != 0)
 		ft_putstr_cmd_fd("Quote are odd !\n", 2, NULL);
-	return (i + var_size - len - quote_len);
+	return (100);
 }

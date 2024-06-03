@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/31 16:19:12 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/03 12:23:29 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_cmd	*create_cmd_node(char *cmd, char *redir);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
-int		ft_quote_len(char *s, t_envp **env);
+int		ft_quote_len(char *s, t_envp **env, int len);
 int		ft_check_syntax(t_cmd *node);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
@@ -55,7 +55,7 @@ void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
-int		ft_check_braces(char *s, int brace_flag);
+int		ft_var_len(char *s, int brace_flag);
 char	**ft_wildcard(t_cmd **cmd);
 
 // lst_proto

@@ -10,13 +10,13 @@ int	ft_var_strlen(char *s, t_envp **env, int *len, int *i)
 	index = *i + 1;
 	if (s[*i + 1] == '{')
 	{
-		var_size = ft_check_braces(&s[*i + 2], 1);
+		var_size = ft_var_len(&s[*i + 2], 1);
 		*len += 2;
 		index++;
 		(*i)++;
 	}
 	else
-		var_size = ft_check_braces(&s[*i + 1], 0);
+		var_size = ft_var_len(&s[*i + 1], 0);
 	var = ft_strndup(&s[index], var_size);
 	printf("VAR = %s\n", var);
 	var_value = ft_search_var(var, env);
@@ -24,7 +24,7 @@ int	ft_var_strlen(char *s, t_envp **env, int *len, int *i)
 	return (ft_strlen(var_value) - ft_strlen(var)); // calcul again the value
 }
 
-int	ft_quote_len(char *s, t_envp **env)
+int	ft_quote_len(char *s, t_envp **env, int len)
 {
 	int		i;
 	int		len;
@@ -39,7 +39,7 @@ int	ft_quote_len(char *s, t_envp **env)
 	i = 0;
 	len = 0;
 	c = '\0';
-	while (s[i])
+	while (s[i] && i < len)
 	{
 		if ((quote_flag == -1 && s[i] == '\"') || (quote_flag == -1
 				&& s[i] == '\'') || (s[i] == c))

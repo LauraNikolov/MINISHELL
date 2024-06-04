@@ -7,15 +7,10 @@ static int	ft_tokenize(char *buffer, t_cmd **lst)
 {
 	//int	(*ft_tab[10])(t_cmd *);
 
-	//t_cmd	*curr;
+	t_cmd	*curr;
 	ft_create_token_lst(buffer, lst);
 	//ft_init_ft_tab(ft_tab);
-	//curr = *lst;
-	// while (curr)
-	// {
-	// 	ft_tab[curr->type](curr);
-	// 	curr = curr->next;
-	// }
+	curr = *lst;
 	return (0);
 }
 
@@ -51,6 +46,12 @@ int	main(int ac, char **av, char **envp)
 		if (!buffer)
 			return(free(buffer), ft_all_free(t_struct), 0);
 		ft_tokenize(buffer, &(t_struct->cmd));
+		t_cmd *curr = t_struct->cmd;
+		while (curr)
+		{
+			ft_get_path(curr);
+			curr = curr->next;
+		}
 		ft_print_lst(t_struct->cmd);
 		ft_exec(t_struct, envp);
 		ft_all_free(t_struct);

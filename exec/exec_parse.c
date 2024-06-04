@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/31 14:44:00 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/04 13:54:50 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,11 @@ int ft_exec_single_cmd(save_struct *t_struct, char **envp)
     return 0;
 }
 
-
-
 void ft_exec(save_struct *t_struct, char **envp)
 {
     int cmd_size;
     
     cmd_size = ft_lst_size(t_struct->cmd);
-    ft_get_path(t_struct->cmd);
     if(cmd_size == 1)
     {
         ft_exec_single_cmd(t_struct, envp);

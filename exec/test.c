@@ -142,114 +142,122 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
 {
     int return_value = 0;
     pid_t pid;
-    int status;
     pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        return (1);
+    }
     if (pid == 0)
     {
-        close(exec->pipe[0]);
-        if(exec->std_in != STDIN_FILENO)
+        // Je ferme la sortie du pipe
+        if (exec->std_in != STDIN_FILENO)
         {
             dup2(exec->std_in, STDIN_FILENO);
             close(exec->std_in);
+            close(exec->pipe[0]);
         }
-        if(exec->std_out != STDOUT_FILENO)
+        if (exec->std_out != STDOUT_FILENO)
         {
             dup2(exec->std_out, STDOUT_FILENO);
             close(exec->std_out);
         }
-        return_value = execve(cmd->path, cmd->args, envp);
+        execve(cmd->path, cmd->args, envp);
+        perror("execve");
+        exit(EXIT_FAILURE);
     }
     else
     {
         close(exec->pipe[1]);
+        if (exec->prev != -1)
+            close(exec->prev);
         exec->prev = exec->pipe[0];
     }
-    return (return_value);
+    return return_value;
 }
 
-int ft_execve_single_cmds(t_cmd *cmd, char **envp, t_exec *exec)
+int ft_execve_single_cmd(t_cmd *cmd, char **envp)
 {
-    int return_value = 0;
     pid_t pid;
-    int status;
     pid = fork();
 
-    if(pid == -1)
+    if (pid == -1)
     {
         perror("fork");
         return (1);
     }
-    if(pid == 0)
-        exec->return_value = execve(cmd->path, cmd->args, envp);
+    if (pid == 0)
+    {
+        execve(cmd->path, cmd->args, envp);
+        perror("execve");
+        exit(EXIT_FAILURE);
+    }
     else
     {
-        wait(NULL);
+        waitpid(pid, NULL, 0);
     }
-    return (exec->return_value);
-    
+    return 0;
 }
 
+int exec_leaf(t_ast *root, char **envp, t_exec *exec)
+{
+    if (root->left->cmd->type == COMMAND && root->right->cmd->type == COMMAND)
+    {
+        t_cmd *cmd1 = root->left->cmd;
+        t_cmd *cmd2 = root->right->cmd;
+        if (root->cmd->type == PIPE)
+        {
+            if (pipe(exec->pipe) == -1)
+            {
+                perror("pipe");
+                return (1);
+            }
+            // Mon stdin est standard
+            exec->std_in = STDIN_FILENO;
+            // Mon stdout est l'entrée du pipe
+            exec->std_out = exec->pipe[1];
+            ft_execve_pipe(cmd1, envp, exec);
 
-int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec) {
+            // Préparer pour la commande suivante
+            exec->std_in = exec->prev;
+            exec->std_out = STDOUT_FILENO;
+            exec->return_value = ft_execve_pipe(cmd2, envp, exec);
+        }
+    }
+    return exec->return_value;
+}
+
+int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec)
+{
     if (root == NULL) {
         return(0);
     }
 
     if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
-        exec_ast_recursive(root->left, envp, 0);
+        exec_ast_recursive(root->left, envp, exec);
     if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
-        exec_ast_recursive(root->right, envp, 0);
-
-    // Exécuter le nœud courant
-   if(root->left->cmd->type == COMMAND && root->right->cmd->type == COMMAND)
-   {
-        t_cmd *cmd1 = root->left->cmd;
-        t_cmd *cmd2 = root->right->cmd;
-        int pfd[2];
-        pipe(pfd);
-        if(root->cmd->type == PIPE)
+        exec_ast_recursive(root->right, envp, exec);
+    
+    if(root->left->cmd->type == COMMAND && root->right->cmd->type == COMMAND)
+    {
+        exec->return_value = exec_leaf(root, envp, exec);
+        int i = 0;
+        while(i != 2)
         {
-            exec->std_in = 0;
-            exec->std_out = pfd[1];
-            ft_execve_pipe(cmd1, envp, exec);
-            pipe(pfd);
-            exec->std_in = exec->prev;
-            exec->std_out = STDOUT_FILENO;
-            exec->return_value = ft_execve_pipe(cmd2, envp, exec);
+            wait(NULL);
+            i++;
         }
-
-        if(root->cmd->type == AND)
-        {
-            t_cmd *cmd1 = root->left->cmd;
-            t_cmd *cmd2 = root->right->cmd;
-            exec->std_in = 0;
-            exec->std_out = 1;
-            exec->return_value = ft_execve_single_cmds(cmd1, envp, exec);
-            if(exec->return_value == 0)
-            {
-                exec->std_in = 0;
-                exec->std_out = 1;
-                exec->return_value = ft_execve_single_cmds(cmd2, envp, exec);
-            }
-            else
-            {
-                exec->return_value = 1;
-                printf("error\n");
-            }
-        }
-
     }
     return (exec->return_value);
 }
 
 int main(int argc, char **argv, char **envp) 
 {
-    char* cmd1_args[] = {"echo", "bonjour", NULL};
-    char* cmd3_args[] = {"ls", NULL};
+    char* cmd1_args[] = {"cat", "../Makefile", NULL};
+    char* cmd3_args[] = {"wc", NULL};
     // Création d'exemple de commandes
-    t_cmd cmd1 = {COMMAND, NULL, NULL, "echo", "/bin/echo", cmd1_args};
-    t_cmd cmd2 = {AND, &cmd1, NULL, NULL, NULL, NULL};
-    t_cmd cmd3 = {COMMAND, &cmd2, NULL, "ls", "/bin/ls", cmd3_args};
+    t_cmd cmd1 = {COMMAND, NULL, NULL, "cat", "/bin/cat", cmd1_args};
+    t_cmd cmd2 = {PIPE, &cmd1, NULL, NULL, NULL, NULL};
+    t_cmd cmd3 = {COMMAND, &cmd2, NULL, "ls", "/usr/bin/wc", cmd3_args};
     t_cmd cmd4 = {AND, &cmd3, NULL, NULL};
     t_cmd cmd5 = {COMMAND, &cmd4, NULL, "ls"};
     t_cmd cmd6 = {PIPE, &cmd5, NULL, NULL};

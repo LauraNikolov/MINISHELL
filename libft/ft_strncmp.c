@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 14:40:05 by melmarti          #+#    #+#             */
-/*   Updated: 2023/11/15 13:11:47 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/04 17:58:47 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	size_t	i;
 
 	i = 0;
+	printf ("dir = %s\n", s2);
+	printf ("cmd = %s\n", s1);
 	while (((unsigned char *)s1)[i] == ((unsigned char *)s2)[i] && i < n
-		&& s1[i])
+		&& s1[i] && s2[i])
 		i++;
 	if (i == n)
 		return (0);

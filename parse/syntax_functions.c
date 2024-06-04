@@ -27,6 +27,7 @@ int	ft_check_word(t_cmd *node)
 			return (-2);
 	}
 	ft_get_path(node);
+	
 	return (0);
 }
 

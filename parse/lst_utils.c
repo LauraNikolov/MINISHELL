@@ -88,7 +88,7 @@ void	ft_print_lst(t_cmd *node)
 			printf("Options n%d : %s\n", i, curr->cmd[i]);
 			i++;
 		}
-		// printf("Path = %s\n", curr->path);
+		printf("Path = %s\n", curr->path);
 		printf ("redir = %s\n", curr->redir);
 		if (curr->type == 0)
 			printf("WORD\n");

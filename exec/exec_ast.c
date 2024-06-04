@@ -6,13 +6,36 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/04 13:50:44 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/04 18:19:41 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
+
+int ft_execve_single_cmd(t_cmd *cmd, char **envp)
+{
+    int return_value = 0;
+    pid_t pid;
+    pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        return (1);
+    }
+    if (pid == 0)
+    {
+        execve(cmd->path, cmd->cmd, envp);
+        perror("execve");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        waitpid(pid, &return_value, 0);
+    }
+    return return_value;
+}
+
+int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root)
 {
     int return_value = 0;
     pid_t pid;
@@ -24,16 +47,16 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
     if (pid == 0)
     {
         // Je ferme la sortie du pipe
-        if (exec->std_in != STDIN_FILENO)
+        if (cmd->std_in != STDIN_FILENO)
         {
-            dup2(exec->std_in, STDIN_FILENO);
-            close(exec->std_in);
-            close(exec->pipe[0]);
+            dup2(cmd->std_in, STDIN_FILENO);
+            close(cmd->std_in);
+            close(root->cmd->pipe[0]);
         }
-        if (exec->std_out != STDOUT_FILENO)
+        if (cmd->std_out != STDOUT_FILENO)
         {
-            dup2(exec->std_out, STDOUT_FILENO);
-            close(exec->std_out);
+            dup2(cmd->std_out, STDOUT_FILENO);
+            close(cmd->std_out);
         }
         execve(cmd->path, cmd->cmd, envp);
         perror("execve");
@@ -41,15 +64,15 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
     }
     else
     {
-        close(exec->pipe[1]);
-        if (exec->prev != -1)
-            close(exec->prev);
-        exec->prev = exec->pipe[0];
+        close(root->cmd->pipe[1]);
+        if (root->cmd->prev_fd != -1)
+            close(root->cmd->prev_fd);
+        root->cmd->prev_fd = root->cmd->pipe[0];
     }
     return return_value;
 }
 
-int exec_leaf(t_ast *root, char **envp, t_exec *exec)
+int exec_leaf(t_ast *root, char **envp)
 {
     if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
@@ -57,48 +80,91 @@ int exec_leaf(t_ast *root, char **envp, t_exec *exec)
         t_cmd *cmd2 = root->right->cmd;
         if (root->cmd->type == PIPE)
         {
-            if (pipe(exec->pipe) == -1)
+            if (pipe(root->cmd->pipe) == -1)
             {
                 perror("pipe");
                 return (1);
             }
             // Mon stdin est standard
-            exec->std_in = STDIN_FILENO;
+            cmd1->std_in = STDIN_FILENO;
             // Mon stdout est l'entrée du pipe
-            exec->std_out = exec->pipe[1];
-            ft_execve_pipe(cmd1, envp, exec);
+            cmd1->std_out = root->cmd->pipe[1];
+            root->cmd->return_value = ft_execve_pipe(cmd1, envp, root);
 
             // Préparer pour la commande suivante
-            exec->std_in = exec->prev;
-            exec->std_out = STDOUT_FILENO;
-            exec->return_value = ft_execve_pipe(cmd2, envp, exec);
+            cmd2->std_in = root->cmd->prev_fd;
+            cmd2->std_out = root->cmd->pipe[1];
+            root->cmd->return_value = ft_execve_pipe(cmd2, envp, root);
+        }
+        if(root->cmd->type == AND)
+        {
+            root->cmd->return_value = ft_execve_single_cmd(cmd1, envp);
+            if(root->cmd->return_value == 0)
+                root->cmd->return_value = ft_execve_single_cmd(cmd2, envp);
+        }
+        if(root->cmd->type == OR)
+        {
+            root->cmd->return_value = ft_execve_single_cmd(cmd1, envp);
+            if(root->cmd->return_value != 0)
+                root->cmd->return_value = ft_execve_single_cmd(cmd2, envp);
         }
     }
-    return exec->return_value;
+
+    return root->cmd->return_value;
 }
 
-int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec)
+int exec_branch(t_ast *root, char **envp)
+{
+    if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
+    {
+        if(root->left->cmd->type == PIPE)
+        {
+            if(pipe(root->cmd->pipe) == -1)
+            {
+                perror("pipe");
+                return (1);
+            }
+            dprintf(2, "prev fd == %d\n", root->left->cmd->prev_fd);
+            root->cmd->std_in = root->left->cmd->prev_fd;
+            root->cmd->std_out = root->left->cmd->pipe[1];
+            root->cmd->return_value = ft_execve_pipe(root->left->cmd, envp, root); // TODO : 
+        }
+    }
+    return(root->cmd->return_value);
+}
+
+int exec_ast_recursive(t_ast *root, char **envp)
 {
     if (root == NULL) {
         return(0);
     }
 
     if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
-        exec_ast_recursive(root->left, envp, exec);
+        exec_ast_recursive(root->left, envp);
     if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
-        exec_ast_recursive(root->right, envp, exec);
+        exec_ast_recursive(root->right, envp);
     
     if(root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
-        exec->return_value = exec_leaf(root, envp, exec);
-        int i = 0;
-        while(i != 2)
-        {
-            wait(NULL);
-            i++;
-        }
+        root->cmd->return_value = exec_leaf(root, envp);
     }
-    return (exec->return_value);
+
+    else
+    {
+        root->cmd->return_value = exec_branch(root, envp);
+    }
+    int i = 0;
+    while(i != 2)
+    {
+        wait(NULL);
+        i++;
+    }
+    // else
+    // {
+    //     root->cmd->return_value = exec_branch(root, envp, exec);
+    // }
+    
+    return (root->cmd->return_value);
 }
 
 /*

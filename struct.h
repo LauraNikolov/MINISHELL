@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:24:22 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/31 15:00:05 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/04 16:37:25 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,16 @@ typedef struct s_cmd
 {
 	char			**cmd;
 	char			*path;
-	int				bool;
 	int 			prev_fd;
+	int 			std_out;
+	int 			std_in;
+	int 			pipe[2];
+	int 			return_value;
 	t_token_type	type;
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 }					t_cmd;
 
-typedef struct ope {
-    char *content;
-    int prior;
-} ope;
-
-typedef struct commands {
-    int std_in;
-    int std_out;
-    char *infile;
-    char *outfile;
-    char **cmds;
-    char *cmd_path;
-} commands;
 
 typedef struct t_ast {
     t_cmd *cmd;

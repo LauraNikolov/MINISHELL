@@ -168,8 +168,8 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
     else
     {
         close(exec->pipe[1]);
-        if (exec->prev != -1)
-            close(exec->prev);
+        if (exec->prev_fd != -1)
+            close(exec->prev_fd);
         exec->prev = exec->pipe[0];
     }
     return return_value;

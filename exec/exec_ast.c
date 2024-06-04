@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/04 13:19:47 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/04 13:26:38 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_exec *exec)
     }
     if (pid == 0)
     {
+        // Je ferme la sortie du pipe
         if (exec->std_in != STDIN_FILENO)
         {
             dup2(exec->std_in, STDIN_FILENO);
@@ -59,9 +60,8 @@ int exec_leaf(t_ast *root, char **envp, t_exec *exec)
             if (pipe(exec->pipe) == -1)
             {
                 perror("pipe");
-                exit(0);
+                return (1);
             }
-            printf("koukou\n");
             // Mon stdin est standard
             exec->std_in = STDIN_FILENO;
             // Mon stdout est l'entrée du pipe
@@ -79,14 +79,15 @@ int exec_leaf(t_ast *root, char **envp, t_exec *exec)
 
 int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec)
 {
-    
-    if(!root)
+    if (root == NULL) {
         return(0);
+    }
+
     if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
         exec_ast_recursive(root->left, envp, exec);
     if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
         exec_ast_recursive(root->right, envp, exec);
-    ft_exec_tree(root);
+    
     if(root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
         exec->return_value = exec_leaf(root, envp, exec);
@@ -97,7 +98,7 @@ int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec)
             i++;
         }
     }
-    return(exec->return_value);                                                                                                                                                                                                                                                                                                                                                               
+    return (exec->return_value);
 }
 
 /*

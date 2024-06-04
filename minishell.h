@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/05/27 14:46:20 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/31 14:27:47 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp);
 t_ast *build_ast_recursive(t_cmd *start, t_cmd *end);
 t_ast *create_ast_node(t_cmd *node);
 void print_ast(t_ast *root, int depth, char prefix);
-int exec_ast_recursive(t_ast *root);
+int exec_ast_recursive(t_ast *root, char **envp, t_exec *exec);
 int ft_exec_tree(t_ast *root);
+int exec_leaf(t_ast *root, char **envp, t_exec *exec);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

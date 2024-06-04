@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:24:22 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/20 16:49:54 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/05/31 15:00:05 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,21 @@ typedef struct s_envp
 	struct s_envp	*next;
 }					t_envp;
 
+typedef struct s_exec {
+	int std_in;
+	int std_out;
+	int prev;
+	int return_value;
+	int pipe[2];
+}				t_exec;
+
 typedef struct save_struct 
 {
     struct s_cmd *cmd;
     struct t_ast *ast;
     struct s_envp *envp;
     struct s_all_struct *all_struct;
+	struct s_exec *exec;
 } save_struct;
 
 #endif

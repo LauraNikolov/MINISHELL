@@ -7,10 +7,8 @@ static int	ft_tokenize(char *buffer, t_cmd **lst)
 {
 	//int	(*ft_tab[10])(t_cmd *);
 
-	t_cmd	*curr;
 	ft_create_token_lst(buffer, lst);
 	//ft_init_ft_tab(ft_tab);
-	curr = *lst;
 	return (0);
 }
 

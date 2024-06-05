@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/04 18:19:41 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/05 16:28:42 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,10 +124,10 @@ int exec_branch(t_ast *root, char **envp)
                 perror("pipe");
                 return (1);
             }
-            dprintf(2, "prev fd == %d\n", root->left->cmd->prev_fd);
-            root->cmd->std_in = root->left->cmd->prev_fd;
-            root->cmd->std_out = root->left->cmd->pipe[1];
-            root->cmd->return_value = ft_execve_pipe(root->left->cmd, envp, root); // TODO : 
+            // je recupere ce qu'il y a a gauche
+            //je recupere ce qui'il y a droite
+                // soit j'exec une single command
+                // 
         }
     }
     return(root->cmd->return_value);
@@ -152,6 +152,8 @@ int exec_ast_recursive(t_ast *root, char **envp)
     else
     {
         root->cmd->return_value = exec_branch(root, envp);
+        dup2(root->cmd->prev_fd, STDOUT_FILENO);
+        close(root->cmd->prev_fd);
     }
     int i = 0;
     while(i != 2)

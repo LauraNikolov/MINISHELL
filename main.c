@@ -38,9 +38,9 @@ int	main(int ac, char **av, char **envp)
 				ft_all_free(t_struct), 0);
 		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
-		if (t_struct)
-			ft_echo(t_struct->cmd->cmd);
-		// ft_print_lst(t_struct->cmd);
+		// if (t_struct)
+		// 	ft_echo(t_struct->cmd->cmd);
+		ft_print_lst(t_struct->cmd);
 		// ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);

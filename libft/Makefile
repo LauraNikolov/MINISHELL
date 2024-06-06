@@ -33,7 +33,6 @@ FILES = ft_memset \
 		ft_substr \
 		ft_strjoin \
 		ft_jointab \
-		ft_join_ntab \
 		ft_strtrim \
 		ft_split \
 		ft_itoa \

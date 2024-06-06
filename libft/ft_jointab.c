@@ -6,6 +6,7 @@ int	ft_count_str(char **t1, char **t2)
 	int	j;
 
 	i = 0;
+	j = 0;
 	while (t1[i])
 		i++;
 	while (t2[j])
@@ -19,6 +20,7 @@ int	ft_count_nstr(char **t1, char **t2, int size)
 	int	j;
 
 	i = 0;
+	j = 0;
 	while (t1[i] && i < size)
 		i++;
 	while (t2[j])

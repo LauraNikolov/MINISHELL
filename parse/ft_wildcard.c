@@ -56,11 +56,11 @@ int	ft_match(char *cmd, char *dir)
 			return (1);
 		while (cmd[i + k] && dir[j] && cmd[i + k] != dir[j])
 			j++;
-		if (!ft_is_char(dir, dir[j]))
-		{
-			printf("j = %d\n", j);
-			return (0);
-		}
+		// if (!ft_is_char(dir, dir[j]))
+		// {
+		// 	printf("j = %d\n", j);
+		// 	return (0);
+		// }
 		return (ft_match(&cmd[i + k], &dir[j]));
 	}
 	return (0);
@@ -120,64 +120,96 @@ char	**ft_save_dir(void)
 	return (curr_dir);
 }
 
-int	ft_wild(char **cmd, char **dir)
+int ft_is_wild(char *s)
+{
+	int i;
+
+	i = 0;
+	while(s[i])
+	{
+		if (s[i] == '*')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int		count_tab(char	**tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+char	**new_tab(char	**tab, char **dir)
 {
 	int		i;
+	int		wild_len;
+	int		tab_len;
+	char	**wild_tab;
+	char	**new_tab;
 	int		j;
-	int		len;
-	int		dir_index;
-	char	**tab;
+	int		k;
 
-	len = 0;
-	dir_index = 0;
 	i = 0;
-	while (cmd[i])
-		i++;
-	i = 0;
-	while (cmd[i])
+	wild_len = 0;
+	tab_len = 0;
+	new_tab = NULL;
+	while (tab[i])
 	{
 		j = 0;
-		while (cmd[i][j])
+		if (ft_is_wild(tab[i]))
 		{
-			if (cmd[i][j] == '*')
+			if (new_tab)
+				free(new_tab);
+			wild_tab = ft_find_dir(tab[i], dir);
+			wild_len = count_tab(wild_tab);
+			printf("wildlen=%d\n", wild_len);
+			tab_len = count_tab(tab);
+			printf("tablen=%d\n", tab_len);
+			new_tab = ft_calloc(tab_len + wild_len + 1, sizeof(char *));
+		}
+		if (wild_len)
+		{
+			while (j < tab_len + wild_len - 1)
 			{
-				while (dir[dir_index])
-					if (ft_match(cmd[i], dir[dir_index]))
-						len++;
-				tab = malloc(sizeof(char *) * (i + len + 1));
-				break ;
+				k = 0;
+				if (j == i)
+				{
+					while (k < wild_len)
+						new_tab[j++] = wild_tab[k++];
+				}
+				if (j < tab_len + wild_len - 1)
+					new_tab[j] = tab[j - k];
+				j++;
 			}
-			j++;
+			free(tab);
+			tab = ft_strdup_array(new_tab);
 		}
 		i++;
 	}
+	return (tab);
 }
 
 void	ft_wildcard(t_cmd **lst)
 {
 	t_cmd	*curr;
 	char	**curr_dir;
-	int		i;
-	int		j;
 
 	curr_dir = ft_save_dir();
 	curr = *lst;
 	while (curr)
 	{
-		i = 1;
-		while (curr->cmd[i])
-		{
-			j = 0;
-			while (curr->cmd[i] && curr->cmd[i][j])
-			{
-				if (curr->cmd[i][j] == '*')
-					curr->cmd = ft_wild(curr, curr_dir);
-				j++;
-				break ;
-			}
-			i++;
-		}
+		if (curr->cmd)
+			new_tab(curr->cmd, curr_dir);
 		curr = curr->next;
 	}
 	ft_free_tab(curr_dir);
 }
+
+
+
+

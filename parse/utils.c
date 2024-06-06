@@ -36,6 +36,8 @@ char	**ft_strdup_array(char **cmd)
 
 	cpy = NULL;
 	i = 0;
+	if (!cmd || !*cmd)
+		return NULL;
 	while (cmd[i])
 		i++;
 	cpy = malloc((i + 1) * sizeof(char *));

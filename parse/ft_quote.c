@@ -2,17 +2,13 @@
 
 int	ft_cmd_len(char *s, t_envp **env, int *i)
 {
-	int		expand;
-	int		start;
 	char	*var;
 	char	*var_value;
 	int		var_len;
 
 	var = NULL;
-	expand = 0;
 	var_len = 0;
 	(*i)++;
-	start = *i;
 	if (s[*i] == '{')
 	{
 		(*i)++;

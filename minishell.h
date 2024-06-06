@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/04 13:01:05 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/06 01:47:32 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
 int		ft_var_len(char *s, int brace_flag);
-char	**ft_wildcard(t_cmd **cmd);
+void    ft_wildcard(t_cmd **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);

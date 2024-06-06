@@ -46,6 +46,7 @@ char	**ft_strdup_array(char **cmd)
 	i = 0;
 	while (cmd[i])
 	{
+		printf("cmd = %s\n", cmd[i]);
 		cpy[i] = ft_strdup(cmd[i]);
 		if (!cpy[i])
 		{

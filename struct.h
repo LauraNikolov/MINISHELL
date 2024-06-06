@@ -30,6 +30,7 @@ typedef struct s_cmd
 	char				*path;
 	char				*redir;
 	int					*bool_bracket;
+	int					expand_flag;
 	t_token_type		type;
 	struct s_cmd		*next;
 	struct s_cmd		*prev;
@@ -88,7 +89,7 @@ typedef struct save_struct
 	struct s_cmd		*cmd;
 	struct s_ast		*ast;
 	struct s_all_struct	*all_struct;
-	struct s_envp			*envp;
+	struct s_envp		*envp;
 	char				*save_spaces;
 
 }						save_struct;

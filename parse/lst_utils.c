@@ -182,7 +182,7 @@ t_envp	*create_envp_node(char *var_name, int flag)
 	envp->prev = NULL;
 	return (envp);
 }
-t_cmd	*create_cmd_node(char *cmd, char *redir)
+t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 {
 	t_cmd *new_node;
 
@@ -195,6 +195,9 @@ t_cmd	*create_cmd_node(char *cmd, char *redir)
 	new_node->path = NULL;
 	new_node->bool_bracket = NULL;
 	new_node->redir = redir;
+	new_node->expand_flag = 0;
+	if (c != '\'')
+		new_node->expand_flag = 1;
 	if (!ft_strcmp(cmd, "|"))
 		new_node->type = PIPE;
 	else if (!ft_strcmp(cmd, "<<"))
@@ -215,5 +218,6 @@ t_cmd	*create_cmd_node(char *cmd, char *redir)
 		new_node->type = C_BRACKET;
 	else
 		new_node->type = WORD;
+	free(cmd);
 	return (new_node);
 }

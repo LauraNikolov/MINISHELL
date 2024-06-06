@@ -151,7 +151,7 @@ static int	ft_add_redir(t_cmd **lst, char *buff, char **cmd)
 		i++;
 	}
 	add_to_lst(lst, create_cmd_node(*cmd, ft_strndup(&buff[spaces + 1], len
-				+ 1)));
+				+ 1), '\0'));
 	return (i);
 }
 
@@ -168,8 +168,7 @@ static int	ft_get_symb(save_struct *t_struct, char *buff, char **cmd)
 				&& buff[j + 1] != '<')))
 		j = ft_add_redir(&(t_struct->cmd), &buff[i], cmd);
 	else
-		add_to_lst(&(t_struct->cmd), create_cmd_node(*cmd, NULL));
-	free(*cmd);
+		add_to_lst(&(t_struct->cmd), create_cmd_node(*cmd, NULL, 0));
 	j += i;
 	while (i--)
 		strcat(t_struct->save_spaces, "0");
@@ -198,9 +197,9 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 			len++;
 		}
 		ft_handle_quote(&buffer[j - len], &cmd, len, t_struct);
-		add_to_lst(&(t_struct->cmd), create_cmd_node(cmd, NULL));
-		free(cmd);
+		add_to_lst(&(t_struct->cmd), create_cmd_node(cmd, NULL, buffer[j - 1]));
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
 }
+

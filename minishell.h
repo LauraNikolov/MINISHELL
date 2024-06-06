@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/06 01:47:32 by renard           ###   ########.fr       */
+/*   Updated: 2024/06/06 16:40:23 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		main(int argc, char **argv, char **envp);
 // libft TODO replace b the submodule
 
 // tokenisation
-t_cmd	*create_cmd_node(char *cmd, char *redir);
+t_cmd	*create_cmd_node(char *cmd, char *redir, char c);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);

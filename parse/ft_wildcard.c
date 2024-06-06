@@ -28,10 +28,12 @@ int	ft_is_char(char *s, char c)
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i])
 	{
 		if (s[i] == c)
-			return (1);
+			return (i + 1);
 		i++;
 	}
 	return (0);
@@ -54,12 +56,13 @@ int	ft_match(char *cmd, char *dir)
 		return (0);
 	if (!ft_strncmp(cmd, dir, i))
 	{
-		if ((cmd[i + k - 1] == '*' && !cmd[i + k + 1]) || (!cmd[i + k] && !dir[i]))
-		{
+		if (cmd[i + k - 1] == '*' && !cmd[i + k])
 			return (1);
-		}
+		if (!cmd[i + k] && !dir[i])
+			return (1);
 		while (cmd[i + k] && dir[j] && cmd[i + k] != dir[j])
 			j++;
+		j += ft_is_char(&dir[j + 1], dir[j]);
 		return (ft_match(&cmd[i + k], &dir[j]));
 	}
 	return (0);
@@ -177,14 +180,10 @@ char	**new_tab(char **cmd, char **dir)
 					if (index == i)
 					{
 						while (wild_tab[k])
-						{
 							new_tab[j++] = ft_strdup(wild_tab[k++]);
-						}
 					}
 					else
-					{
 						new_tab[j++] = ft_strdup(cmd[index]);
-					}
 					index++;
 				}
 				new_tab[j] = NULL;

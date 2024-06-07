@@ -46,7 +46,6 @@ char	**ft_strdup_array(char **cmd)
 	i = 0;
 	while (cmd[i])
 	{
-		printf("cmd = %s\n", cmd[i]);
 		cpy[i] = ft_strdup(cmd[i]);
 		if (!cpy[i])
 		{
@@ -85,21 +84,15 @@ int	ft_str_is_alpha(char *s)
 	return (1);
 }
 
-void	ft_putstr_cmd_fd(char *s, int fd, char *str)
+int	ft_putstr_cmd_fd(char *s, int fd, char *str)
 {
 	int	i;
 
 	i = 0;
-	while (s[i])
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
+	write(fd, s, ft_strlen(s));
 	if (str)
-	{
 		write(fd, str, ft_strlen(str));
-		write(2, "\'", 2);
-	}
-	write(2, "\n", 2);
-	exit(-1);
+	write(fd, "\'", 2);
+	write(fd, "\n", 2);
+	return (-1);
 }

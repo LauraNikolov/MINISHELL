@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/06 16:40:23 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/07 13:49:40 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft/libft.h"
 # include "struct.h"
+# include <dirent.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -25,7 +26,6 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <dirent.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
@@ -42,21 +42,19 @@ char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
 int		ft_quote_len(char *s, t_envp **env, int len);
-int		ft_check_syntax(t_cmd *node);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
-void	ft_exec_syntax_functions(t_cmd **cmd);
+int		ft_exec_syntax_functions(t_cmd **cmd);
 int		ft_init_ft_tab(int (*ft_tab[9])(t_cmd *));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
-int		ft_check_brackets(t_cmd **cmd);
-void	ft_putstr_cmd_fd(char *s, int fd, char *str);
+int		ft_putstr_cmd_fd(char *s, int fd, char *str);
 void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
 int		ft_var_len(char *s, int brace_flag);
-void    ft_wildcard(t_cmd **cmd);
+void	ft_wildcard(t_cmd **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
@@ -72,7 +70,7 @@ void	ft_print_lst(t_cmd *node);   // A SUPP A LA FIN
 void	ft_print_envp(t_envp *envp); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
 void	ft_free_lst(t_cmd *lst);
-void	ft_free_envp_lst(t_envp *lst);
+void	ft_free_envp_lst(t_envp **lst);
 void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
 void	ft_print_env(t_envp **env);

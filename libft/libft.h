@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 16:15:04 by melmarti          #+#    #+#             */
-/*   Updated: 2024/06/05 18:24:55 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/07 13:35:31 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int					ft_isalpha(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
 int					ft_isprint(int c);
+int					ft_count_tab(char **tab);
+int					ft_is_char(char *s, char c);
 void				*ft_memchr(const void *s, int c, size_t n);
 int					ft_memcmp(const void *string1, const void *string2,
 						size_t n);
@@ -52,7 +54,7 @@ char				*ft_strndup(char *src, int n);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				**ft_jointab(char **t1, char **t2);
-char				**ft_join_ntab(char **tab1, char **tab2, int size);
+char				*ft_strjoin_path(const char *s1, const char *s2);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char *s, char *c);
 char				*ft_itoa(int n);

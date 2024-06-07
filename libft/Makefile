@@ -16,6 +16,7 @@ FILES = ft_memset \
 		ft_strlcat \
 		ft_strchr \
 		ft_strrchr \
+		ft_is_char \
 		ft_strnstr \
 		ft_strncmp \
 		ft_strndup \
@@ -28,11 +29,13 @@ FILES = ft_memset \
 		ft_isprint \
 		ft_toupper \
 		ft_tolower \
+		ft_count_tab \
 		ft_strdup \
 		ft_calloc \
 		ft_substr \
 		ft_strjoin \
 		ft_jointab \
+		ft_strjoin_path \
 		ft_strtrim \
 		ft_split \
 		ft_itoa \

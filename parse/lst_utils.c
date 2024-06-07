@@ -16,12 +16,12 @@ int	ft_lst_size(t_cmd *cmd)
 	return (i);
 }
 
-void	ft_free_envp_lst(t_envp *lst)
+void	ft_free_envp_lst(t_envp **lst)
 {
 	t_envp	*curr;
 	t_envp	*temp;
 
-	curr = lst;
+	curr = *lst;
 	while (curr)
 	{
 		temp = curr->next;
@@ -30,6 +30,7 @@ void	ft_free_envp_lst(t_envp *lst)
 		free(curr);
 		curr = temp;
 	}
+	*lst = NULL;
 }
 
 void	ft_free_node(t_cmd *node)
@@ -172,6 +173,8 @@ t_envp	*create_envp_node(char *var_name, int flag)
 	int		i;
 
 	envp = malloc(sizeof(t_envp));
+	if(!envp)
+		return(NULL);
 	i = 0;
 	while (var_name[i] && var_name[i] != '=')
 		i++;

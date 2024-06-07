@@ -11,7 +11,6 @@ void	ft_handler_signals(int signal)
 void	ft_all_free(save_struct *t_struct)
 {
 	ft_free_lst(t_struct->cmd);
-	// ft_free_envp_lst(t_struct->envp);
 	free(t_struct->save_spaces);
 	free(t_struct);
 }
@@ -31,16 +30,18 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		t_struct = malloc(sizeof(save_struct));
+		if (!t_struct)
+			return(ft_free_envp_lst(&env), 0);
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return (free(buffer), ft_free_envp_lst(t_struct->envp),
+			return (free(buffer), ft_free_envp_lst(&t_struct->envp),
 				ft_all_free(t_struct), 0);
 		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
 		// if (t_struct)
 		// 	ft_echo(t_struct->cmd->cmd);
-		ft_print_lst(t_struct->cmd);
+		// ft_print_lst(t_struct->cmd);
 		// ft_exec(t_struct, envp);
 		ft_all_free(t_struct);
 		free(buffer);

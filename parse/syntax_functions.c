@@ -14,7 +14,6 @@ int	ft_check_pipe(t_cmd *node)
 	{
 		printf("syntax error near unexpected token '%s'\n", node->cmd[0]);
 		return (-1);
-		// return le code d erreur
 	}
 	return (0);
 }
@@ -24,10 +23,9 @@ int	ft_check_word(t_cmd *node)
 	if (node->prev && node->next)
 	{
 		if (node->prev->type == C_BRACKET)
-			return (-2);
+			return (-1);
 	}
 	ft_get_path(node);
-	
 	return (0);
 }
 
@@ -43,8 +41,8 @@ int	ft_check_Cbracket(t_cmd *node)
 	while (curr)
 	{
 		if (curr->prev == NULL)
-			ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-				node->cmd[0]);
+			return (ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
+					node->cmd[0]));
 		if (curr->prev->type == O_BRACKET)
 			break ;
 		curr = curr->prev;
@@ -133,10 +131,7 @@ int	ft_check_Obracket(t_cmd *node)
 	curr = NULL;
 	p_counter = 0;
 	if (ft_bad_expression(node))
-	{
-		printf("Bad expression syntax\n");
-		exit(-1);
-	}
+		return (ft_putstr_cmd_fd("Minishell : Bad expression", 2, NULL));
 	if (*(node->bool_bracket) == 0)
 	{
 		curr = node;
@@ -149,16 +144,14 @@ int	ft_check_Obracket(t_cmd *node)
 			curr = curr->next;
 		}
 		if (p_counter != 0)
-		{
-			printf("Parenthesis error\n");
-			exit(-1);
-		}
+			return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `", 2,
+					node->cmd[0]));
 		*(node->bool_bracket) = 1;
 	}
 	return (0);
 }
 
-void	ft_exec_syntax_functions(t_cmd **cmd)
+int	ft_exec_syntax_functions(t_cmd **cmd)
 {
 	t_cmd	*curr;
 	int		(*ft_tab[10])(t_cmd *);
@@ -170,11 +163,13 @@ void	ft_exec_syntax_functions(t_cmd **cmd)
 		if (curr->type < 0 || ft_tab[curr->type] == NULL)
 		{
 			curr = curr->next;
-			continue;
+			continue ;
 		}
-		ft_tab[curr->type](curr);
+		if (ft_tab[curr->type](curr) == -1)
+			return (-1);
 		curr = curr->next;
 	}
+	return (0);
 }
 
 int	ft_init_ft_tab(int (*ft_tab[9])(t_cmd *))

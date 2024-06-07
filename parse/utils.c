@@ -29,37 +29,6 @@ int	ft_is_symb(char *cmd, char *symb)
 	return (0);
 }
 
-char	**ft_strdup_array(char **cmd)
-{
-	int		i;
-	char	**cpy;
-
-	cpy = NULL;
-	i = 0;
-	if (!cmd || !*cmd)
-		return NULL;
-	while (cmd[i])
-		i++;
-	cpy = malloc((i + 1) * sizeof(char *));
-	if (!cpy)
-		return (NULL);
-	i = 0;
-	while (cmd[i])
-	{
-		cpy[i] = ft_strdup(cmd[i]);
-		if (!cpy[i])
-		{
-			while (i > 0)
-				free(cpy[--i]);
-			free(cpy);
-			return (NULL);
-		}
-		i++;
-	}
-	cpy[i] = NULL;
-	return (cpy);
-}
-
 void	ft_free_tab(char **split)
 {
 	int	i;
@@ -84,14 +53,20 @@ int	ft_str_is_alpha(char *s)
 	return (1);
 }
 
-int	ft_putstr_cmd_fd(char *s, int fd, char *str)
+int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	write(fd, s, ft_strlen(s));
-	if (str)
-		write(fd, str, ft_strlen(str));
+	if (*str)
+		write(fd, *(&str), ft_strlen(*str));
+	if (flag)
+		while (str[++i])
+		{
+			write(fd, &str[i], ft_strlen(str[i]));
+			write(fd, " ", 2);
+		}
 	write(fd, "\'", 2);
 	write(fd, "\n", 2);
 	return (-1);

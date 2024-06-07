@@ -75,7 +75,7 @@ static void	ft_add_var(t_envp **env, char **var)
 		return ;
 	if (var[1][0] >= '0' && var[1][0] <= '9')
 		ft_putstr_cmd_fd("bash: export: `': not a valid identifier", 2,
-			var[1]);
+			&var[1], 0);
 	i = 0;
 	while (var[++i])
 		add_to_envp_lst(env, create_envp_node(var[i], 1));

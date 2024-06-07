@@ -36,6 +36,7 @@ FILES = ft_memset \
 		ft_strjoin \
 		ft_jointab \
 		ft_strjoin_path \
+		ft_strdup_array \
 		ft_strtrim \
 		ft_split \
 		ft_itoa \

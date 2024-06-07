@@ -15,7 +15,6 @@ typedef enum s_token_type
 	R_HEREDOC,
 	O_BRACKET,
 	C_BRACKET,
-	NO_TYPE,
 }						t_token_type;
 
 // typedef struct s_redir

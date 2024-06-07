@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 16:15:04 by melmarti          #+#    #+#             */
-/*   Updated: 2024/06/07 13:35:31 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/07 15:17:43 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int					ft_strcmp(char *s1, char *s2);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 char				*ft_strnstr(const char *s1, const char *s2, size_t n);
 int					ft_strrchr(const char *s, int c);
+char				**ft_strdup_array(char **cmd);
 int					ft_tolower(int c);
 int					ft_toupper(int c);
 char				*ft_strdup(const char *src);

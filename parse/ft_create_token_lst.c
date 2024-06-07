@@ -8,7 +8,7 @@ int	ft_var_len(char *s, int brace_flag)
 	while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
 		i++;
 	if ((brace_flag && s[i] != '}') || (brace_flag && i == 0))
-		ft_putstr_cmd_fd("minishell : bad_substition $", 2, s);
+		ft_putstr_cmd_fd("minishell : bad_substition $", 2, &s, 0);
 	return (i);
 }
 

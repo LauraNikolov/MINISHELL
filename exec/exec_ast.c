@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/05 16:28:42 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/07 18:41:30 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,18 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp)
     }
     if (pid == 0)
     {
+        if(cmd->std_in != STDIN_FILENO)
+        {
+            dprintf(2, "je rentre ici : %d\n", cmd->std_in);
+            dup2(cmd->std_in, STDIN_FILENO);
+            close(cmd->std_in);
+        }
+        if(cmd->std_out != STDOUT_FILENO)
+        {
+            dprintf(2, "je rentre la :%d\n", cmd->std_out);
+            dup2(cmd->std_out, STDOUT_FILENO);
+            close(cmd->std_out);
+        }
         execve(cmd->path, cmd->cmd, envp);
         perror("execve");
         exit(EXIT_FAILURE);
@@ -115,19 +127,24 @@ int exec_leaf(t_ast *root, char **envp)
 
 int exec_branch(t_ast *root, char **envp)
 {
+    (void)envp;
     if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
     {
-        if(root->left->cmd->type == PIPE)
+        if(root->left->cmd->type == PIPE && root->right->cmd->type == WORD)
         {
             if(pipe(root->cmd->pipe) == -1)
             {
                 perror("pipe");
                 return (1);
             }
-            // je recupere ce qu'il y a a gauche
-            //je recupere ce qui'il y a droite
-                // soit j'exec une single command
-                // 
+        }
+        {
+            if(pipe(root->cmd->pipe) == -1)
+            {
+                perror("pipe");
+                return (1);
+            }
+             
         }
     }
     return(root->cmd->return_value);
@@ -135,39 +152,29 @@ int exec_branch(t_ast *root, char **envp)
 
 int exec_ast_recursive(t_ast *root, char **envp)
 {
-    if (root == NULL) {
+    if (root == NULL) 
+    {
+        dup2(root->cmd->std_in, STDIN_FILENO);
+        dup2(root->cmd->std_out, STDOUT_FILENO);
+        close(root->cmd->std_in);
+        close(root->cmd->std_out);
         return(0);
     }
 
     if(root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
         exec_ast_recursive(root->left, envp);
-    if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
-        exec_ast_recursive(root->right, envp);
     
+    // * c'est une feuille    
     if(root->left->cmd->type == WORD && root->right->cmd->type == WORD)
-    {
-        root->cmd->return_value = exec_leaf(root, envp);
-    }
+        return_value = exec_leaf(root, envp);
 
     else
     {
-        root->cmd->return_value = exec_branch(root, envp);
-        dup2(root->cmd->prev_fd, STDOUT_FILENO);
-        close(root->cmd->prev_fd);
+        return_value = exec_branch(root, envp);
     }
-    int i = 0;
-    while(i != 2)
-    {
-        wait(NULL);
-        i++;
-    }
-    // else
-    // {
-    //     root->cmd->return_value = exec_branch(root, envp, exec);
-    // }
-    
-    return (root->cmd->return_value);
-}
+     return (root->cmd->return_value);
+}    
+
 
 /*
 * une fonction qui execute une commande simple : 

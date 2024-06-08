@@ -59,15 +59,18 @@ int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)
 
 	i = -1;
 	write(fd, s, ft_strlen(s));
-	if (*str)
-		write(fd, *(&str), ft_strlen(*str));
-	if (flag)
+	if (flag == 1)
 		while (str[++i])
 		{
-			write(fd, &str[i], ft_strlen(str[i]));
 			write(fd, " ", 2);
+			ft_putstr_fd(str[i],fd);
 		}
-	write(fd, "\'", 2);
+	else if (*str)
+	{
+		ft_putstr_fd(*str,fd);
+		write(fd, "\'", 2);
+	}
 	write(fd, "\n", 2);
 	return (-1);
 }
+

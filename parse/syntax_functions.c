@@ -147,27 +147,6 @@ int	ft_check_Obracket(t_cmd *node)
 	return (0);
 }
 
-int	ft_exec_syntax_functions(t_cmd **cmd)
-{
-	t_cmd	*curr;
-	int		(*ft_tab[10])(t_cmd *);
-
-	ft_init_ft_tab(ft_tab);
-	curr = *cmd;
-	while (curr)
-	{
-		if (curr->type < 0 || ft_tab[curr->type] == NULL)
-		{
-			curr = curr->next;
-			continue ;
-		}
-		if (ft_tab[curr->type](curr) == -1)
-			return (-1);
-		curr = curr->next;
-	}
-	return (0);
-}
-
 int ft_check_op(t_cmd *node)
 {
 	if (!node->next)
@@ -190,6 +169,27 @@ int ft_check_redir(t_cmd *node)
 	if(node->next->type != WORD)
 		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
 					2, &node->cmd[0], 0));
+	return (0);
+}
+
+int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
+{
+	t_cmd	*curr;
+	int		(*ft_tab[10])(t_cmd *);
+
+	ft_init_ft_tab(ft_tab);
+	curr = *cmd;
+	while (curr)
+	{
+		if (curr->type < 0 || ft_tab[curr->type] == NULL)
+		{
+			curr = curr->next;
+			continue ;
+		}
+		if (ft_tab[curr->type](curr) == -1)
+			return (ft_return_code("2", env));
+		curr = curr->next;
+	}
 	return (0);
 }
 

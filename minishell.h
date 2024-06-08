@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/08 16:22:57 by renard           ###   ########.fr       */
+/*   Updated: 2024/06/08 23:59:59 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int		ft_is_symb(char *cmd, char *symb);
 int		ft_quote_len(char *s, t_envp **env, int len);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
-int		ft_exec_syntax_functions(t_cmd **cmd);
+int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
 int		ft_init_ft_tab(int (*ft_tab[10])(t_cmd *));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
@@ -58,6 +58,7 @@ void	ft_wildcard(t_cmd **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
+int     ft_return_code(char *code, t_envp **env);
 void	ft_create_token_lst(char *buffer, save_struct *t_struct);
 void	add_to_lst(t_cmd **head, t_cmd *new_node);
 void	add_to_envp_lst(t_envp **head, t_envp *new_node);

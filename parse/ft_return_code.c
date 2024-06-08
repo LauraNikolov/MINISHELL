@@ -1,0 +1,17 @@
+#include "../minishell.h"
+
+int ft_return_code(char *code, t_envp **env)
+{
+    if (!env)
+        return (-1);
+    t_envp *curr;
+
+    curr = *env;
+    while(curr)
+    {
+        if (!ft_strcmp(curr->var_name, "?"))
+            curr->var_value = code;
+        curr = curr->next;
+    }
+    return (-1);
+}

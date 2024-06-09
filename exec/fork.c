@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/04 16:37:35 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/09 16:32:43 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
 {
     t_cmd *start; 
     t_cmd *end;
+    int return_value = -1;
 
     start =  t_struct->cmd;
     while(t_struct->cmd->next)
@@ -60,5 +61,5 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
         start = start->next;
     }
     //set_exec_struct(&exec);
-    exec_ast_recursive(t_struct->ast, envp);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 }

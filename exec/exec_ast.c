@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/10 13:50:35 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/10 15:19:47 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,13 +162,14 @@ int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_va
     // * feuille : gauche et droite sont des mots
     if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
-        dprintf(2, "\n\nje suis la feuille droite\n");
+        dprintf(2, "\n\nje suis la feuille\n");
         print_ast(root, 0, ' ');
         return_value = exec_leaf(root, envp, save_root, return_value);
     }
+    // * c'est une branche
     else
     {
-        dprintf(2, "\n\nje suis la branche droite\n");
+        dprintf(2, "\n\nje suis la branche\n");
         print_ast(root, 0, ' ');
          // * si la droite est une branche
         if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
@@ -181,17 +182,35 @@ int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_va
                 while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
                     write(STDOUT_FILENO, buffer, bytes_read);
                 close(root->cmd->prev_fd);
+                // * si la gauche a reussi appeler recursivement sur le droite
                 if(return_value == 0)
                     return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
                 else
                     return(return_value);
             }
+            else if(root->cmd->type == OR)
+            {
+                // * afficher le pipe
+                char buffer[1024];
+                ssize_t bytes_read;
+                while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
+                    write(STDOUT_FILENO, buffer, bytes_read);
+                close(root->cmd->prev_fd);
+                // * si la gauche a pas reussi appeler recursivement sur le droite
+                if(return_value != 0)
+                    return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+                else
+                    return(return_value);
+            }
+            
+            // * si la gauche est un pipe
             else
             {
                 root->right->cmd->prev_fd = root->left->cmd->prev_fd;  
                 return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
             }
         }
+        else
         {
             if(root->cmd->type == PIPE)
             {

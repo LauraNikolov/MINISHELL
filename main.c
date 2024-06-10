@@ -39,11 +39,13 @@ int	main(int ac, char **av, char **envp)
 				ft_all_free(t_struct), 0);
 		add_history(buffer);
 		if (!ft_tokenize(buffer, t_struct, &env))
-		// if (t_struct)
-		ft_echo(t_struct->cmd->cmd);
+			ft_print_lst(t_struct->cmd);
+		// ft_echo(t_struct->cmd->cmd);
 		// ft_print_env(&t_struct->envp);
 		// ft_exec(t_struct, envp);
-		// ft_export_cmd(&t_struct->envp, &buffer);
+		ft_export(t_struct, t_struct->cmd->cmd);
+		// ft_unset(t_struct, t_struct->cmd->cmd);
+		ft_print_env(&t_struct->envp);
 		ft_all_free(t_struct);
 		free(buffer);
 		buffer = NULL;

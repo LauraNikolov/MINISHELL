@@ -7,7 +7,7 @@ int	ft_check_double_symbols3(char *s, char **cmd)
 	else if (s[0] == ')')
 		*cmd = ft_strdup(")");
 	else if (s[0] == '&' && s[1] != '&')
-		return (0);
+		*cmd = ft_strdup("&");
 	return (1);
 }
 

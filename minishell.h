@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/08 23:59:59 by renard           ###   ########.fr       */
+/*   Updated: 2024/06/10 19:00:08 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	ft_wildcard(t_cmd **cmd);
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
-int     ft_return_code(char *code, t_envp **env);
+int		ft_return_code(char *code, t_envp **env);
 void	ft_create_token_lst(char *buffer, save_struct *t_struct);
 void	add_to_lst(t_cmd **head, t_cmd *new_node);
 void	add_to_envp_lst(t_envp **head, t_envp *new_node);
@@ -66,7 +66,7 @@ void	ft_remove_null_node(t_cmd **lst);
 t_cmd	*lst_last(t_cmd *node);
 t_envp	*lst_envp_last(t_envp *node);
 void	ft_free_node(t_cmd *node);
-t_envp	*create_envp_node(char *var_name, int flag);
+t_envp	*create_envp_node(char *var_name);
 void	ft_print_lst(t_cmd *node);   // A SUPP A LA FIN
 void	ft_print_envp(t_envp *envp); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
@@ -78,6 +78,8 @@ void	ft_print_env(t_envp **env);
 
 // General utils
 int		ft_safe_malloc(char **s, int size);
+void	ft_override_content(char *s1, char *s2);
+void	ft_swap_content(char **s1, char **s2);
 
 // exec
 void	ft_build_ast(save_struct *t_struct, char **envp);
@@ -85,7 +87,8 @@ void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
 
 // BUILTINS
-int		ft_export_cmd(t_envp **env, char **var);
+int		ft_export(save_struct *t_struct, char **var);
+int		ft_unset(save_struct *t_struct, char **var);
 void	ft_env(char **envp);
 int		ft_echo(char **cmd);
 

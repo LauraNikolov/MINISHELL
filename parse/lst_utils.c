@@ -90,7 +90,7 @@ void	ft_print_lst(t_cmd *node)
 			i++;
 		}
 		printf("Path = %s\n", curr->path);
-		printf ("redir = %s\n", curr->redir);
+		printf("redir = %s\n", curr->redir);
 		if (curr->type == 0)
 			printf("WORD\n");
 		else if (curr->type == 1)
@@ -167,27 +167,46 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 	new_node->prev = last;
 	last->next = new_node;
 }
-t_envp	*create_envp_node(char *var_name, int flag)
+t_envp	*create_envp_node(char *var_name)
 {
 	t_envp	*envp;
 	int		i;
 
 	envp = malloc(sizeof(t_envp));
-	if(!envp)
-		return(NULL);
+	if (!envp)
+		return (NULL);
 	i = 0;
 	while (var_name[i] && var_name[i] != '=')
 		i++;
 	envp->var_name = ft_strndup(var_name, i);
 	envp->var_value = ft_strdup(&var_name[i + 1]);
-	envp->add_variables = flag;
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);
 }
+t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
+{
+	if (!ft_strcmp(cmd, ">>"))
+		new_node->type = R_APPEND;
+	else if (!ft_strcmp(cmd, "||"))
+		new_node->type = OR;
+	else if (!ft_strcmp(cmd, "&&"))
+		new_node->type = AND;
+	else if (!ft_strcmp(cmd, "&"))
+		new_node->type = NO_TYPE;
+	else if (!ft_strcmp(cmd, "("))
+		new_node->type = O_BRACKET;
+	else if (!ft_strcmp(cmd, ")"))
+		new_node->type = C_BRACKET;
+	else
+		new_node->type = WORD;
+	free(cmd);
+	return (new_node);
+}
+
 t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 {
-	t_cmd *new_node;
+	t_cmd	*new_node;
 
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
@@ -209,18 +228,5 @@ t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 		new_node->type = R_IN;
 	else if (!ft_strcmp(cmd, ">"))
 		new_node->type = R_OUT;
-	else if (!ft_strcmp(cmd, ">>"))
-		new_node->type = R_APPEND;
-	else if (!ft_strcmp(cmd, "||"))
-		new_node->type = OR;
-	else if (!ft_strcmp(cmd, "&&"))
-		new_node->type = AND;
-	else if (!ft_strcmp(cmd, "("))
-		new_node->type = O_BRACKET;
-	else if (!ft_strcmp(cmd, ")"))
-		new_node->type = C_BRACKET;
-	else
-		new_node->type = WORD;
-	free(cmd);
-	return (new_node);
+	return (create_cmd_node2(new_node, cmd));
 }

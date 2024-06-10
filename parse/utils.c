@@ -20,7 +20,7 @@ int	ft_is_symb(char *cmd, char *symb)
 
 	i = 0;
 	j = 0;
-	while (symb[i] && cmd[j]) // gerer les double chevrons et les && et les ||
+	while (symb[i] && cmd[j])
 	{
 		if (cmd[j] == symb[i])
 			return (1);
@@ -37,6 +37,29 @@ void	ft_free_tab(char **split)
 	while (split[i])
 		free(split[i++]);
 	free(split);
+}
+void	ft_swap_content(char **s1, char **s2)
+{
+	char	*tmp;
+
+	tmp = ft_strdup(*s1);
+	free(*s1);
+	*s1 = NULL;
+	*s1 = ft_strdup(*s2);
+	*s2 = NULL;
+	free(*s2);
+	*s2 = tmp;
+}
+
+void	ft_override_content(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	if (!s1 || !s2)
+		return ;
+	free(s1);
+	s1 = ft_strdup(s2);
 }
 
 int	ft_str_is_alpha(char *s)
@@ -58,19 +81,25 @@ int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)
 	int	i;
 
 	i = -1;
+	if (!s)
+		return (-1);
+	if (flag == 2)
+	{
+		write(fd, s, ft_strlen(s));
+		return (-1);
+	}
 	write(fd, s, ft_strlen(s));
 	if (flag == 1)
 		while (str[++i])
 		{
 			write(fd, " ", 2);
-			ft_putstr_fd(str[i],fd);
+			ft_putstr_fd(str[i], fd);
 		}
-	else if (*str)
+	else if (str)
 	{
-		ft_putstr_fd(*str,fd);
+		ft_putstr_fd(*str, fd);
 		write(fd, "\'", 2);
 	}
 	write(fd, "\n", 2);
 	return (-1);
 }
-

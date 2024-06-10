@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/09 16:32:43 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/10 12:17:48 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,7 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
         start = start->next;
     }
     //set_exec_struct(&exec);
-    exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    return_value = exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value); 
+    //set la valeur de retour dans la liste chainee envp (fqire un itoa)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 }

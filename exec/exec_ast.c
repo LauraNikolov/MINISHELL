@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/09 17:01:17 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/10 13:50:35 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,20 @@
     {
         if(cmd->std_in != STDIN_FILENO)
         {
-            dprintf(2, "Redirection std_in : %d\n", cmd->std_in);
             dup2(cmd->std_in, STDIN_FILENO);
             close(cmd->std_in);
         }
         if(cmd->std_out != STDOUT_FILENO)
         {
-            dprintf(2, "Redirection std_out : %d\n", cmd->std_out);
             dup2(cmd->std_out, STDOUT_FILENO);
             close(cmd->std_out);
         }
-        execve(cmd->path, cmd->cmd, envp);
-        perror("execve");
-        exit(EXIT_FAILURE);
+        return_value = execve(cmd->path, cmd->cmd, envp);
+        if(return_value != 0)
+        {
+            perror("execve : \n");
+            dprintf(2, "cmd->path = %s\n", cmd->path);
+        } 
     }
     else
     {
@@ -63,7 +64,6 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root)
             dup2(cmd->std_in, STDIN_FILENO);
             close(cmd->std_in);
         }
-        dprintf(2, "avant le dup stdout == %d, et cmd->std_out %d\n", STDOUT_FILENO, cmd->std_out);
         if (cmd->std_out != STDOUT_FILENO)
         {
             dup2(cmd->std_out, STDOUT_FILENO);
@@ -72,8 +72,12 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root)
         }
         // Fermer les descripteurs de pipe inutilisés dans le processus enfant
         close(root->cmd->pipe[0]);
-        execve(cmd->path, cmd->cmd, envp);
-        perror("execve");
+        return_value = execve(cmd->path, cmd->cmd, envp);
+        if(return_value != 0)
+        {
+            perror("execve : \n");
+            dprintf(2, "cmd->path = %s\n", cmd->path);
+        }
         exit(EXIT_FAILURE);
     }
     else
@@ -89,6 +93,10 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root)
 
 int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
 {
+    if(root->cmd->type == WORD)
+    {
+        return (0);
+    }
     if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
         t_cmd *cmd1 = root->left->cmd;
@@ -101,7 +109,10 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
                 return (1);
             }
             // cmd1: stdin est standard, stdout est l'entrée du pipe
-            cmd1->std_in = STDIN_FILENO;
+            if(root->cmd->prev_fd == -1)
+                cmd1->std_in = STDIN_FILENO;
+            else
+                cmd1->std_in = root->cmd->prev_fd;
             cmd1->std_out = root->cmd->pipe[1];
             return_value = ft_execve_pipe(cmd1, envp, root);
 
@@ -116,6 +127,11 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
                 cmd2->std_out = root->cmd->pipe[1];
             else
                  cmd2->std_out = STDOUT_FILENO;
+            if(root->cmd->prev_fd != -1)
+            {
+                close(root->cmd->prev_fd);
+                cmd2->std_out = STDOUT_FILENO;
+            }
             dprintf(2, "cmd2 stdout: %d\n", cmd2->std_out);
             return_value = ft_execve_pipe(cmd2, envp, root);
         }
@@ -138,52 +154,68 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
 
 int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
 {
+    if (root == NULL)
+        return (0);
     if (root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
-        exec_ast_recursive(root->left, envp, save_root, return_value);
-    
+        return_value = exec_ast_recursive(root->left, envp, save_root, return_value);
+ 
+    // * feuille : gauche et droite sont des mots
     if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
     {
-        dprintf(2, "\n\nje suis la feuille\n");
+        dprintf(2, "\n\nje suis la feuille droite\n");
         print_ast(root, 0, ' ');
         return_value = exec_leaf(root, envp, save_root, return_value);
     }
     else
     {
-        dprintf(2, "\n\nje suis la branche\n");
+        dprintf(2, "\n\nje suis la branche droite\n");
         print_ast(root, 0, ' ');
          // * si la droite est une branche
         if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
         {
-            root->right->cmd->prev_fd = root->left->cmd->prev_fd;
-            exec_ast_recursive(root->right, envp, save_root, return_value);
-        }
-        else
-        {
-            if(root->cmd->type == PIPE)
-            {
-                pipe(root->cmd->pipe);
-                dprintf(2, "fd prev : %d\n", root->left->cmd->prev_fd);
-                root->right->cmd->std_in = root->left->cmd->prev_fd;
-                if(save_root != root)
-                root->right->cmd->std_out = root->cmd->pipe[1];
-                else
-                {
-                    dprintf(2, "kikou\n");
-                    root->right->cmd->std_out = STDOUT_FILENO;
-                }
-                return_value = ft_execve_pipe(root->right->cmd, envp, root);
-            }
-            dprintf(2, "mon root == %d\n", root->cmd->type);
             if(root->cmd->type == AND)
             {
-                dprintf(2, "salut salut\n");
+                // * afficher le pipe
                 char buffer[1024];
                 ssize_t bytes_read;
                 while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
                     write(STDOUT_FILENO, buffer, bytes_read);
                 close(root->cmd->prev_fd);
-                if(return_value != 0)
-                    ft_execve_single_cmd(root->right->cmd, envp);
+                if(return_value == 0)
+                    return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+                else
+                    return(return_value);
+            }
+            else
+            {
+                root->right->cmd->prev_fd = root->left->cmd->prev_fd;  
+                return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+            }
+        }
+        {
+            if(root->cmd->type == PIPE)
+            {
+                pipe(root->cmd->pipe);
+                root->right->cmd->std_in = root->left->cmd->prev_fd;
+                if(save_root != root)
+                    root->right->cmd->std_out = root->cmd->pipe[1];
+                else
+                {
+                    root->right->cmd->std_out = STDOUT_FILENO;
+                }
+                return_value = ft_execve_pipe(root->right->cmd, envp, root);
+            }
+            if(root->cmd->type == AND)
+            {
+               // dprintf(2, "je suis le AND\n");
+                char buffer[1024];
+                ssize_t bytes_read;
+                while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
+                    write(STDOUT_FILENO, buffer, bytes_read);
+                close(root->cmd->prev_fd);
+                //dprintf(2, "return_value = %d\n", return_value);
+                if(return_value == 0)
+                    return_value = ft_execve_single_cmd(root->right->cmd, envp);
                 else
                     return(-1);
             }

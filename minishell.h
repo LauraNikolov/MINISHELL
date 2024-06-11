@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/10 19:00:08 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/11 13:40:43 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <limits.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
@@ -91,6 +92,7 @@ int		ft_export(save_struct *t_struct, char **var);
 int		ft_unset(save_struct *t_struct, char **var);
 void	ft_env(char **envp);
 int		ft_echo(char **cmd);
+int		ft_exit(char **code, save_struct *t_struct);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

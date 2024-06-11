@@ -69,11 +69,11 @@ int	ft_str_is_alpha(char *s)
 	i = 0;
 	while (s[i])
 	{
-		if ((s[i] < 'a' || s[i] > 'z') || (s[i] < 'A' || s[i] > 'Z'))
-			return (0);
+		if ((s[i] >= 'a' || s[i] <= 'z') || (s[i] >= 'A' || s[i] <= 'Z'))
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)

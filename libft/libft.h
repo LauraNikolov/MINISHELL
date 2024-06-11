@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 16:15:04 by melmarti          #+#    #+#             */
-/*   Updated: 2024/06/07 15:17:43 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/11 13:33:56 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@ typedef struct s_list
 }					t_list;
 
 int					ft_atoi(const char *s);
+long long			ft_atoll(const char *s);
 void				ft_bzero(void *s, size_t n);
 void				*ft_calloc(size_t count, size_t size);
 int					ft_isalnum(int c);
 int					ft_isalpha(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
+int					ft_str_isdigit(char *s);
 int					ft_isprint(int c);
 int					ft_count_tab(char **tab);
 int					ft_is_char(char *s, char c);

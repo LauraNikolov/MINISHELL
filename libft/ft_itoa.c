@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 17:32:00 by melmarti          #+#    #+#             */
-/*   Updated: 2024/02/09 14:55:40 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/11 13:30:17 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ char	*ft_itoa(int n)
 	return (ft_putnbr(s, n, counter));
 }
 
-int main(void)
-{
-   int n;
-   n = 0;
-   printf ("%s\n", ft_itoa(n));
-}
+// int main(void)
+// {
+//    int n;
+//    n = 0;
+//    printf ("%s\n", ft_itoa(n));
+// }

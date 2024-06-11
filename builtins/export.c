@@ -53,14 +53,15 @@ static void	ft_add_var(t_envp **env, char *var)
 	flag = 0;
 	while (curr)
 	{
-		if (!ft_strncmp(curr->var_name, var, ft_strchr(var, '=')))
+		if (!ft_strncmp(curr->var_name, var, ft_strchr(var, '='))
+			&& var[ft_strchr(var, '=') + 1])
 		{
 			ft_override_content(curr->var_value, &var[ft_strchr(var, '=') + 1]);
 			flag = 1;
 		}
 		curr = curr->next;
 	}
-	if (!flag)
+	if (!flag && var[ft_strchr(var, '=') + 1])
 		add_to_envp_lst(env, create_envp_node(var));
 }
 int	ft_export(save_struct *t_struct, char **var)

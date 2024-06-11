@@ -43,6 +43,7 @@ typedef struct s_ast
 	char				**args;
 	struct s_ast		*right;
 	struct s_ast		*left;
+	
 }						t_ast;
 
 typedef struct s_envp

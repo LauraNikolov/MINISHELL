@@ -22,7 +22,9 @@ FILES = ft_memset \
 		ft_strndup \
 		ft_strcmp \
 		ft_atoi \
+		ft_atoll \
 		ft_isalpha \
+		ft_str_isdigit \
 		ft_isdigit \
 		ft_isalnum \
 		ft_isascii \

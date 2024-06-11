@@ -40,14 +40,14 @@ int	main(int ac, char **av, char **envp)
 		add_history(buffer);
 		if (!ft_tokenize(buffer, t_struct, &env))
 			ft_print_lst(t_struct->cmd);
+		free(buffer);
 		// ft_echo(t_struct->cmd->cmd);
+		ft_exit(t_struct->cmd->cmd, t_struct);
 		// ft_print_env(&t_struct->envp);
 		// ft_exec(t_struct, envp);
-		ft_export(t_struct, t_struct->cmd->cmd);
-		// ft_unset(t_struct, t_struct->cmd->cmd);
-		ft_print_env(&t_struct->envp);
+		// ft_print_env(&t_struct->envp);
 		ft_all_free(t_struct);
-		free(buffer);
+		
 		buffer = NULL;
 	}
 }

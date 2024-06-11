@@ -17,25 +17,22 @@ static void	ft_remove_var(t_envp *node)
 	free(node);
 }
 
-int	ft_unset(save_struct *t_struct, char **var)
+int	ft_unset(char **var, t_envp **env)
 {
 	t_envp	*curr;
-	t_envp	*tmp;
 	int		i;
 
-	curr = t_struct->envp;
+	curr = *env;
 	while (curr)
 	{
-		tmp = curr->next;
 		i = -1;
 		while (var[++i])
 			if (!ft_strcmp(curr->var_name, var[i]))
 			{
 				if (!curr->prev)
-					t_struct->envp = tmp;
+					*env = curr->next;
 				ft_remove_var(curr);
 			}
-		curr = tmp;
 	}
-	return (ft_return_code("0", &t_struct->envp));
+	return (ft_return_code("0", env));
 }

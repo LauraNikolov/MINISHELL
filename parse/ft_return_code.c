@@ -13,5 +13,5 @@ int ft_return_code(char *code, t_envp **env)
             curr->var_value = code;
         curr = curr->next;
     }
-    return (0);
+    return (1);
 }

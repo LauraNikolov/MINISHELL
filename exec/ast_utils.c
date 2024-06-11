@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int ft_check_bracket(t_ast *token)
+int	ft_check_bracket(t_ast *token)
 {
 	t_ast	*tmp_prev;
 	int		i;
@@ -20,7 +20,7 @@ int ft_check_bracket(t_ast *token)
 	return (i);
 }
 
-void ft_clear_ast(t_ast *root)
+void	ft_clear_ast(t_ast *root)
 {
 	if (root == NULL)
 		return ;
@@ -36,33 +36,33 @@ t_ast	*ast_init(void)
 	ast = ft_calloc(1, sizeof(t_ast));
 	if (!ast)
 		return (NULL);
-	ast->token = NULL;
+	ast->args = NULL;
 	ast->left = NULL;
 	ast->right = NULL;
 	return (ast);
 }
 
-t_ast	*ast_new_node(t_token *token)
+t_ast	*ast_new_node(t_ast *token)
 {
 	t_ast	*ast;
 
 	ast = ft_calloc(1, sizeof(t_ast));
 	if (!ast)
 		return (NULL);
-	ast->token = token;
+	ast->type = token;
 	ast->left = NULL;
 	ast->right = NULL;
 	return (ast);
 }
 
-t_ast	*create_operator_node(t_token *token, t_ast *left, t_ast *right)
+t_ast	*create_operator_node(t_ast *args, t_ast *left, t_ast *right)
 {
 	t_ast *node;
 
 	node = ft_calloc(1, sizeof(t_ast));
 	if (!node)
 		return (NULL);
-	node->token = token;
+	node->args = args;
 	node->left = left;
 	node->right = right;
 	return (node);

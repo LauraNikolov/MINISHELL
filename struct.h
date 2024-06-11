@@ -43,7 +43,8 @@ typedef struct s_ast
 	char				**args;
 	struct s_ast		*right;
 	struct s_ast		*left;
-	
+	struct s_ast		*prev;
+	struct s_ast		*next;
 }						t_ast;
 
 typedef struct s_envp

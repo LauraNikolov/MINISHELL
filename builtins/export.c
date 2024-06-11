@@ -64,11 +64,11 @@ static void	ft_add_var(t_envp **env, char *var)
 	if (!flag && var[ft_strchr(var, '=') + 1])
 		add_to_envp_lst(env, create_envp_node(var));
 }
-int	ft_export(save_struct *t_struct, char **var)
+int	ft_export(char **var, t_envp **env)
 {
 	int	i;
 
-	if (!t_struct->envp || !*var)
+	if (!env || !*var)
 		return (0);
 	i = -1;
 	while (var[++i])
@@ -80,9 +80,9 @@ int	ft_export(save_struct *t_struct, char **var)
 			ft_putstr_cmd_fd("': not a valid identifier", 2, NULL, 0);
 		}
 		else
-			ft_add_var(&t_struct->envp, var[i]);
+			ft_add_var(env, var[i]);
 	}
-	ft_sort_env(&t_struct->envp, var);
-	ft_print_env(&t_struct->envp);
-	return (ft_return_code("0", &t_struct->envp));
+	ft_sort_env(env, var);
+	ft_print_env(env);
+	return (ft_return_code("0", env));
 }

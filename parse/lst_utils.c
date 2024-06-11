@@ -59,17 +59,18 @@ void	ft_free_lst(t_cmd *lst)
 	}
 }
 
-void	ft_print_envp(t_envp *envp)
+int	ft_print_envp(t_envp **envp)
 {
 	t_envp	*curr;
 
-	curr = envp;
+	curr = *envp;
 	while (curr)
 	{
 		printf("var_name = %s\n", curr->var_name);
-		printf("path = %s\n***\n", curr->var_value);
+		printf("path = %s\n", curr->var_value);
 		curr = curr->next;
 	}
+	return (ft_return_code(0, envp));
 }
 
 void	ft_print_lst(t_cmd *node)

@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/11 13:40:43 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:00:14 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "struct.h"
 # include <dirent.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
@@ -26,7 +27,6 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <limits.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
@@ -68,8 +68,7 @@ t_cmd	*lst_last(t_cmd *node);
 t_envp	*lst_envp_last(t_envp *node);
 void	ft_free_node(t_cmd *node);
 t_envp	*create_envp_node(char *var_name);
-void	ft_print_lst(t_cmd *node);   // A SUPP A LA FIN
-void	ft_print_envp(t_envp *envp); // A SUPP A LA FIN
+void	ft_print_lst(t_cmd *node); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
 void	ft_free_lst(t_cmd *lst);
 void	ft_free_envp_lst(t_envp **lst);
@@ -86,13 +85,16 @@ void	ft_swap_content(char **s1, char **s2);
 void	ft_build_ast(save_struct *t_struct, char **envp);
 void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
+t_ast	*create_operator_node(t_ast *args, t_ast *left, t_ast *right);
 
 // BUILTINS
-int		ft_export(save_struct *t_struct, char **var);
-int		ft_unset(save_struct *t_struct, char **var);
+int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);
+int		ft_export(char **var, t_envp **env);
+int		ft_unset(char **var, t_envp **env);
 void	ft_env(char **envp);
-int		ft_echo(char **cmd);
-int		ft_exit(char **code, save_struct *t_struct);
+int		ft_echo(char **cmd, t_envp **env);
+int		ft_exit(char **code, t_envp **env);
+int		ft_print_envp(t_envp **envp);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

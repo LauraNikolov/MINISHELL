@@ -17,7 +17,7 @@ static void	ft_echo_str(char **cmd, int option)
 		ft_putchar_fd('\n', 1);
 }
 
-int	ft_echo(char **cmd)
+int	ft_echo(char **cmd, t_envp **env)
 {
 	int option;
 	int i;
@@ -38,5 +38,5 @@ int	ft_echo(char **cmd)
 			option = 0;
 	}
 	ft_echo_str(cmd, option);
-	return (0);
+	return (ft_return_code(0, env));
 }

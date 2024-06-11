@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/11 17:13:13 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:20:22 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
                 //cmd2->std_out = root->cmd->pipe[1];
             if(root != save_root->right)
                     root->right->cmd->std_out = root->cmd->pipe[1];
+            if(root == save_root)
+                cmd2->std_out = STDOUT_FILENO;
             return_value = ft_execve_pipe(cmd2, envp, root);
         }
         if (root->cmd->type == AND)
@@ -205,6 +207,8 @@ int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_va
                 root->right->cmd->std_in = root->left->cmd->prev_fd;
                 if(root != save_root->right)
                     root->right->cmd->std_out = root->cmd->pipe[1];
+                if(root == save_root)
+                    root->right->cmd->std_out = STDOUT_FILENO;
                 return_value = ft_execve_pipe(root->right->cmd, envp, root);
             }
             if(root->cmd->type == AND)

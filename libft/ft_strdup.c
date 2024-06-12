@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 17:19:07 by melmarti          #+#    #+#             */
-/*   Updated: 2024/05/02 13:51:23 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/06 14:55:35 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*ft_strdup(const char *src)
 	char	*dest;
 
 	i = 0;
+	if (!src)
+		return (NULL);
 	dest = malloc(sizeof(char) * ft_strlen(src) + 1);
 	if (!dest)
 		return (NULL);

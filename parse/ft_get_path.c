@@ -1,31 +1,25 @@
 #include "../minishell.h"
 
-int	ft_get_path(t_cmd **lst)
+int	ft_get_path(t_cmd *node)
 {
-	t_cmd *curr;
-	char *path;
-	char **bin;
-	int i;
+	char	*path;
+	char	*absolute_path;
+	char	**bin;
+	int		i;
 
-	path = getenv("PATH");
-	curr = *lst;
-	if (!path)
-		return (-1);           // Error type TODO !
+	path = getenv("PATH");       // if no environment TODO !
 	bin = ft_split(path, ":"); // split les paths
-	while (curr)
+	i = 0;
+	while (bin[i])
 	{
-		i = 0;
-		while (bin[i])
+		absolute_path = ft_strjoin_path(bin[i], node->cmd[0]);
+		if (access(absolute_path, F_OK) == 0)
 		{
-			if (access(ft_strjoin(bin[i], curr->cmd[0]), F_OK) == 0)
-				// utiliser strcat pour pas malloc un truc impossible a free ? juste pour la boucle
-			{
-				curr->path = ft_strjoin(bin[i], curr->cmd[0]);
-				break ;
-			}
-			i++;
+			node->path = ft_strdup(absolute_path);
+			break ;
 		}
-		curr = curr->next;
+		free(absolute_path);
+		i++;
 	}
 	ft_free_tab(bin);
 	return (0);

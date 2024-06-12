@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/11 18:20:22 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/12 17:50:56 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,96 +144,180 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value)
 
     return (return_value);
 }
-
-int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
+void read_pipe(int fd)
 {
-    if (root == NULL)
-        return (0);
-    if (root->left->cmd->type == PIPE || root->left->cmd->type == AND || root->left->cmd->type == OR)
-        return_value = exec_ast_recursive(root->left, envp, save_root, return_value);
- 
-    // * feuille : gauche et droite sont des mots
-    if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
-    {
-        return_value = exec_leaf(root, envp, save_root, return_value);
-    }
-    // * c'est une branche
-    else
-    {
-         // * si la droite est une branche
-        if(root->right->cmd->type == PIPE || root->right->cmd->type == AND || root->right->cmd->type == OR)
-        {
-            if(root->cmd->type == AND)
-            {
-                // * afficher le pipe
-                char buffer[1024];
-                ssize_t bytes_read;
-                while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
-                    write(STDOUT_FILENO, buffer, bytes_read);
-                close(root->cmd->prev_fd);
-                // * si la gauche a reussi appeler recursivement sur le droite
-                if(return_value == 0)
-                    return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
-                else
-                    return(return_value);
-            }
-            else if(root->cmd->type == OR)
-            {
-                // * afficher le pipe
-                char buffer[1024];
-                ssize_t bytes_read;
-                while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
-                    write(STDOUT_FILENO, buffer, bytes_read);
-                close(root->cmd->prev_fd);
-                // * si la gauche a pas reussi appeler recursivement sur le droite
-                if(return_value != 0)
-                    return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
-                else
-                    return(return_value);
-            }
-            
-            // * si la gauche est un pipe
-            else
-            {
-                root->right->cmd->prev_fd = root->left->cmd->prev_fd;  
-                return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
-            }
-        }
-        else
-        {
-            if(root->cmd->type == PIPE)
-            {
-                pipe(root->cmd->pipe);
-                root->right->cmd->std_in = root->left->cmd->prev_fd;
-                if(root != save_root->right)
-                    root->right->cmd->std_out = root->cmd->pipe[1];
-                if(root == save_root)
-                    root->right->cmd->std_out = STDOUT_FILENO;
-                return_value = ft_execve_pipe(root->right->cmd, envp, root);
-            }
-            if(root->cmd->type == AND)
-            {
-               // dprintf(2, "je suis le AND\n");
-                char buffer[1024];
-                ssize_t bytes_read;
-                while ((bytes_read = read(root->left->cmd->prev_fd, buffer, sizeof(buffer))) > 0)
-                    write(STDOUT_FILENO, buffer, bytes_read);
-                close(root->cmd->prev_fd);
-                //dprintf(2, "return_value = %d\n", return_value);
-                if(return_value == 0)
-                    return_value = ft_execve_single_cmd(root->right->cmd, envp);
-                else
-                    return(-1);
-            }
-        }
-    }
-    int i = 4;
-    while (i != 0)
-    {
-        wait(0);
-        i--;
-    }
-    return (root->cmd->return_value);
+    char buffer[1024];
+    ssize_t bytes_read;
+    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
+        write(STDOUT_FILENO, buffer, bytes_read);
+    close(fd);
+}
+int	ft_pipe_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	if (root->right->cmd->type == PIPE
+		|| root->right->cmd->type == AND
+		|| root->right->cmd->type == OR)
+	{
+		root->right->cmd->prev_fd = root->left->cmd->prev_fd;
+		return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+	}
+	else
+	{
+		pipe(root->cmd->pipe);
+		root->right->cmd->std_in = root->left->cmd->prev_fd;
+		if (root != save_root->right)
+			root->right->cmd->std_out = root->cmd->pipe[1];
+		if (root == save_root)
+			root->right->cmd->std_out = STDOUT_FILENO;
+		return_value = ft_execve_pipe(root->right->cmd, envp, root);
+	}
+	return (return_value);
+}
+
+int	ft_pipe(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	return (ft_pipe_recursive(root, envp, save_root, return_value));
+}
+
+int	ft_and_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	if (root->right->cmd->type == PIPE
+		|| root->right->cmd->type == AND
+		|| root->right->cmd->type == OR)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (return_value == 0)
+			return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+		else
+			return (return_value);
+	}
+	else
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (return_value == 0)
+			return_value = ft_execve_single_cmd(root->right->cmd, envp);
+		else
+			return (return_value);
+	}
+	return (return_value);
+}
+
+int	ft_and(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	return (ft_and_recursive(root, envp, save_root, return_value));
+}
+
+int	ft_or_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	if (root->right->cmd->type == PIPE
+		|| root->right->cmd->type == AND
+		|| root->right->cmd->type == OR)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (return_value != 0)
+			return_value = exec_ast_recursive(root->right, envp, save_root, return_value);
+		else
+			return (return_value);
+	}
+	else
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (return_value != 0)
+			return_value = ft_execve_single_cmd(root->right->cmd, envp);
+		else
+			return (return_value);
+	}
+	return (return_value);
+}
+
+int	ft_or(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	return (ft_or_recursive(root, envp, save_root, return_value));
+}
+
+void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int *return_value)
+{
+	if (root->cmd->type == AND)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (*return_value == 0)
+			*return_value = exec_ast_recursive(root->right, envp, save_root, *return_value);
+		else
+			return;
+	}
+	else if (root->cmd->type == OR)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (*return_value != 0)
+			*return_value = exec_ast_recursive(root->right, envp, save_root, *return_value);
+		else
+			return;
+	}
+	else
+	{
+		root->right->cmd->prev_fd = root->left->cmd->prev_fd;
+		*return_value = exec_ast_recursive(root->right, envp, save_root, *return_value);
+	}
+}
+
+void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root, int *return_value)
+{
+	if (root->cmd->type == PIPE)
+	{
+		pipe(root->cmd->pipe);
+		root->right->cmd->std_in = root->left->cmd->prev_fd;
+		if (root != save_root->right)
+			root->right->cmd->std_out = root->cmd->pipe[1];
+		if (root == save_root)
+			root->right->cmd->std_out = STDOUT_FILENO;
+		*return_value = ft_execve_pipe(root->right->cmd, envp, root);
+	}
+	else if (root->cmd->type == AND)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (*return_value == 0)
+			*return_value = ft_execve_single_cmd(root->right->cmd, envp);
+		else
+			*return_value = -1;
+	}
+	else if (root->cmd->type == OR)
+	{
+		read_pipe(root->left->cmd->prev_fd);
+		if (*return_value != 0)
+			*return_value = ft_execve_single_cmd(root->right->cmd, envp);
+		else
+			*return_value = -1;
+	}
+}
+
+int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value)
+{
+	int	i;
+
+	if (root == NULL)
+		return (0);
+	if (root->left->cmd->type == PIPE
+		|| root->left->cmd->type == AND
+		|| root->left->cmd->type == OR)
+		return_value = exec_ast_recursive(root->left, envp, save_root, return_value);
+	if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
+		return_value = exec_leaf(root, envp, save_root, return_value);
+	else
+	{
+		if (root->right->cmd->type == PIPE
+			|| root->right->cmd->type == AND
+			|| root->right->cmd->type == OR)
+			ft_handle_ast_recursive(root, envp, save_root, &return_value);
+		else
+			ft_handle_exec(root, envp, save_root, &return_value);
+	}
+	i = 4;
+	while (i != 0)
+	{
+		wait(0);
+		i--;
+	}
+	return (root->cmd->return_value);
 }
 
 

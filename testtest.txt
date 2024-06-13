@@ -1,0 +1,16 @@
+cat
+exec
+kaka
+kaka.txt
+kk
+libft
+main.c
+main.o
+Makefile
+mdr
+minishell
+minishell.h
+parse
+struct.h
+testtest.txt
+valgrind.txt

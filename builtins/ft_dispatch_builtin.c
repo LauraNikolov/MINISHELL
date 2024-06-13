@@ -12,5 +12,5 @@ int ft_dispatch_builtin(char **cmd, save_struct *t_struct)
 		return(ft_unset(cmd, &t_struct->envp));
 	else if (!ft_strcmp(cmd[0], "env"))
 		return(ft_print_envp(&t_struct->envp));
-	return (0);
+	return (-1);
 }

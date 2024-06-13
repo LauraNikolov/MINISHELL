@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/12 15:12:35 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:14:27 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,22 +82,23 @@ void	ft_override_content(char **s1, char *s2);
 void	ft_swap_content(char **s1, char **s2);
 
 // exec
-void ft_exec(save_struct *t_struct, char **envp);
-int ft_exec_single_cmd(save_struct *t_struct, char **envp);
-void ft_exec_multi_cmds(save_struct *t_struct, char **envp);
-t_ast *build_ast_recursive(t_cmd *start, t_cmd *end);
-t_ast *create_ast_node(t_cmd *node);
-void print_ast(t_ast *root, int depth, char prefix);
-int exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value);
-int ft_exec_tree(t_ast *root);
-int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value);
+void	ft_exec(save_struct *t_struct, char **envp);
+int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
+void	ft_exec_multi_cmds(save_struct *t_struct, char **envp);
+t_ast	*build_ast_recursive(t_cmd *start, t_cmd *end);
+t_ast	*create_ast_node(t_cmd *node);
+void	print_ast(t_ast *root, int depth, char prefix);
+int		exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
+			int return_value, save_struct *t_struct);
+int		ft_exec_tree(t_ast *root);
+int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value, save_struct *t_struct);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);
 int		ft_export(char **var, t_envp **env);
 int		ft_unset(char **var, t_envp **env);
 void	ft_env(char **envp);
-int		ft_echo(char **cmd, t_envp **env);
+int	ft_echo(char **cmd, t_envp **env);
 int		ft_exit(char **code, t_envp **env);
 int		ft_print_envp(t_envp **envp);
 

@@ -22,6 +22,7 @@ int	ft_unset(char **var, t_envp **env)
 	t_envp	*curr;
 	int		i;
 
+	dprintf(2, "YOYOYO\n");
 	curr = *env;
 	while (curr)
 	{

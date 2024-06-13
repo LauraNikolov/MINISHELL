@@ -243,5 +243,7 @@ t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 		new_node->type = R_IN;
 	else if (!ft_strcmp(cmd, ">"))
 		new_node->type = R_OUT;
-	return (create_cmd_node2(new_node, cmd));
+	else
+		create_cmd_node2(new_node, cmd);
+	return (new_node);
 }

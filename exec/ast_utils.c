@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:45:40 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/05/20 16:43:20 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/13 12:43:05 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,3 +104,4 @@ t_ast *build_ast_recursive(t_cmd *start, t_cmd *end)
     join_tree(gauche, droit, root_node);
     return root_node;
 }
+

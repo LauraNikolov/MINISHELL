@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/12 16:48:34 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/11 16:10:39 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ int ft_exec_tree(t_ast *root)
 //    (*exec)->std_out = STDOUT_FILENO;
 //    (*exec)->prev = -1;
 // }
+
+
 
 void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
 {

@@ -41,15 +41,15 @@ void fonctionrecursive(int n, char *str) {
     printf("après = la taille de mon malloc : (%lu)\n", sizeof(char) * n);
 }
 
-// int main() {
-//     char *str = NULL; // Initialisez str à NULL
+int main() {
+    char *str = NULL; // Initialisez str à NULL
 
-//     // Appel de la fonction récursive
-//     fonctionrecursive(0, str);
+    // Appel de la fonction récursive
+    fonctionrecursive(0, str);
 
-//     // Libération de la mémoire à la fin du programme
-//     if (str)
-//         free(str);
+    // Libération de la mémoire à la fin du programme
+    if (str)
+        free(str);
 
-//     return 0;
-// }
+    return 0;
+}

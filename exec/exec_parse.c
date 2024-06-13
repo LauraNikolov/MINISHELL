@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/12 16:34:33 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/04 13:54:50 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@ int ft_exec_single_cmd(save_struct *t_struct, char **envp)
         exit(EXIT_FAILURE);
     }
     else
+    {
         waitpid(pid, NULL, 0);
+    }
     return 0;
 }
 

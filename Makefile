@@ -3,8 +3,8 @@ LDFLAGS = -lreadline
 CC = cc
 
 PARSEDIR = parse
-EXECDIR = exec_folder
-MAINDIR = ../minishell
+EXECDIR = exec
+MAINDIR = ../MINISHELL
 LIBFTDIR = libft
 BUILTINSDIR = builtins
 

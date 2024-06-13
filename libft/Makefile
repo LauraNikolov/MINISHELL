@@ -48,6 +48,8 @@ FILES = ft_memset \
 		ft_putstr_fd \
 		ft_putendl_fd \
 		ft_putnbr_fd \
+		get_next_line \
+		get_next_line_utils \
 
 FILES_BONUS = ft_lstnew \
 			ft_lstadd_front \

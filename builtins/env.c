@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	ft_env(char **envp) // commande env a executer directement sur le char **envp et pas sur la liste envp
+void	ft_env(char **envp)
 {
 	int i;
 
@@ -13,3 +13,5 @@ void	ft_env(char **envp) // commande env a executer directement sur le char **en
 		ft_putstr_fd("\n", 1);
 	}
 }
+
+

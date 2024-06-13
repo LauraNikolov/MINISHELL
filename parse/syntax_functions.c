@@ -38,9 +38,7 @@ int	ft_check_word(t_cmd *node)
 	}
 	ft_get_path(node);
 	if (!node->path)
-	{
 		node->path = ft_strdup(node->cmd[0]);
-	}
 	return (0);
 }
 

@@ -51,15 +51,15 @@ void	ft_swap_content(char **s1, char **s2)
 	*s2 = tmp;
 }
 
-void	ft_override_content(char *s1, char *s2)
+void	ft_override_content(char **s1, char *s2)
 {
 	int	i;
 
 	i = 0;
-	if (!s1 || !s2)
+	if (!*s1 || !s2)
 		return ;
-	free(s1);
-	s1 = ft_strdup(s2);
+	free(*s1);
+	*s1 = ft_strdup(s2);
 }
 
 int	ft_str_is_alpha(char *s)

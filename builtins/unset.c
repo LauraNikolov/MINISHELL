@@ -22,10 +22,11 @@ int	ft_unset(char **var, t_envp **env)
 	t_envp	*curr;
 	int		i;
 
+	dprintf(2, "YOYOYO\n");
 	curr = *env;
 	while (curr)
 	{
-		i = -1;
+		i = 0;
 		while (var[++i])
 			if (!ft_strcmp(curr->var_name, var[i]))
 			{
@@ -33,6 +34,7 @@ int	ft_unset(char **var, t_envp **env)
 					*env = curr->next;
 				ft_remove_var(curr);
 			}
+		curr = curr->next;
 	}
 	return (ft_return_code("0", env));
 }

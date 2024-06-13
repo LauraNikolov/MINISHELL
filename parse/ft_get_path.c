@@ -12,7 +12,7 @@ int	ft_get_path(t_cmd *node)
 	i = 0;
 	while (bin[i])
 	{
-		absolute_path = ft_strjoin(bin[i], node->cmd[0]);
+		absolute_path = ft_strjoin_path(bin[i], node->cmd[0]);
 		if (access(absolute_path, F_OK) == 0)
 		{
 			node->path = ft_strdup(absolute_path);

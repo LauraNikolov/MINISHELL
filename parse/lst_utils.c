@@ -66,8 +66,13 @@ int	ft_print_envp(t_envp **envp)
 	curr = *envp;
 	while (curr)
 	{
-		printf("var_name = %s\n", curr->var_name);
-		printf("path = %s\n", curr->var_value);
+		if (!ft_strcmp(curr->var_name, "?"))
+		{
+			curr = curr->next;
+			continue ;
+		}
+		printf("%s", curr->var_name);
+		printf("=%s\n", curr->var_value);
 		curr = curr->next;
 	}
 	return (ft_return_code(0, envp));
@@ -177,14 +182,23 @@ t_envp	*create_envp_node(char *var_name)
 	if (!envp)
 		return (NULL);
 	i = 0;
-	while (var_name[i] && var_name[i] != '=')
-		i++;
-	envp->var_name = ft_strndup(var_name, i);
-	envp->var_value = ft_strdup(&var_name[i + 1]);
+	if (ft_is_char(var_name, '='))
+	{
+		while (var_name[i] && var_name[i] != '=')
+			i++;
+		envp->var_name = ft_strndup(var_name, i);
+		envp->var_value = ft_strdup(&var_name[i + 1]);
+	}
+	else
+	{
+		envp->var_name = ft_strndup(var_name, i);
+		envp->var_value = NULL;
+	}
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);
 }
+
 t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
 {
 	if (!ft_strcmp(cmd, ">>"))
@@ -229,5 +243,7 @@ t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 		new_node->type = R_IN;
 	else if (!ft_strcmp(cmd, ">"))
 		new_node->type = R_OUT;
-	return (create_cmd_node2(new_node, cmd));
+	else
+		create_cmd_node2(new_node, cmd);
+	return (new_node);
 }

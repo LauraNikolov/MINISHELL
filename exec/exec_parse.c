@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/13 13:19:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:04:08 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,15 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	}
 	if (pid == 0)
 	{
-		// ! check builting
 		return_value = ft_dispatch_builtin(t_struct->cmd->cmd, t_struct);
 		if(return_value != -1)
 			exit(return_value);
 		else
+		{
         	return_value = execve(t_struct->cmd->path, t_struct->cmd->cmd, envp);
-		perror("execve");
-		exit(EXIT_FAILURE);
+			perror("execve");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{

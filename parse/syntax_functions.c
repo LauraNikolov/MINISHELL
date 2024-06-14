@@ -195,10 +195,7 @@ int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 			return (-1);
 		}
 		if (ft_tab[curr->type](curr) == -1)
-		{
-			ft_return_code("2", env);
-			return (-1);
-		}
+			return (ft_return_code("2", env));
 		curr = curr->next;
 	}
 	return (0);

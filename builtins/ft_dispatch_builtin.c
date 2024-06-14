@@ -2,6 +2,7 @@
 
 int ft_dispatch_builtin(char **cmd, save_struct *t_struct)
 {
+	// if not env return ?
 	if (!ft_strcmp(cmd[0], "echo"))
 		return(ft_echo(cmd, &t_struct->envp));
 	else if (!ft_strcmp(cmd[0], "export"))
@@ -11,6 +12,10 @@ int ft_dispatch_builtin(char **cmd, save_struct *t_struct)
 	else if (!ft_strcmp(cmd[0], "unset"))
 		return(ft_unset(cmd, &t_struct->envp));
 	else if (!ft_strcmp(cmd[0], "env"))
-		return(ft_print_envp(&t_struct->envp));
+		return(ft_env(&t_struct->envp));
+	else if (!ft_strcmp(cmd[0], "pwd"))
+		return(ft_pwd(&t_struct->envp));
+	else if (!ft_strcmp(cmd[0], "cd"))
+		return(ft_cd(t_struct));
 	return (-1);
 }

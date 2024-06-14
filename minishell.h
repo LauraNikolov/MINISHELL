@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/13 13:14:27 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/14 11:54:23 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,16 +91,19 @@ void	print_ast(t_ast *root, int depth, char prefix);
 int		exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 			int return_value, save_struct *t_struct);
 int		ft_exec_tree(t_ast *root);
-int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value, save_struct *t_struct);
+int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
+			save_struct *t_struct);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);
 int		ft_export(char **var, t_envp **env);
 int		ft_unset(char **var, t_envp **env);
-void	ft_env(char **envp);
-int	ft_echo(char **cmd, t_envp **env);
+int		ft_env(t_envp **envp);
+int		ft_echo(char **cmd, t_envp **env);
 int		ft_exit(char **code, t_envp **env);
 int		ft_print_envp(t_envp **envp);
+int		ft_pwd(t_envp **envp);
+int		ft_cd(save_struct *t_struct);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

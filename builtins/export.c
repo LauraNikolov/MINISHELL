@@ -3,10 +3,10 @@
 void	ft_print_env(t_envp **env)
 {
 	t_envp	*curr;
-
 	curr = *env;
 	while (curr)
 	{
+		
 		if (!ft_strcmp(curr->var_name, "?"))
 		{
 			curr = curr->next;
@@ -86,8 +86,9 @@ int	ft_export(char **var, t_envp **env)
 		return (0);
 	if (!var[1])
 	{
-		ft_sort_env(env, var);
+		printf("T_ENVPPTR %p\n", *env);
 		ft_print_env(env);
+		ft_sort_env(env, var);
 		return (ft_return_code("0", env));
 	}
 	i = 1;

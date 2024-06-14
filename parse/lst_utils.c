@@ -182,18 +182,10 @@ t_envp	*create_envp_node(char *var_name)
 	if (!envp)
 		return (NULL);
 	i = 0;
-	if (ft_is_char(var_name, '='))
-	{
-		while (var_name[i] && var_name[i] != '=')
-			i++;
-		envp->var_name = ft_strndup(var_name, i);
-		envp->var_value = ft_strdup(&var_name[i + 1]);
-	}
-	else
-	{
-		envp->var_name = ft_strndup(var_name, i);
-		envp->var_value = NULL;
-	}
+	while (var_name[i] && var_name[i] != '=')
+		i++;
+	envp->var_name = ft_strndup(var_name, i);
+	envp->var_value = ft_strdup(&var_name[i + 1]);
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);

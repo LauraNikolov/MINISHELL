@@ -1,10 +1,10 @@
 #include "../minishell.h"
 
-int	ft_check_pipe(t_cmd *node)
+int	ft_check_pipe(t_cmd *node, t_envp **env)
 {
 	if (!node->prev || !node->next)
 	{
-		printf("syntax error near unexpected token '%s'\n", node->cmd[0]);
+		printf("Minishell: syntax error near unexpected token '%s'\n", node->cmd[0]);
 		return (-1);
 	}
 	if (!(node->prev->type == WORD || node->prev->type == C_BRACKET)
@@ -12,13 +12,14 @@ int	ft_check_pipe(t_cmd *node)
 			|| node->next->type == R_APPEND || node->next->type == R_HEREDOC
 			|| node->next->type == WORD))
 	{
-		printf("syntax error near unexpected token '%s'\n", node->cmd[0]);
-		return (-1);
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `", 2,
+					&node->next->cmd[0], 0);
+		return (ft_return_code("2", env));
 	}
 	return (0);
 }
 
-int	ft_check_word(t_cmd *node)
+int	ft_check_word(t_cmd *node, t_envp **env)
 {
 	if (!node->next)
 	{
@@ -30,11 +31,17 @@ int	ft_check_word(t_cmd *node)
 	if (node->next->next)
 	{
 		if (node->next->type == O_BRACKET && !node->cmd[1])
-			return (ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-					&node->next->next->cmd[0], 0));
+		{
+			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `", 2,
+					&node->next->next->cmd[0], 0);
+				return (ft_return_code("2", env));
+		}
 		else if (node->next->type == O_BRACKET && node->cmd[1])
-			return (ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-					&node->next->cmd[0], 0));
+		{
+			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `", 2,
+					&node->next->next->cmd[0], 0);
+				return (ft_return_code("2", env));
+		}
 	}
 	ft_get_path(node);
 	if (!node->path)
@@ -42,7 +49,7 @@ int	ft_check_word(t_cmd *node)
 	return (0);
 }
 
-int	ft_check_Cbracket(t_cmd *node)
+int	ft_check_Cbracket(t_cmd *node, t_envp **env)
 {
 	t_cmd	*curr;
 
@@ -54,8 +61,11 @@ int	ft_check_Cbracket(t_cmd *node)
 	while (curr)
 	{
 		if (curr->prev == NULL)
-			return (ft_putstr_cmd_fd("syntax error near unexpected token `", 2,
-					&node->cmd[0], 0));
+		{
+			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `", 2,
+					&node->next->cmd[0], 0);
+			return (ft_return_code("2", env));
+		}
 		if (curr->prev->type == O_BRACKET)
 			break ;
 		curr = curr->prev;
@@ -67,11 +77,7 @@ int	ft_is_enum(t_cmd *node, char **error_node)
 {
 	if (!node)
 		return (0);
-	if (node->type == PIPE)
-		return (0);
-	if (node->type == R_HEREDOC)
-		return (0);
-	if (node->type == R_APPEND)
+	if (node->type == PIPE || node->type == R_HEREDOC || node->type == R_APPEND)
 		return (0);
 	else if (node->prev)
 		*error_node = node->cmd[0];
@@ -105,7 +111,7 @@ int	ft_bad_expression(t_cmd *node)
 	{
 		if (node->next->cmd[1])
 		{
-			ft_putstr_cmd_fd("Minishell : syntax error in expression :", 2,
+			ft_putstr_cmd_fd("Minishell: syntax error in expression :", 2,
 				node->next->cmd, 1);
 			return (1);
 		}
@@ -113,7 +119,7 @@ int	ft_bad_expression(t_cmd *node)
 	return (0);
 }
 
-int	ft_check_Obracket(t_cmd *node)
+int	ft_check_Obracket(t_cmd *node, t_envp **env)
 {
 	t_cmd	*curr;
 	char	*error_cmd;
@@ -131,7 +137,7 @@ int	ft_check_Obracket(t_cmd *node)
 				&& curr->prev->type == O_BRACKET)
 			{
 				if (ft_bad_expression(curr))
-					return (-1);
+					return(ft_return_code("1", env));
 			}
 			if (curr->type == O_BRACKET && ft_is_enum(curr->next, &error_cmd))
 				p_counter++;
@@ -140,68 +146,69 @@ int	ft_check_Obracket(t_cmd *node)
 			curr = curr->next;
 		}
 		if (p_counter != 0)
-			return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-					2, &error_cmd, 0));
+		{
+			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
+					2, &error_cmd, 0);
+			return(ft_return_code("2", env));
+		}
 		*(node->bool_bracket) = 1;
 	}
 	return (0);
 }
 
-int	ft_check_op(t_cmd *node)
+int	ft_check_op(t_cmd *node, t_envp **env)
 {
-	if (!node->next)
-		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-				2, &node->cmd[0], 0));
-	if (node->next->type == AND || node->next->type == OR
+	if (!node->next || node->next->type == AND || node->next->type == OR
 		|| node->next->type == PIPE)
-		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-				2, &node->next->cmd[0], 0));
+	{
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
+				2, &node->cmd[0], 0);
+		return (ft_return_code("2", env));
+	}
 	return (0);
 }
 
-int	ft_check_redir(t_cmd *node)
+int	ft_check_redir(t_cmd *node, t_envp **env)
 {
-	if (node->redir)
-		return (0);
-	if (!node->next)
-		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-				2, &node->cmd[0], 0));
-	if (node->next->type == AND || node->next->type == OR
-		|| node->next->type == PIPE)
-		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-				2, &node->next->cmd[0], 0));
-	if (node->next->type != WORD)
-		return (ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
-				2, &node->cmd[0], 0));
+	if (!node->next || node->next->type == AND || node->next->type == OR
+		|| node->next->type == PIPE || node->next->type != WORD)
+	{
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
+				2, &node->cmd[0], 0);
+		return (ft_return_code("2", env));
+	}
 	return (0);
 }
 
 int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 {
 	t_cmd	*curr;
-	int		(*ft_tab[10])(t_cmd *);
+	int		(*ft_tab[10])(t_cmd *, t_envp **);
 
 	ft_init_ft_tab(ft_tab);
 	curr = *cmd;
 	while (curr)
 	{
-		if (curr->type < 0 || ft_tab[curr->type] == NULL)
+		if (!ft_tab[curr->type])
 			curr = curr->next;
-		if (curr->type == NO_TYPE)
+		else if (curr->type == NO_TYPE)
 		{
-			ft_putstr_cmd_fd("Minishell : syntax error near unexpected token `",
+			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
 				2, &curr->cmd[0], 0);
 			ft_return_code("2", env);
 			return (-1);
 		}
-		if (ft_tab[curr->type](curr) == -1)
-			return (ft_return_code("2", env));
-		curr = curr->next;
+		else if (ft_tab[curr->type](curr, env) != 0)
+			return (-1);
+		else 
+			curr = curr->next;
 	}
+	if(curr == *cmd)
+		return (-1);
 	return (0);
 }
 
-int	ft_init_ft_tab(int (*ft_tab[10])(t_cmd *))
+int	ft_init_ft_tab(int (*ft_tab[10])(t_cmd *, t_envp **))
 {
 	ft_tab[WORD] = ft_check_word;
 	ft_tab[PIPE] = ft_check_pipe;

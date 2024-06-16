@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/14 11:54:23 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/16 20:30:55 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		ft_quote_len(char *s, t_envp **env, int len);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
-int		ft_init_ft_tab(int (*ft_tab[10])(t_cmd *));
+int		ft_init_ft_tab(int (*ft_tab[10])(t_cmd *, t_envp **));
 int		ft_get_path(t_cmd *node);
 int		ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
 int		ft_putstr_cmd_fd(char *s, int fd, char **str, int flag);

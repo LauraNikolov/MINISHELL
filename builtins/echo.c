@@ -38,5 +38,5 @@ int	ft_echo(char **cmd, t_envp **env)
 			option = 0;
 	}
 	ft_echo_str(cmd, option);
-	return (ft_return_code(0, env));
+	return (ft_return_code("0", env));
 }

@@ -53,9 +53,6 @@ void	ft_swap_content(char **s1, char **s2)
 
 void	ft_override_content(char **s1, char *s2)
 {
-	int	i;
-
-	i = 0;
 	if (!*s1 || !s2)
 		return ;
 	free(*s1);

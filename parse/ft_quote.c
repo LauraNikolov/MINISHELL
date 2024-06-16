@@ -56,6 +56,6 @@ int	ft_quote_len(char *s, t_envp **env, int len)
 			var_size += ft_cmd_len(s, env, &i);
 	}
 	if (quote_len % 2 != 0)
-		ft_putstr_cmd_fd("Quote are odd !\n", 2, NULL, 0);
+		return (-1);
 	return (i + var_size - quote_len);
 }

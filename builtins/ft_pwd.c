@@ -15,5 +15,5 @@ int	ft_pwd(t_envp **envp)
 	}
 	else
 		return (ft_return_code("127", envp));
-	return (ft_return_code(0, envp));
+	return (ft_return_code("0", envp));
 }

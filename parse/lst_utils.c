@@ -173,7 +173,7 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 	new_node->prev = last;
 	last->next = new_node;
 }
-t_envp	*create_envp_node(char *var_name)
+t_envp	*create_envp_node(char *var)
 {
 	t_envp	*envp;
 	int		i;
@@ -182,10 +182,10 @@ t_envp	*create_envp_node(char *var_name)
 	if (!envp)
 		return (NULL);
 	i = 0;
-	while (var_name[i] && var_name[i] != '=')
+	while (var[i] && var[i] != '=')
 		i++;
-	envp->var_name = ft_strndup(var_name, i);
-	envp->var_value = ft_strdup(&var_name[i + 1]);
+	envp->var_name = ft_strndup(var, i);
+	envp->var_value = ft_strdup(&var[i + 1]);
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);

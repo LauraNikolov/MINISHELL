@@ -135,6 +135,8 @@ t_redir	*create_redir_node(char *s)
 {
 	t_redir	*new_node;
 
+	if (!s)
+		return (NULL);
 	new_node = malloc(sizeof(t_redir));
 	new_node->redir = ft_strdup(s);
 	if (!ft_strcmp(s, "<<"))
@@ -144,7 +146,9 @@ t_redir	*create_redir_node(char *s)
 	else if (!ft_strcmp(s, ">"))
 		new_node->type = R_OUT;
 	else if (!ft_strcmp(s, ">>"))
+	{
 		new_node->type = R_APPEND;
+	}
 	else
 		new_node->type = WORD;
 	new_node->next = NULL;
@@ -175,9 +179,9 @@ static int	ft_get_symb(save_struct *t_struct, char *buff, char **cmd)
 	len = 0;
 	if (ft_is_symb(buff, "><"))
 	{
-		while (buff[len] && !ft_is_symb(&buff[len], "|()&"))
+		while (buff[len] && !ft_is_symb(&buff[len], "|()& "))
 		{
-			while (buff[len] && ft_is_symb(&buff[len], " \t")
+			while (buff[len] && ft_is_symb(&buff[len], " ")
 				&& !ft_is_symb(&buff[len], "><"))
 				len++;
 			j = 0;

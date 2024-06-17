@@ -16,10 +16,18 @@ static int	ft_changepwd_var(t_envp **env, char *pwd, char *old_pwd)
 	return (0);
 }
 
+static int	ft_write_cderr(char *path, t_envp **env)
+{
+	ft_putstr_cmd_fd("minishell : cd: ", 2, NULL, 2);
+	ft_putstr_cmd_fd(path, 2, NULL, 2);
+	ft_putstr_cmd_fd(": No such file or directory", 2, NULL, 0);
+	return (ft_return_code("1", env));
+}
+
 int	ft_cd(save_struct *t_struct)
 {
 	char	*path;
-	char 	old_pwd[PATH_MAX];
+	char	old_pwd[PATH_MAX];
 	char	pwd[PATH_MAX];
 
 	if (t_struct->cmd->cmd[2])
@@ -27,36 +35,19 @@ int	ft_cd(save_struct *t_struct)
 		ft_putstr_cmd_fd("minishell : cd: too many arguments", 2, NULL, 0);
 		return (ft_return_code("1", &t_struct->envp));
 	}
-	path = t_struct->cmd->cmd[1];
 	getcwd(old_pwd, PATH_MAX);
+	if (t_struct->cmd->cmd[1][0] != '/')
+		path = ft_strjoin_path(old_pwd, t_struct->cmd->cmd[1]);
+	else
+		path = t_struct->cmd->cmd[1];
+	if (!opendir(path))
+		return (ft_write_cderr(t_struct->cmd->cmd[1], &t_struct->envp));
 	if (!chdir(path))
 	{
 		getcwd(pwd, PATH_MAX);
-		ft_changepwd_var(&t_struct->envp, pwd , old_pwd);
+		ft_changepwd_var(&t_struct->envp, pwd, old_pwd);
 	}
 	else
 		return (ft_return_code("1", &t_struct->envp));
 	return (ft_return_code("0", &t_struct->envp), 0);
 }
-/*
-
-char	*curr_folder = NULL;
-int		nb;
-
-
-if (!strcmp(path))
-
-nb = ft_count_slash(path);
-if (nb)
-{
-	ft_find_new_dir(old_pwd, nb);
-}
-exit(0);
-
-printf("path = %s\n", path);
-// if (getcwd(pwd, PATH_MAX))
-curr_folder = ft_strdup(&pwd[ft_strrchr(pwd, '/') + 1]);
-// printf("curr_folder = %s\n", curr_folder);
-
-free(curr_folder);
-// free(new_folder); */

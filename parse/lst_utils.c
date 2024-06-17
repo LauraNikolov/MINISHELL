@@ -81,7 +81,7 @@ int	ft_print_envp(t_envp **envp)
 void	ft_print_lst(t_cmd *node)
 {
 	t_cmd	*curr;
-	t_redir *curr_redir;
+	t_redir	*curr_redir;
 	int		i;
 	int		command_num;
 
@@ -96,13 +96,23 @@ void	ft_print_lst(t_cmd *node)
 			printf("Options n%d : %s\n", i, curr->cmd[i]);
 			i++;
 		}
-		printf("Path = %s\n", curr->path);
+		// printf("Path = %s\n", curr->path);
 		if (curr->redir)
 		{
 			curr_redir = curr->redir;
-			while(curr_redir)
+			while (curr_redir)
 			{
-				printf("redir = %s\n", curr_redir->redir);
+				printf("redir = %s :", curr_redir->redir);
+				if (curr_redir->type == 4)
+					printf(" R_IN\n");
+				else if (curr_redir->type == 0)
+					printf("WORD\n");
+				else if (curr_redir->type == 5)
+					printf(" R_OUT\n");
+				else if (curr_redir->type == 6)
+					printf("R_APPEND\n");
+				else if (curr_redir->type == 7)
+					printf("HEREDOC\n");
 				curr_redir = curr_redir->next;
 			}
 		}
@@ -114,14 +124,6 @@ void	ft_print_lst(t_cmd *node)
 			printf("AND\n");
 		else if (curr->type == 3)
 			printf("OR\n");
-		else if (curr->type == 4)
-			printf("R_IN\n");
-		else if (curr->type == 5)
-			printf("R_OUT\n");
-		else if (curr->type == 6)
-			printf("R_APPEND\n");
-		else if (curr->type == 7)
-			printf("HEREDOC\n");
 		else if (curr->type == 8)
 			printf("O_BRACKET\n");
 		else if (curr->type == 9)

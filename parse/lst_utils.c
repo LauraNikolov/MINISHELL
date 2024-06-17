@@ -81,6 +81,7 @@ int	ft_print_envp(t_envp **envp)
 void	ft_print_lst(t_cmd *node)
 {
 	t_cmd	*curr;
+	t_redir *curr_redir;
 	int		i;
 	int		command_num;
 
@@ -96,7 +97,15 @@ void	ft_print_lst(t_cmd *node)
 			i++;
 		}
 		printf("Path = %s\n", curr->path);
-		printf("redir = %s\n", curr->redir);
+		if (curr->redir)
+		{
+			curr_redir = curr->redir;
+			while(curr_redir)
+			{
+				printf("redir = %s\n", curr_redir->redir);
+				curr_redir = curr_redir->next;
+			}
+		}
 		if (curr->type == 0)
 			printf("WORD\n");
 		else if (curr->type == 1)
@@ -127,6 +136,16 @@ void	ft_print_lst(t_cmd *node)
 t_cmd	*lst_last(t_cmd *node)
 {
 	t_cmd	*curr;
+
+	curr = node;
+	while (curr->next)
+		curr = curr->next;
+	return (curr);
+}
+
+t_redir	*lst_last_redir(t_redir *node)
+{
+	t_redir	*curr;
 
 	curr = node;
 	while (curr->next)
@@ -193,9 +212,7 @@ t_envp	*create_envp_node(char *var)
 
 t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
 {
-	if (!ft_strcmp(cmd, ">>"))
-		new_node->type = R_APPEND;
-	else if (!ft_strcmp(cmd, "||"))
+	if (!ft_strcmp(cmd, "||"))
 		new_node->type = OR;
 	else if (!ft_strcmp(cmd, "&&"))
 		new_node->type = AND;
@@ -211,7 +228,7 @@ t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
 	return (new_node);
 }
 
-t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
+t_cmd	*create_cmd_node(char *cmd, char c)
 {
 	t_cmd	*new_node;
 
@@ -222,19 +239,13 @@ t_cmd	*create_cmd_node(char *cmd, char *redir, char c)
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	new_node->path = NULL;
+	new_node->redir = NULL;
 	new_node->bool_bracket = NULL;
-	new_node->redir = redir;
 	new_node->expand_flag = 0;
 	if (c != '\'')
 		new_node->expand_flag = 1;
 	if (!ft_strcmp(cmd, "|"))
 		new_node->type = PIPE;
-	else if (!ft_strcmp(cmd, "<<"))
-		new_node->type = R_HEREDOC;
-	else if (!ft_strcmp(cmd, "<"))
-		new_node->type = R_IN;
-	else if (!ft_strcmp(cmd, ">"))
-		new_node->type = R_OUT;
 	else
 		create_cmd_node2(new_node, cmd);
 	return (new_node);

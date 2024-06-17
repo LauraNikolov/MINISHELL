@@ -27,7 +27,7 @@ typedef struct s_cmd
 	int				std_in;
 	int				pipe[2];
 	int				return_value;
-	char			*redir;
+	struct s_redir	*redir;
 	int				*bool_bracket;
 	int				expand_flag;
 	t_token_type	type;
@@ -63,11 +63,18 @@ typedef struct ope
 	int				prior;
 }					ope;
 
+typedef struct s_redir
+{
+	char			*redir;
+	int				type;
+	struct s_redir	*next;
+}					t_redir;
+
 typedef struct s_envp
 {
 	char			*var_path;
 	char			*var_name;
-	char				*var_value;
+	char			*var_value;
 	int				add_variables;
 	struct s_envp	*next;
 	struct s_envp	*prev;

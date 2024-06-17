@@ -16,13 +16,11 @@ int	ft_safe_malloc(char **s, int size)
 int	ft_is_symb(char *cmd, char *symb)
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	j = 0;
-	while (symb[i] && cmd[j])
+	while (symb[i])
 	{
-		if (cmd[j] == symb[i])
+		if (!ft_strncmp(cmd, &symb[i], 1))
 			return (1);
 		i++;
 	}

@@ -131,48 +131,81 @@ int	ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct)
 	return (i);
 }
 
-static int	ft_add_redir(t_cmd **lst, char *buff, char **cmd)
+t_redir	*create_redir_node(char *s)
 {
-	int	spaces;
-	int	len;
-	int	i;
+	t_redir	*new_node;
 
-	len = 0;
-	i = 0;
-	spaces = 0;
-	while (buff[i] && buff[i] == ' ')
+	new_node = malloc(sizeof(t_redir));
+	new_node->redir = ft_strdup(s);
+	if (!ft_strcmp(s, "<<"))
+		new_node->type = R_HEREDOC;
+	else if (!ft_strcmp(s, "<"))
+		new_node->type = R_IN;
+	else if (!ft_strcmp(s, ">"))
+		new_node->type = R_OUT;
+	else if (!ft_strcmp(s, ">>"))
+		new_node->type = R_APPEND;
+	else
+		new_node->type = WORD;
+	new_node->next = NULL;
+	return (new_node);
+}
+
+void	add_to_redir_lst(t_redir **head, t_redir *new_node)
+{
+	t_redir	*last;
+
+	if (!*head)
 	{
-		spaces++;
-		i++;
+		*head = new_node;
+		return ;
 	}
-	while (buff[i] && (buff[i] != ' ' || buff[i] == '\0'))
-	{
-		len++;
-		i++;
-	}
-	add_to_lst(lst, create_cmd_node(*cmd, ft_strndup(&buff[spaces + 1], len
-				+ 1), '\0'));
-	return (i);
+	last = lst_last_redir(*head);
+	last->next = new_node;
 }
 
 static int	ft_get_symb(save_struct *t_struct, char *buff, char **cmd)
 {
-	int	i;
-	int	j;
-	int	len;
+	int		len;
+	int		i;
+	int		j;
+	t_cmd	*last;
 
-	i = ft_check_double_symbols(buff, cmd);
+	last = lst_last(t_struct->cmd);
 	len = 0;
-	j = 0;
-	if (buff[j] && ((buff[j] == '>' && buff[j + 1] != '>') || (buff[j] == '<'
-				&& buff[j + 1] != '<')))
-		j = ft_add_redir(&(t_struct->cmd), &buff[i], cmd);
+	if (ft_is_symb(buff, "><"))
+	{
+		while (buff[len] && !ft_is_symb(&buff[len], "|()&"))
+		{
+			while (buff[len] && ft_is_symb(&buff[len], " \t")
+				&& !ft_is_symb(&buff[len], "><"))
+				len++;
+			j = 0;
+			if (ft_is_symb(&buff[len], "><"))
+			{
+				j = ft_check_double_symbols(&buff[len], cmd);
+				add_to_redir_lst((&last->redir), create_redir_node(*cmd));
+			}
+			else
+			{
+				while (buff[len + j] && !ft_is_symb(&buff[len + j], "|><()& "))
+					j++;
+				*cmd = ft_strndup(&buff[len], j);
+				add_to_redir_lst((&last->redir), create_redir_node(*cmd));
+			}
+			free(*cmd);
+			len += j;
+		}
+	}
 	else
-		add_to_lst(&(t_struct->cmd), create_cmd_node(*cmd, NULL, 0));
-	j += i;
-	while (i--)
-		strcat(t_struct->save_spaces, "0");
-	return (len + j);
+	{
+		len = ft_check_double_symbols(buff, cmd);
+		add_to_lst(&(t_struct->cmd), create_cmd_node(*cmd, buff[-1]));
+		i = len;
+		while (i--)
+			strcat(t_struct->save_spaces, "0");
+	}
+	return (len);
 }
 
 void	ft_create_token_lst(char *buffer, save_struct *t_struct)
@@ -197,9 +230,8 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 			len++;
 		}
 		ft_handle_quote(&buffer[j - len], &cmd, len, t_struct);
-		add_to_lst(&(t_struct->cmd), create_cmd_node(cmd, NULL, buffer[j - 1]));
+		add_to_lst(&(t_struct->cmd), create_cmd_node(cmd, buffer[j - 1]));
 		if (ft_is_symb(&buffer[j], "|><()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
 }
-

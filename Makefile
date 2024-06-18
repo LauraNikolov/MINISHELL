@@ -13,6 +13,7 @@ exec/exec_parse.c \
 exec/fork.c \
 exec/ast_utils.c \
 exec/exec_ast.c \
+exec/free_ast.c \
 
 LIBFT = $(LIBFTDIR)/libft.a
 PARSE_OBJS = $(PARSE_SRCS:.c=.o)

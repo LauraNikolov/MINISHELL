@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/13 13:13:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:24:39 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 {
+	(void)t_struct;
     int return_value = 0;
     pid_t pid;
     pid = fork();
@@ -34,12 +35,7 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
             dup2(cmd->std_out, STDOUT_FILENO);
             close(cmd->std_out);
         }
-		// ! check builting
-		return_value = ft_dispatch_builtin(cmd->cmd, t_struct);
-		if(return_value != -1)
-			exit(return_value);
-		else
-        	return_value = execve(cmd->path, cmd->cmd, envp);
+        return_value = execve(cmd->path, cmd->cmd, envp);
         if(return_value != 0)
         {
             perror("execve : \n");
@@ -54,6 +50,7 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 
 int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
 {
+	(void)t_struct;
     int return_value = 0;
     pid_t pid;
     pid = fork();
@@ -76,11 +73,7 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
         // Fermer les descripteurs de pipe inutilisés dans le processus enfant
         close(root->cmd->pipe[0]);
 		// ! check builting
-		return_value = ft_dispatch_builtin(cmd->cmd, t_struct);
-		if(return_value != -1)
-			exit(return_value);
-		else
-        	return_value = execve(cmd->path, cmd->cmd, envp);
+        return_value = execve(cmd->path, cmd->cmd, envp);
         if(return_value != 0)
         {
             perror("execve : \n");
@@ -122,7 +115,6 @@ int exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value, save
                 cmd1->std_in = root->cmd->prev_fd;
             cmd1->std_out = root->cmd->pipe[1];
             return_value = ft_execve_pipe(cmd1, envp, root, t_struct);
-
             // cmd2: stdin est la sortie du pipe précédent, stdout est l'entrée du pipe
             if (pipe(root->cmd->pipe) == -1)
             {
@@ -249,7 +241,7 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int *re
 {
 	if (root->cmd->type == AND)
 	{
-		read_pipe(root->left->cmd->prev_fd);
+		//read_pipe(root->left->cmd->prev_fd);
 		if (*return_value == 0)
 			*return_value = exec_ast_recursive(root->right, envp, save_root, *return_value , t_struct);
 		else
@@ -257,7 +249,7 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int *re
 	}
 	else if (root->cmd->type == OR)
 	{
-		read_pipe(root->left->cmd->prev_fd);
+		//read_pipe(root->left->cmd->prev_fd);
 		if (*return_value != 0)
 			*return_value = exec_ast_recursive(root->right, envp, save_root, *return_value, t_struct);
 		else
@@ -278,7 +270,7 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root, int *return_valu
 		root->right->cmd->std_in = root->left->cmd->prev_fd;
 		if (root != save_root->right)
 			root->right->cmd->std_out = root->cmd->pipe[1];
-		if (root == save_root)
+		if (root == save_root || root->parent->cmd->type == OR || root->parent->cmd->type == AND)
 			root->right->cmd->std_out = STDOUT_FILENO;
 		*return_value = ft_execve_pipe(root->right->cmd, envp, root, t_struct);
 	}
@@ -303,6 +295,9 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root, int *return_valu
 int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_value, save_struct *t_struct)
 {
 	int	i;
+	print_ast(root, 0, ' ');
+	if(root->parent)
+		dprintf(2, "parent == %s\n", cmd_type_to_string(root->parent->cmd->type));
 	if (root == NULL)
 		return (0);
 	if (root->left->cmd->type == PIPE

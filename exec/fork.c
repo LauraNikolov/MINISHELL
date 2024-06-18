@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/13 12:49:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:12:17 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
         t_struct->cmd = t_struct->cmd->next;
     end = t_struct->cmd;
     t_struct->cmd = start;
-    t_struct->ast = build_ast_recursive(start, end);
+    t_struct->ast = build_ast_recursive(start, end, NULL);
     start = t_struct->cmd;
     while(start)
     {

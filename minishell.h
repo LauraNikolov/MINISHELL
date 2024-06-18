@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/13 13:14:27 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:17:04 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,14 @@ void	ft_swap_content(char **s1, char **s2);
 void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);
 void	ft_exec_multi_cmds(save_struct *t_struct, char **envp);
-t_ast	*build_ast_recursive(t_cmd *start, t_cmd *end);
-t_ast	*create_ast_node(t_cmd *node);
+t_ast	*build_ast_recursive(t_cmd *start, t_cmd *end, t_ast *parent);
+t_ast	*create_ast_node(t_cmd *node, t_ast *parent);
 void	print_ast(t_ast *root, int depth, char prefix);
 int		exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 			int return_value, save_struct *t_struct);
 int		ft_exec_tree(t_ast *root);
 int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value, save_struct *t_struct);
+const char* cmd_type_to_string(enum s_token_type type);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);

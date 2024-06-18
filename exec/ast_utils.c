@@ -6,17 +6,18 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:45:40 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/13 12:43:05 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 15:11:47 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_ast *create_ast_node(t_cmd *cmd) {
+t_ast *create_ast_node(t_cmd *cmd, t_ast *parent) {
     t_ast *node = (t_ast *)malloc(sizeof(t_ast));
     node->cmd = cmd;
     node->left = NULL;
     node->right = NULL;
+    node->parent = parent;
     return node;
 }
 
@@ -58,7 +59,7 @@ void print_ast(t_ast *root, int depth, char prefix) {
     print_ast(root->right, depth + 1, '`');
 }
 
-t_ast *build_ast_recursive(t_cmd *start, t_cmd *end) 
+t_ast *build_ast_recursive(t_cmd *start, t_cmd *end, t_ast *parent) 
 {
     t_cmd *current = end;
     t_cmd *root = NULL;
@@ -88,19 +89,20 @@ t_ast *build_ast_recursive(t_cmd *start, t_cmd *end)
 
     // Si aucun opérateur n'a été trouvé, retourner un noeud AST simple
     if (!root) {
-        return create_ast_node(start);
+        return create_ast_node(start, parent);
     }
 
     // Déterminer les points d'arrêt
     left_end = root->prev;
     right_start = root->next;
 
+    t_ast *root_node = create_ast_node(root, parent);
+
     // Construire les sous-arbres gauche et droit
-    t_ast *gauche = build_ast_recursive(start, left_end);
-    t_ast *droit = build_ast_recursive(right_start, end);
+    t_ast *gauche = build_ast_recursive(start, left_end, root_node);
+    t_ast *droit = build_ast_recursive(right_start, end, root_node);
 
     // Créer le noeud racine et joindre les sous-arbres
-    t_ast *root_node = create_ast_node(root);
     join_tree(gauche, droit, root_node);
     return root_node;
 }

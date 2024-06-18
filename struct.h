@@ -41,6 +41,7 @@ typedef struct t_ast
 	t_cmd			*cmd;
 	struct t_ast	*left;
 	struct t_ast	*right;
+	struct t_ast	*parent;
 }					t_ast;
 
 // typedef struct s_ast

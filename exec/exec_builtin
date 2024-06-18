@@ -6,31 +6,8 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 11:33:49 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/18 11:41:11 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 16:43:31 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// int exec_builtin(t_cmd *cmd, save_struct *save)
-// {
-    
-// }
-
-int exec_pipe_builtin(t_cmd *cmd, save_struct *t_struct, char **envp, t_ast *root)
-{
-
-    int return_value;
-    if (cmd->std_in != STDIN_FILENO)
-    {
-        dup2(cmd->std_in, STDIN_FILENO);
-        close(cmd->std_in);
-    }
-    if (cmd->std_out != STDOUT_FILENO)
-    {
-        dup2(cmd->std_out, STDOUT_FILENO);
-        close(cmd->std_out);
-    }
-    return_value = ft_dispatch_builtin(&cmd, t_struct);
-    
-}

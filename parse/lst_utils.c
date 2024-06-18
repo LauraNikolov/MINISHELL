@@ -71,11 +71,9 @@ int	ft_print_envp(t_envp **envp)
 			curr = curr->next;
 			continue ;
 		}
-		printf("%s", curr->var_name);
-		printf("=%s\n", curr->var_value);
 		curr = curr->next;
 	}
-	return (ft_return_code(0, envp));
+	return (ft_return_code("0", envp));
 }
 
 void	ft_print_lst(t_cmd *node)

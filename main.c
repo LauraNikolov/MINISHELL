@@ -38,7 +38,7 @@ int	main(int ac, char **av, char **envp)
 			return (free(buffer), ft_free_envp_lst(&t_struct->envp),
 				ft_all_free(t_struct), 0);
 		add_history(buffer);
-		ft_tokenize(buffer, t_struct, &t_struct->envp);
+		ft_tokenize(buffer, t_struct, &env);
 		ft_print_lst(t_struct->cmd);
 		ft_exec(t_struct, envp);
 		free(buffer);

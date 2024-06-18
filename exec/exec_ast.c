@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/18 15:24:39 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/18 18:05:59 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 	(void)t_struct;
     int return_value = 0;
     pid_t pid;
+	if((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
+		return(return_value);
     pid = fork();
     if (pid == -1) {
         perror("fork");
@@ -50,7 +52,6 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 
 int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
 {
-	(void)t_struct;
     int return_value = 0;
     pid_t pid;
     pid = fork();
@@ -73,7 +74,10 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
         // Fermer les descripteurs de pipe inutilisés dans le processus enfant
         close(root->cmd->pipe[0]);
 		// ! check builting
-        return_value = execve(cmd->path, cmd->cmd, envp);
+		if((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
+			exit(return_value);
+		else
+        	return_value = execve(cmd->path, cmd->cmd, envp);
         if(return_value != 0)
         {
             perror("execve : \n");
@@ -276,7 +280,6 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root, int *return_valu
 	}
 	else if (root->cmd->type == AND)
 	{
-		read_pipe(root->left->cmd->prev_fd);
 		if (*return_value == 0)
 			*return_value = ft_execve_single_cmd(root->right->cmd, envp, t_struct);
 		else
@@ -284,7 +287,6 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root, int *return_valu
 	}
 	else if (root->cmd->type == OR)
 	{
-		read_pipe(root->left->cmd->prev_fd);
 		if (*return_value != 0)
 			*return_value = ft_execve_single_cmd(root->right->cmd, envp, t_struct);
 		else

@@ -7,6 +7,7 @@ int ft_return_code(char *code, t_envp **env)
     t_envp *curr;
 
     curr = *env;
+    //  printf("return code %s\n", code);
     while(curr)
     {
         if (!ft_strcmp(curr->var_name, "?"))

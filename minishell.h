@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/18 17:58:44 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:32:49 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int			ft_echo(char **cmd, t_envp **env);
 int			ft_exit(char **code, t_envp **env);
 int			ft_print_envp(t_envp **envp);
 int			ft_pwd(t_envp **envp);
-int			ft_cd(char **cmd, save_struct *t_struct);
+int     	ft_cd(char **cmd, save_struct *t_struct);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

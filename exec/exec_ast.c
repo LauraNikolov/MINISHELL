@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/19 19:48:33 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:53:59 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,13 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
     }
     else
     {
-        waitpid(pid, &return_value, 0);
+		int status = 0;
+        waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			return_value = WEXITSTATUS(status);
+		dprintf(2, "return value  == %d\n", return_value);
     }
-    return return_value;
+    return (return_value);
 }
 
 int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
@@ -318,7 +322,7 @@ int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root, int return_va
 		wait(0);
 		i--;
 	}
-	return (root->cmd->return_value);
+	return (return_value);
 }
 
 

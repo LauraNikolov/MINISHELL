@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/19 19:41:09 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:53:19 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 void ft_parse_error(t_cmd *cmd)
 {
+	dprintf(2, "kkkk\n");
 	if(ft_strchr(cmd->cmd[0], '/') == -1)
 	{
 		dprintf(2, "%s: command not found\n", cmd->cmd[0]);

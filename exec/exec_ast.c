@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/18 18:05:59 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:48:33 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,8 @@ int ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
             dup2(cmd->std_out, STDOUT_FILENO);
             close(cmd->std_out);
         }
-        return_value = execve(cmd->path, cmd->cmd, envp);
-        if(return_value != 0)
-        {
-            perror("execve : \n");
-        } 
+        if(execve(cmd->path, cmd->cmd, envp) == -1)
+			ft_parse_error(cmd);
     }
     else
     {
@@ -77,12 +74,10 @@ int ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct)
 		if((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
 			exit(return_value);
 		else
-        	return_value = execve(cmd->path, cmd->cmd, envp);
-        if(return_value != 0)
-        {
-            perror("execve : \n");
-        }
-        exit(EXIT_FAILURE);
+		{
+			if(execve(cmd->path, cmd->cmd, envp) == -1)
+				ft_parse_error(cmd);
+		}
     }
     else
     {

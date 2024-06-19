@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/19 19:32:49 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:46:19 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,10 @@ int			ft_exec_tree(t_ast *root);
 int			exec_leaf(t_ast *root, char **envp, t_ast *save_root,
 				int return_value, save_struct *t_struct);
 const char	*cmd_type_to_string(enum s_token_type type);
+void	ft_parse_error(t_cmd *cmd);
 
-// BUILTINS
-int			ft_dispatch_builtin(char **cmd, save_struct *t_struct);
+	// BUILTINS
+	int ft_dispatch_builtin(char **cmd, save_struct *t_struct);
 int			ft_export(char **var, t_envp **env);
 int			ft_unset(char **var, t_envp **env);
 int			ft_env(t_envp **envp);
@@ -105,7 +106,7 @@ int			ft_echo(char **cmd, t_envp **env);
 int			ft_exit(char **code, t_envp **env);
 int			ft_print_envp(t_envp **envp);
 int			ft_pwd(t_envp **envp);
-int     	ft_cd(char **cmd, save_struct *t_struct);
+int			ft_cd(char **cmd, save_struct *t_struct);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

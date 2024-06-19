@@ -6,12 +6,26 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/18 18:32:34 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:41:09 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <sys/wait.h>
+
+void ft_parse_error(t_cmd *cmd)
+{
+	if(ft_strchr(cmd->cmd[0], '/') == -1)
+	{
+		dprintf(2, "%s: command not found\n", cmd->cmd[0]);
+		exit(127);
+	}
+	else
+	{
+		dprintf(2 ,"minishell: %s: No such file or directory\n", cmd->cmd[0]);
+		exit(126);
+	}
+}
 
 int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 {
@@ -32,9 +46,8 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	}
 	if (pid == 0)
 	{
-		execve(t_struct->cmd->path, t_struct->cmd->cmd, envp);
-		perror("execve");
-		exit(return_value);
+		if(execve(t_struct->cmd->path, t_struct->cmd->cmd, envp) == -1)
+			ft_parse_error(t_struct->cmd);
 	}
 	else
 	{
@@ -55,7 +68,6 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 		{
 			int return_value = ft_exec_single_cmd(t_struct, envp);
 			ft_return_code(ft_itoa(return_value), &t_struct->envp);
-			printf("return_code == %d\n", return_value);
 			return ;
 		}
 		else

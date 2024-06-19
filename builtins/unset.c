@@ -22,7 +22,6 @@ int	ft_unset(char **var, t_envp **env)
 	t_envp	*curr;
 	int		i;
 
-	dprintf(2, "YOYOYO\n");
 	curr = *env;
 	while (curr)
 	{
@@ -36,5 +35,5 @@ int	ft_unset(char **var, t_envp **env)
 			}
 		curr = curr->next;
 	}
-	return (ft_return_code("0", env));
+	return (0);
 }

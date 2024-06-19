@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/17 17:18:52 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:28:48 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_cmd	*create_cmd_node(char *cmd, char c);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_is_symb(char *cmd, char *symb);
-int		ft_quote_len(char *s, t_envp **env, int len);
+int		ft_quote_len(char *s, int len);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
@@ -82,7 +82,11 @@ void	ft_print_env(t_envp **env);
 int		ft_safe_malloc(char **s, int size);
 void	ft_override_content(char **s1, char *s2);
 void	ft_swap_content(char **s1, char **s2);
+int		ft_is_str(char c, char *s);
 
+// expand
+int		ft_expand(t_cmd *node, t_envp **env);
+int		ft_cmd_len(char *s, t_envp **env, int *i);
 // exec
 void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);

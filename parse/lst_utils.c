@@ -75,7 +75,7 @@ int	ft_print_envp(t_envp **envp)
 		printf("=%s\n", curr->var_value);
 		curr = curr->next;
 	}
-	return (ft_return_code(0, envp));
+	return (0);
 }
 
 void	ft_print_lst(t_cmd *node)
@@ -159,6 +159,8 @@ t_envp	*lst_envp_last(t_envp *node)
 {
 	t_envp	*curr;
 
+	if (!node)
+		return (NULL);
 	curr = node;
 	while (curr->next)
 		curr = curr->next;
@@ -191,7 +193,6 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 		return ;
 	}
 	last = lst_envp_last(*head);
-	new_node->prev = last;
 	last->next = new_node;
 }
 t_envp	*create_envp_node(char *var)
@@ -206,11 +207,15 @@ t_envp	*create_envp_node(char *var)
 	while (var[i] && var[i] != '=')
 		i++;
 	envp->var_name = ft_strndup(var, i);
-	envp->var_value = ft_strdup(&var[i + 1]);
+	if (var && !var[i + 1])
+		envp->var_value = NULL;
+	else 
+		envp->var_value = ft_strdup(&var[i + 1]);
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);
 }
+
 
 t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
 {

@@ -8,5 +8,5 @@ int	ft_env(t_envp **envp)
 		ft_return_code("127", envp);
 	}
 	ft_print_envp(envp);
-	return (ft_return_code(0, envp));
+	return (0);
 }

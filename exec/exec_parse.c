@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/19 19:53:19 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/20 14:13:12 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,12 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 		if (cmd_size == 1)
 		{
 			int return_value = ft_exec_single_cmd(t_struct, envp);
-			ft_return_code(ft_itoa(return_value), &t_struct->envp);
+			dprintf(2, "return value single cmd = %d\n", return_value);
+			//t_return_code(ft_itoa(return_value), &t_struct->envp);
 			return ;
 		}
 		else
+		{
 			ft_exec_multi_cmds(t_struct, envp);
+		}
 	}

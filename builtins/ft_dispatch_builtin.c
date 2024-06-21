@@ -18,7 +18,6 @@ int	ft_dispatch_builtin(char **cmd, save_struct *t_struct)
 		return (ft_pwd(&t_struct->envp));
 	else if (!ft_strcmp(cmd[0], "cd"))
 	{
-	dprintf(2, "cmd == %s\n", cmd[0]);
 		return (ft_cd(cmd, t_struct));
 	}
 	return (-1);

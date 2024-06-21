@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/21 15:26:51 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:45:58 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,10 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 {
 	t_cmd	*cmd1;
 	t_cmd	*cmd2;
-	//int		i;
+	int		pid;
+				int status;
 
+	// int		i;
 	if (root->cmd->type == WORD)
 		return (0);
 	if (root->left->cmd->type == WORD && root->right->cmd->type == WORD)
@@ -183,24 +185,23 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 				root->right->cmd->std_out = root->cmd->pipe[1];
 			if (root == save_root)
 				cmd2->std_out = STDOUT_FILENO;
-			if(root->parent)
+			if (root->parent)
 			{
-				if(root->parent->cmd->type == OR || root->parent->cmd->type == AND)
+				if (root->parent->cmd->type == OR
+					|| root->parent->cmd->type == AND)
 					cmd2->std_out = STDOUT_FILENO;
 			}
 			return_value = ft_execve_pipe(cmd2, envp, root, t_struct,
 					save_root);
 			if (root == save_root)
 			{
-				int pid = 0;
-				//int i = get_nbr_of_pipe(save_root->cmd);
+				pid = 0;
+				// int i = get_nbr_of_pipe(save_root->cmd);
 				while (pid != -1)
 				{
-					pid = wait(NULL);
-					// dprintf(2, "i = %d\n", i);
-					// waitpid(-1, &return_value, 0);
-					// if (WIFEXITED(pid))
-					// 	return_value = WEXITSTATUS(return_value);
+					pid = wait(&status);
+					if (WIFEXITED(status))
+						return_value = WEXITSTATUS(status);
 				}
 			}
 		}
@@ -325,16 +326,17 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 	if (root->cmd->type == AND)
 	{
 		// read_pipe(root->left->cmd->prev_fd);
-		if(root->left->cmd->type == PIPE)
+		if (root->left->cmd->type == PIPE)
 		{
-			//int i = get_nbr_of_pipe(t_struct->cmd);
-			int pid = 0;
+			int status;
+			int pid;
+			pid = 0;
+			status = 0;
 			while (pid != -1)
 			{
-				pid = wait(NULL);
-				//waitpid(-1, return_value, 0);
-				// if (WIFEXITED(*return_value))
-				// 	*return_value = WEXITSTATUS(*return_value);
+				pid = wait(&status);
+				if (WIFEXITED(status))
+					*return_value = WEXITSTATUS(status);
 			}
 		}
 		if (*return_value == 0)
@@ -345,15 +347,17 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 	}
 	else if (root->cmd->type == OR)
 	{
-		if(root->left->cmd->type == PIPE)
+		if (root->left->cmd->type == PIPE)
 		{
-			int pid = 0;
+			int status;
+			int pid;
+			pid = 0;
+			status = 0;
 			while (pid != -1)
 			{
-				pid = wait(NULL);
-				//waitpid(-1, return_value, 0);
-				// if (WIFEXITED(*return_value))
-				// 	*return_value = WEXITSTATUS(*return_value);
+				pid = wait(&status);
+				if (WIFEXITED(status))
+					*return_value = WEXITSTATUS(status);
 			}
 		}
 		// read_pipe(root->left->cmd->prev_fd);
@@ -388,14 +392,15 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 				save_root);
 		if (root == save_root)
 		{
+			int status;
 			int pid;
 			pid = 0;
+			status = 0;
 			while (pid != -1)
 			{
-				pid = wait(NULL);
-				//waitpid(-1, return_value, 0);
-				// if (WIFEXITED(*return_value))
-				// 	*return_value = WEXITSTATUS(*return_value);
+				pid = wait(&status);
+				if (WIFEXITED(status))
+					*return_value = WEXITSTATUS(status);
 			}
 		}
 	}
@@ -403,40 +408,38 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 	{
 		if (root->left->cmd->type == PIPE)
 		{
+			int status;
 			int pid;
 			pid = 0;
+			status = 0;
 			while (pid != -1)
 			{
-				pid = wait(NULL);
-				//waitpid(-1, return_value, 0);
-				// if (WIFEXITED(*return_value))
-				// 	*return_value = WEXITSTATUS(*return_value);
+				pid = wait(&status);
+				if (WIFEXITED(status))
+					*return_value = WEXITSTATUS(status);
 			}
 		}
 		if (*return_value == 0)
 			*return_value = ft_execve_single_cmd(root->right->cmd, envp,
 					t_struct);
-		else
-			*return_value = -1;
 	}
 	else if (root->cmd->type == OR)
 	{
 		if (root->left->cmd->type == PIPE)
 		{
+			int status;
 			int pid;
 			pid = 0;
+			status = 0;
 			while (pid != -1)
 			{
-				pid = wait(NULL);
-				//waitpid(-1, return_value, 0);
-				// if (WIFEXITED(*return_value))
-				// 	*return_value = WEXITSTATUS(*return_value);
+				pid = wait(&status);
+				if (WIFEXITED(status))
+					*return_value = WEXITSTATUS(status);
 			}
 			if (*return_value != 0)
 				*return_value = ft_execve_single_cmd(root->right->cmd, envp,
 						t_struct);
-			else
-				*return_value = -1;
 		}
 	}
 }
@@ -461,14 +464,6 @@ int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		else
 			ft_handle_exec(root, envp, save_root, &return_value, t_struct);
 	}
-	// i = get_nbr_of_pipe(save_root->cmd);
-	// while (i != 0)
-	// {
-	// 	waitpid(0, &return_value, 0);
-	// 	if (WIFEXITED(return_value))
-	// 		return_value = WEXITSTATUS(return_value);
-	// 	i--;
-	// }
 	return (return_value);
 }
 

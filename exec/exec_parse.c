@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/21 14:30:00 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/21 15:46:06 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	if ((return_value = ft_dispatch_builtin(t_struct->cmd->cmd, t_struct)) !=
 		-1)
 	{
-		dprintf(2, "single builtin\n");
 		return (return_value);
 	}
 	pid = fork();

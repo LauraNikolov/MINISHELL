@@ -10,6 +10,7 @@ typedef enum s_token_type
 	AND,
 	OR,
 	R_IN,
+	// INFILE,
 	R_OUT,
 	R_APPEND,
 	R_HEREDOC,
@@ -27,7 +28,7 @@ typedef struct s_cmd
 	int				std_in;
 	int				pipe[2];
 	int				return_value;
-	char			*redir;
+	struct s_redir	*redir;
 	int				*bool_bracket;
 	int				expand_flag;
 	t_token_type	type;
@@ -41,6 +42,7 @@ typedef struct t_ast
 	t_cmd			*cmd;
 	struct t_ast	*left;
 	struct t_ast	*right;
+	struct t_ast	*parent;
 }					t_ast;
 
 // typedef struct s_ast
@@ -63,11 +65,18 @@ typedef struct ope
 	int				prior;
 }					ope;
 
+typedef struct s_redir
+{
+	char			*redir;
+	int				type;
+	struct s_redir	*next;
+}					t_redir;
+
 typedef struct s_envp
 {
 	char			*var_path;
 	char			*var_name;
-	char				*var_value;
+	char			*var_value;
 	int				add_variables;
 	struct s_envp	*next;
 	struct s_envp	*prev;

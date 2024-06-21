@@ -4,7 +4,7 @@ int	ft_safe_malloc(char **s, int size)
 {
 	if (!s)
 		return (0);
-	*s = ft_calloc(size + 100, sizeof(char));
+	*s = ft_calloc(size, sizeof(char));
 	if (!*s)
 	{
 		ft_putstr_fd("Malloc error\n", 2);
@@ -13,16 +13,16 @@ int	ft_safe_malloc(char **s, int size)
 	return (0);
 }
 
-int	ft_is_symb(char *cmd, char *symb)
+int	ft_is_str(char c, char *s)
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	j = 0;
-	while (symb[i] && cmd[j])
+	if (!c || !s)
+		return (0);
+	while (s[i])
 	{
-		if (cmd[j] == symb[i])
+		if (c == s[i])
 			return (1);
 		i++;
 	}
@@ -53,9 +53,6 @@ void	ft_swap_content(char **s1, char **s2)
 
 void	ft_override_content(char **s1, char *s2)
 {
-	int	i;
-
-	i = 0;
 	if (!*s1 || !s2)
 		return ;
 	free(*s1);

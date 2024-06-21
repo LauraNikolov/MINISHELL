@@ -4,7 +4,7 @@ CC = cc
 
 PARSEDIR = parse
 EXECDIR = exec
-MAINDIR = ../MINISHELL
+MAINDIR = ../minishell_backup
 LIBFTDIR = libft
 BUILTINSDIR = builtins
 

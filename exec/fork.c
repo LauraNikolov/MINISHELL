@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/13 12:49:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/21 17:27:38 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
         t_struct->cmd = t_struct->cmd->next;
     end = t_struct->cmd;
     t_struct->cmd = start;
-    t_struct->ast = build_ast_recursive(start, end);
+    t_struct->ast = build_ast_recursive(start, end, NULL);
+    print_ast(t_struct->ast, 0, ' ');
     start = t_struct->cmd;
     while(start)
     {
@@ -62,7 +63,9 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
         start = start->next;
     }
     //set_exec_struct(&exec);
-    return_value = exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value, t_struct); 
+    return_value = exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value, t_struct);
+    //ft_return_code(ft_itoa(return_value), &t_struct->envp);
+    dprintf(2, "return value multiple cmd = %d\n", return_value);
     //set la valeur de retour dans la liste chainee envp (fqire un itoa)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 }

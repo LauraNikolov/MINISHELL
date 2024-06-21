@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/21 15:45:58 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/21 17:47:22 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,6 +322,13 @@ int	ft_or(t_ast *root, char **envp, t_ast *save_root, int return_value,
 void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		int *return_value, save_struct *t_struct)
 {
+	if(root->cmd->type == AND || root->cmd->type == OR)
+	{
+		if(root->left->cmd->type == WORD)
+		{
+			*return_value = ft_execve_single_cmd(root->left->cmd, envp, t_struct);
+		}	
+	}
 
 	if (root->cmd->type == AND)
 	{
@@ -447,6 +454,8 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		int return_value, save_struct *t_struct)
 {
+	dprintf(2, "CECI EST LE ROOT : \n");
+	print_ast(root, 0, ' ');
 	if (root == NULL)
 		return (return_value);
 	if (root->left->cmd->type == PIPE || root->left->cmd->type == AND

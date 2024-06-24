@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/21 14:35:13 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:52:02 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_redir	*lst_last_redir(t_redir *node);
 void	add_to_redir_lst(t_redir **head, t_redir *new_node);
 t_envp	*lst_envp_last(t_envp *node);
 void	ft_free_node(t_cmd *node);
-t_envp	*create_envp_node(char *var_name, int flag);
+t_envp	*create_envp_node(char *var_name, int print_flag);
 void	ft_print_lst(t_cmd *node); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
 void	ft_free_lst(t_cmd *lst);

@@ -53,7 +53,7 @@ void	ft_swap_content(char **s1, char **s2)
 
 void	ft_override_content(char **s1, char *s2)
 {
-	if (!*s1 || !s2)
+	if (!s2)
 		return ;
 	free(*s1);
 	*s1 = ft_strdup(s2);

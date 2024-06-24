@@ -23,8 +23,8 @@ int	main(int ac, char **av, char **envp)
 
 	(void)av;
 	(void)ac;
-	env = NULL;
 	signal(SIGINT, ft_handler_signals);
+	env = NULL;
 	ft_save_envp(envp, &env);
 	while (1)
 	{
@@ -34,14 +34,12 @@ int	main(int ac, char **av, char **envp)
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return (free(buffer), ft_all_free(t_struct), 0);
+			return (ft_free_envp_lst(&t_struct->envp), free(buffer), ft_all_free(t_struct), 0);
 		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
-		// ft_dispatch_builtin(t_struct->cmd->cmd, t_struct);
 		ft_expand(t_struct->cmd, &t_struct->envp);
-		ft_exec(t_struct, envp);
-		ft_print_lst(t_struct->cmd);
-		// ft_envp_to_char(t_struct->envp);
+		ft_dispatch_builtin(t_struct->cmd->cmd, t_struct);
+		// ft_exec(t_struct, envp);
 		free(buffer);
 		ft_all_free(t_struct);
 	}

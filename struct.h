@@ -74,10 +74,9 @@ typedef struct s_redir
 
 typedef struct s_envp
 {
-	char			*var_path;
 	char			*var_name;
 	char			*var_value;
-	int				add_variables;
+	int				print_flag;
 	struct s_envp	*next;
 	struct s_envp	*prev;
 }					t_envp;

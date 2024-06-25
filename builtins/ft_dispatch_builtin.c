@@ -4,6 +4,7 @@ int ft_dispatch_builtin(char **cmd, save_struct *t_struct)
 {
 	if (!t_struct->cmd->cmd)
 		return (-1);
+	ft_expand(t_struct->cmd, &t_struct->envp);
 	if (!ft_strcmp(cmd[0], "echo"))
 		return(ft_echo(cmd, &t_struct->envp));
 	else if (!ft_strcmp(cmd[0], "export"))

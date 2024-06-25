@@ -5,14 +5,17 @@ void	ft_handler_signals(int signal)
 	if (signal == SIGINT)
 	{
 		ft_putchar_fd('\n', 2);
-		// g_signal = 1;
+	}
+	else if (signal ==SIGQUIT )
+	{
+		ft_putstr_fd("\b\b  \b\b", 1);
 	}
 }
-void	ft_all_free(save_struct *t_struct)
+
+int ft_signals()
 {
-	ft_free_lst(t_struct->cmd);
-	free(t_struct->save_spaces);
-	free(t_struct);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, ft_handler_signals);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -23,8 +26,8 @@ int	main(int ac, char **av, char **envp)
 
 	(void)av;
 	(void)ac;
-	signal(SIGINT, ft_handler_signals);
 	env = NULL;
+	ft_signal();
 	ft_save_envp(envp, &env);
 	while (1)
 	{
@@ -38,8 +41,7 @@ int	main(int ac, char **av, char **envp)
 		add_history(buffer);
 		ft_tokenize(buffer, t_struct, &env);
 		ft_expand(t_struct->cmd, &t_struct->envp);
-		ft_dispatch_builtin(t_struct->cmd->cmd, t_struct);
-		// ft_exec(t_struct, envp);
+		ft_exec(t_struct, envp);
 		free(buffer);
 		ft_all_free(t_struct);
 	}

@@ -21,7 +21,6 @@ void	ft_free_envp_lst(t_envp **lst)
 	t_envp	*curr;
 	t_envp	*temp;
 
-	printf("coucou\n");
 	curr = *lst;
 	while (curr)
 	{
@@ -194,6 +193,7 @@ void	add_to_envp_lst(t_envp **head, t_envp *new_node)
 		return ;
 	}
 	last = lst_envp_last(*head);
+	new_node->prev = last;
 	last->next = new_node;
 }
 t_envp	*create_envp_node(char *var, int print_flag)
@@ -201,6 +201,7 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	t_envp	*envp;
 	int		i;
 
+	envp = NULL;
 	envp = malloc(sizeof(t_envp));
 	if (!envp || !var)
 		return (NULL);
@@ -208,9 +209,9 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	while (var[i] && var[i] != '=')
 		i++;
 	envp->var_name = ft_strndup(var, i);
-	if (!var[i + 1] || (!var[i] && var[i] != '='))
+	if (!var[i])
 		envp->var_value = NULL;
-	else
+	else if (var[i + 1])
 		envp->var_value = ft_strdup(&var[i + 1]);
 	envp->print_flag = print_flag;
 	envp->next = NULL;

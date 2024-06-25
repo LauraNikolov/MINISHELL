@@ -4,7 +4,7 @@ int	ft_safe_malloc(char **s, int size)
 {
 	if (!s)
 		return (0);
-	*s = ft_calloc(size, sizeof(char));
+	*s = ft_calloc(size + 100, sizeof(char));
 	if (!*s)
 	{
 		ft_putstr_fd("Malloc error\n", 2);
@@ -38,24 +38,23 @@ void	ft_free_tab(char **split)
 		free(split[i++]);
 	free(split);
 }
+
 void	ft_swap_content(char **s1, char **s2)
 {
 	char	*tmp;
 
-	tmp = ft_strdup(*s1);
-	free(*s1);
-	*s1 = NULL;
-	*s1 = ft_strdup(*s2);
-	*s2 = NULL;
-	free(*s2);
+	tmp = *s1;
+	*s1 = *s2;
 	*s2 = tmp;
 }
+
 
 void	ft_override_content(char **s1, char *s2)
 {
 	if (!s2)
 		return ;
 	free(*s1);
+	*s1 = NULL;
 	*s1 = ft_strdup(s2);
 }
 
@@ -99,4 +98,11 @@ int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)
 	}
 	write(fd, "\n", 2);
 	return (-1);
+}
+
+void	ft_all_free(save_struct *t_struct)
+{
+	ft_free_lst(t_struct->cmd);
+	free(t_struct->save_spaces);
+	free(t_struct);
 }

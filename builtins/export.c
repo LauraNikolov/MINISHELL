@@ -20,18 +20,18 @@ void	ft_print_env(t_envp **env)
 			ft_putstr_fd(curr->var_value, 1);
 			write(1, "\"", 2);
 		}
-		if (curr->print_flag && !curr->var_value)
+		else if (curr->print_flag && !curr->var_value)
 			write(1, "=\"\"", 4);
 		write(1, "\n", 2);
 		curr = curr->next;
 	}
 }
 
-static void	ft_sort_env(t_envp **env, char **var)
+void	ft_sort_env(t_envp **env)
 {
 	t_envp	*curr;
 
-	if (!env || !*env || !*var)
+	if (!env || !*env)
 		return ;
 	curr = *env;
 	while (curr->next)
@@ -62,12 +62,12 @@ static void	ft_add_var(t_envp **env, char *var)
 	curr = *env;
 	while (curr)
 	{
-		if (!ft_strncmp(curr->var_name, var , i))
+		if (!ft_strncmp(curr->var_name, var, i))
 		{
-			if((size_t)i != ft_strlen(curr->var_name))
-				break;
+			if ((size_t)i != ft_strlen(curr->var_name))
+				break ;
 			flag = 1;
-			if (var[i + 1] && var[i] == '=')
+			if (var[i + 1])
 				ft_override_content(&curr->var_value, &var[i + 1]);
 			if (var[i] == '=')
 				curr->print_flag = 1;
@@ -80,14 +80,14 @@ static void	ft_add_var(t_envp **env, char *var)
 		add_to_envp_lst(env, create_envp_node(var, 0));
 }
 
-static int	ft_fork_export(char **var, t_envp **env)
+static int	ft_fork_export(t_envp **env)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		ft_sort_env(env, var);
+		ft_sort_env(env);
 		ft_print_env(env);
 		exit(0);
 	}
@@ -101,9 +101,11 @@ int	ft_export(char **var, t_envp **env)
 	int	i;
 
 	if (!env || !*var)
+	{
 		return (0);
+	}
 	if (!var[1])
-		return (ft_fork_export(var, env));
+		return (ft_fork_export(env));
 	i = 1;
 	while (var[i])
 	{

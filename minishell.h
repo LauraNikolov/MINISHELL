@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/24 14:52:02 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/25 18:41:12 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int		main(int argc, char **argv, char **envp);
 t_cmd	*create_cmd_node(t_redir *redir, char *cmd, char c);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
-int		ft_is_symb(char *cmd, char *symb);
 int		ft_quote_len(char *s, int len);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
@@ -54,7 +53,6 @@ void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
 
 // Parsing
-int		ft_var_len(char *s, int brace_flag);
 void	ft_wildcard(t_cmd **cmd);
 
 // lst_proto
@@ -77,6 +75,7 @@ void	ft_free_envp_lst(t_envp **lst);
 void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
 void	ft_print_env(t_envp **env);
+void	ft_sort_env(t_envp **env);
 t_redir	*create_redir_node(char *s);
 
 // General utils
@@ -85,10 +84,10 @@ void	ft_override_content(char **s1, char *s2);
 void	ft_swap_content(char **s1, char **s2);
 int		ft_is_str(char c, char *s);
 char	**ft_envp_to_char(t_envp *env);
+int		ft_var_len(char *s, int brace_flag);
 
 // expand
 int		ft_expand(t_cmd *node, t_envp **env);
-int		ft_cmd_len(char *s, t_envp **env, int *i);
 // exec
 void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);

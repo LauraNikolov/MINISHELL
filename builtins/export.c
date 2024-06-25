@@ -51,11 +51,11 @@ static void	ft_add_var(t_envp **env, char *var)
 {
 	t_envp	*curr;
 	int		i;
-	int		print_flag;
+	//int		print_flag;
 	int		flag;
 
 	flag = 0;
-	print_flag = 0;
+	//print_flag = 0;
 	i = ft_strchr(var, '=');
 	if (i == -1)
 		i = ft_strlen(var);

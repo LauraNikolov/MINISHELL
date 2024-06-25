@@ -12,11 +12,11 @@ void	ft_handler_signals(int signal)
 	}
 }
 
-int ft_signals()
-{
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, ft_handler_signals);
-}
+//int ft_signals()
+//{
+	//signal(SIGQUIT, SIG_IGN);
+	//signal(SIGINT, ft_handler_signals);
+//}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -27,7 +27,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	(void)ac;
 	env = NULL;
-	ft_signal();
+	//ft_signal();
 	ft_save_envp(envp, &env);
 	while (1)
 	{
@@ -44,4 +44,5 @@ int	main(int ac, char **av, char **envp)
 		free(buffer);
 		ft_all_free(t_struct);
 	}
+	return(0);
 }

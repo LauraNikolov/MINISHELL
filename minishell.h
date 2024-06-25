@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/25 18:41:12 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/06/25 21:07:25 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int		ft_exec_tree(t_ast *root);
 int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			save_struct *t_struct);
 void	ft_parse_error(t_cmd *cmd);
+int		redir_out(t_cmd *cmd);
+int redir_in(t_cmd *cmd);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);

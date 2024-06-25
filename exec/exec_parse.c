@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/21 15:46:06 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/25 21:39:09 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,15 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	return(return_value);
 }
 
-	void ft_exec(save_struct * t_struct, char **envp)
+	void ft_exec(save_struct *t_struct, char **envp)
 	{
 		int cmd_size;
 
 		cmd_size = ft_lst_size(t_struct->cmd);
 		if (cmd_size == 1)
 		{
-			int return_value = ft_exec_single_cmd(t_struct, envp);
+			apply_redir(t_struct->cmd);
+			int return_value = ft_execve_single_cmd(t_struct->cmd, envp, t_struct);
 			dprintf(2, "return value single cmd = %d\n", return_value);
 			//t_return_code(ft_itoa(return_value), &t_struct->envp);
 			return ;

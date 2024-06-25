@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/25 21:17:01 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/25 21:34:35 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,3 +95,11 @@ int redir_out(t_cmd *cmd)
     return(fd);
 }
 
+
+void apply_redir(t_cmd *cmd)
+{
+	if(redir_in(cmd) != -1)
+		cmd->std_in = redir_in(cmd);
+	if(redir_out(cmd) != -1)
+		cmd->std_out = redir_out(cmd);
+}

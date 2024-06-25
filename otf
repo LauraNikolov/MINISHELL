@@ -1,1 +1,18 @@
-       0
+EOF
+Makefile
+README.md
+TODO
+builtins
+exec
+libft
+lili
+ls
+main.c
+main.o
+minishell
+minishell.h
+otf
+parse
+struct.h
+test_in
+valgrind.txt

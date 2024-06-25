@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/25 21:12:34 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/25 21:34:24 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,15 +220,23 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 		}
 		if (root->cmd->type == AND)
 		{
+			apply_redir(cmd1);
 			return_value = ft_execve_single_cmd(cmd1, envp, t_struct);
 			if (return_value == 0)
+			{
+				apply_redir(cmd2);
 				return_value = ft_execve_single_cmd(cmd2, envp, t_struct);
+			}
 		}
 		if (root->cmd->type == OR)
 		{
+			apply_redir(cmd1);
 			return_value = ft_execve_single_cmd(cmd1, envp, t_struct);
 			if (return_value != 0)
+			{
+				apply_redir(cmd2);
 				return_value = ft_execve_single_cmd(cmd2, envp, t_struct);
+			}
 		}
 	}
 	return (return_value);
@@ -260,6 +268,7 @@ int	ft_pipe_recursive(t_ast *root, char **envp, t_ast *save_root,
 			root->right->cmd->std_out = root->cmd->pipe[1];
 		if (root == save_root)
 			root->right->cmd->std_out = STDOUT_FILENO;
+		apply_redir(root->right->cmd);
 		return_value = ft_execve_pipe(root->right->cmd, envp, root, t_struct,
 				save_root);
 	}
@@ -287,8 +296,11 @@ int	ft_and_recursive(t_ast *root, char **envp, t_ast *save_root,
 	else
 	{
 		if (return_value == 0)
+		{
 			return_value = ft_execve_single_cmd(root->right->cmd, envp,
 					t_struct);
+			apply_redir(root->right->cmd);
+		}
 		else
 			return (return_value);
 	}
@@ -307,19 +319,22 @@ int	ft_or_recursive(t_ast *root, char **envp, t_ast *save_root,
 	if (root->right->cmd->type == PIPE || root->right->cmd->type == AND
 		|| root->right->cmd->type == OR)
 	{
-		read_pipe(root->left->cmd->prev_fd);
 		if (return_value != 0)
+		{
 			return_value = exec_ast_recursive(root->right, envp, save_root,
 					return_value, t_struct);
+		}
 		else
 			return (return_value);
 	}
 	else
 	{
-		read_pipe(root->left->cmd->prev_fd);
 		if (return_value != 0)
+		{
+			apply_redir(root->right->cmd);
 			return_value = ft_execve_single_cmd(root->right->cmd, envp,
 					t_struct);
+		}
 		else
 			return (return_value);
 	}
@@ -339,6 +354,7 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 	{
 		if(root->left->cmd->type == WORD)
 		{
+			apply_redir(root->left->cmd);
 			*return_value = ft_execve_single_cmd(root->left->cmd, envp, t_struct);
 		}	
 	}
@@ -408,6 +424,7 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 		if (root == save_root || root->parent->cmd->type == OR
 			|| root->parent->cmd->type == AND)
 			root->right->cmd->std_out = STDOUT_FILENO;
+		apply_redir(root->right->cmd);
 		*return_value = ft_execve_pipe(root->right->cmd, envp, root, t_struct,
 				save_root);
 		if (root == save_root)
@@ -440,8 +457,11 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 			}
 		}
 		if (*return_value == 0)
+		{
+			apply_redir(root->right->cmd);
 			*return_value = ft_execve_single_cmd(root->right->cmd, envp,
 					t_struct);
+		}
 	}
 	else if (root->cmd->type == OR)
 	{
@@ -458,8 +478,11 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 					*return_value = WEXITSTATUS(status);
 			}
 			if (*return_value != 0)
+			{
+				apply_redir(root->right->cmd);
 				*return_value = ft_execve_single_cmd(root->right->cmd, envp,
 						t_struct);
+			}
 		}
 	}
 }

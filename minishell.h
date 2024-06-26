@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/25 21:38:08 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/26 15:21:06 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ int		redir_out(t_cmd *cmd);
 int redir_in(t_cmd *cmd);
 void apply_redir(t_cmd *cmd);
 int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct);
+void manage_heredoc(t_cmd *cmd);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);

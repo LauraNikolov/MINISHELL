@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/25 21:34:24 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/26 17:21:59 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,15 +170,7 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			else
 				cmd1->std_in = root->cmd->prev_fd;
 			cmd1->std_out = root->cmd->pipe[1];
-			if(redir_out(cmd1) != -1)
-			{
-				cmd1->std_out = redir_out(cmd1);
-			}
-			if(redir_in(cmd1) != -1)
-			{
-				cmd1->std_in = redir_in(cmd1);
-				dprintf(2, "stdin = %d\n", cmd1->std_in);
-			}
+			apply_redir(cmd1);
 			return_value = ft_execve_pipe(cmd1, envp, root, t_struct,
 					save_root);
 			// cmd2: stdin est la sortie du pipe précédent,
@@ -200,10 +192,7 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 					|| root->parent->cmd->type == AND)
 					cmd2->std_out = STDOUT_FILENO;
 			}
-			if(redir_out(cmd2) != -1)
-			{
-				cmd2->std_out = redir_out(cmd2);
-			}
+			apply_redir(cmd2);
 			return_value = ft_execve_pipe(cmd2, envp, root, t_struct,
 					save_root);
 			if (root == save_root)

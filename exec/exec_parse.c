@@ -6,7 +6,7 @@
 /*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/25 21:39:09 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/26 18:10:13 by lauranicolo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 		cmd_size = ft_lst_size(t_struct->cmd);
 		if (cmd_size == 1)
 		{
+			manage_heredoc(t_struct->cmd);
 			apply_redir(t_struct->cmd);
 			int return_value = ft_execve_single_cmd(t_struct->cmd, envp, t_struct);
 			dprintf(2, "return value single cmd = %d\n", return_value);
@@ -73,6 +74,7 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 		}
 		else
 		{
+			manage_heredoc(t_struct->cmd);
 			ft_exec_multi_cmds(t_struct, envp);
 		}
 	}

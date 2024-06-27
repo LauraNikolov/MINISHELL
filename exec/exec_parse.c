@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/26 18:10:13 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/27 12:34:48 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,25 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	return(return_value);
 }
 
+void close_fds(t_cmd *cmd_list)
+{
+    t_cmd *current = cmd_list; // Remplacez t_cmd par le type de votre structure de commande
+
+    while (current != NULL)
+    {
+        // Ferme std_out si ce n'est pas la sortie standard
+        if (current->std_out != 1)
+        {
+            close(current->std_out);
+            current->std_out = 1; // Réinitialise à la sortie standard
+        }
+
+        // Ajoutez ici des vérifications similaires pour std_in si nécessaire
+
+        current = current->next; // Passe à la commande suivante dans la liste
+	}
+}
+
 	void ft_exec(save_struct *t_struct, char **envp)
 	{
 		int cmd_size;
@@ -76,5 +95,6 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 		{
 			manage_heredoc(t_struct->cmd);
 			ft_exec_multi_cmds(t_struct, envp);
+			close_fds(t_struct->cmd);
 		}
 	}

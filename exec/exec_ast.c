@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/26 17:21:59 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/27 12:49:04 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,9 +286,9 @@ int	ft_and_recursive(t_ast *root, char **envp, t_ast *save_root,
 	{
 		if (return_value == 0)
 		{
+			apply_redir(root->right->cmd);
 			return_value = ft_execve_single_cmd(root->right->cmd, envp,
 					t_struct);
-			apply_redir(root->right->cmd);
 		}
 		else
 			return (return_value);

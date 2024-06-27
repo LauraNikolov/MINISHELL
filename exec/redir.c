@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/26 18:12:12 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/27 12:46:16 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,10 +221,70 @@ void apply_redir(t_cmd *cmd)
 {
     if(!cmd->redir)
         return;
-    dprintf(2, "before in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
-	if(check_redir_in(cmd->redir) != 1)
-		cmd->std_in = redir_in(cmd);
-	if(check_redir_out(cmd->redir) != 1)
-		cmd->std_out = redir_out(cmd);
-    dprintf(2, "in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+    t_redir *current;
+    int fd = -1;
+    current = cmd->redir;
+    while(current)
+    {
+        dprintf(2, "once\n");
+        if(current->type == R_HEREDOC)
+        {
+            fd = open(current->next->redir, O_RDWR, 0644);
+            dprintf(2, "here_doc in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+            if(fd == -1)
+            {
+                perror("minishell");
+                return;
+            }
+            cmd->std_in = fd;
+        }
+        if(current->type == R_IN)
+        {
+            int fd;
+            fd = open(current->next->redir, O_RDWR, 0644);
+            dprintf(2, "r-in in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+            if(fd == -1)
+            {
+                perror("minishell");
+                return;
+            }
+            cmd->std_in = fd;
+        }
+        if(current->type == R_OUT)
+        {
+            int fd;
+            fd = open(current->next->redir, O_RDWR | O_TRUNC | O_CREAT, 0644);
+            cmd->std_out = fd;
+            dprintf(2, "r_out in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+            if(fd == -1)
+            {
+                perror("minishell");
+                return;
+            }
+        }
+        if(current->type == R_APPEND)
+        {
+            int fd;
+            fd = open(current->next->redir, O_RDWR| O_APPEND | O_CREAT, 0644);
+            dprintf(2, "r_append in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+            if(fd == -1)
+            {
+                perror("minishell");
+                return;
+            }
+            cmd->std_out = fd;
+        }
+        if(!current->next->next)
+            break;
+        else
+        {
+            close(fd);
+            current = current->next->next;
+        } 
+    }
+    // dprintf(2, "before in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+	// if(check_redir_in(cmd->redir) != 1)
+	// 	cmd->std_in = redir_in(cmd);
+	// if(check_redir_out(cmd->redir) != 1)
+	// 	cmd->std_out = redir_out(cmd);
 }

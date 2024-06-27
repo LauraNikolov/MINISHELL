@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/27 14:24:31 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:29:58 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,73 +216,46 @@ int check_redir_out(t_redir *redir)
     }
     return(1);
 }
-
 void apply_redir(t_cmd *cmd)
 {
-    if(!cmd->redir)
+    if (!cmd->redir)
         return;
-    t_redir *current;
-    int fd_in = -1;
-    int fd_out = -1;
-    current = cmd->redir;
-    while(current)
-    {
-        dprintf(2, "once\n");
-        if(current->type == R_HEREDOC)
-        {
-            if(fd_in != -1)
-                close(fd_in);
-            fd_in = open(current->next->redir, O_RDWR, 0644);
-            if(fd_in == -1)
-            {
-                perror("minishell");
-                return;
-            }
-            cmd->std_in = fd_in;
-            dprintf(2, "here_doc in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
+    t_redir *current = cmd->redir;
+    int fd_in = -1, fd_out = -1;
+
+    while (current && current->next) {
+    if (current->type == R_HEREDOC || current->type == R_IN) {
+        if (fd_in != -1) // Si ce n'est pas le premier fd_in, fermez-le
+            close(fd_in);
+        fd_in = open(current->next->redir, O_RDONLY);
+        if (fd_in == -1) {
+            perror("minishell");
+            return;
         }
-        if(current->type == R_IN)
-        {
-            if(fd_in != -1)
-                close(fd_in);
-            fd_in = open(current->next->redir, O_RDWR, 0644);
-            dprintf(2, "r-in in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
-            if(fd_in == -1)
-            {
-                perror("minishell");
-                return;
-            }
-            cmd->std_in = fd_in;
+    } else if (current->type == R_OUT) {
+        if (fd_out != -1) // Si ce n'est pas le premier fd_out, fermez-le
+            close(fd_out);
+        fd_out = open(current->next->redir, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+        if (fd_out == -1) {
+            perror("minishell");
+            return;
         }
-        else if(current->type == R_OUT)
-        {
-            if(fd_out != -1)
-                close(fd_out);
-            fd_out = open(current->next->redir, O_RDWR | O_TRUNC | O_CREAT, 0644);
-            cmd->std_out = fd_out;
-            dprintf(2, "r_out in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
-            if(fd_out== -1)
-            {
-                perror("minishell");
-                return;
-            }
+    } else if (current->type == R_APPEND) {
+        if (fd_out != -1) // Si ce n'est pas le premier fd_out, fermez-le
+            close(fd_out);
+        fd_out = open(current->next->redir, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        if (fd_out == -1) {
+            perror("minishell");
+            return;
         }
-        else if(current->type == R_APPEND)
-        {
-            if(fd_out != -1)
-                close(fd_out);
-            fd_out = open(current->next->redir, O_RDWR| O_APPEND | O_CREAT, 0644);
-            dprintf(2, "r_append in == %d out == %d et cmd == %s\n", cmd->std_in, cmd->std_out, cmd->cmd[0]);
-            if(fd_out == -1)
-            {
-                perror("minishell");
-                return;
-            }
-            cmd->std_out = fd_out;
-        }
-        if(!current->next->next)
-            break;
-        else
-            current = current->next->next;
     }
+    // Avance de deux nœuds pour passer au prochain type de redirection
+    current = current->next ? current->next->next : NULL;
+}
+
+// Après la boucle, assignez le dernier fd_in et fd_out à cmd->std_in et cmd->std_out respectivement
+if (fd_in != -1)
+    cmd->std_in = fd_in;
+if (fd_out != -1)
+    cmd->std_out = fd_out;
 }

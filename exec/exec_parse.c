@@ -6,7 +6,7 @@
 /*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/27 12:34:48 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:40:39 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void close_fds(t_cmd *cmd_list)
 {
     t_cmd *current = cmd_list; // Remplacez t_cmd par le type de votre structure de commande
 
-    while (current != NULL)
+    while (current != NULL && current->next)
     {
         // Ferme std_out si ce n'est pas la sortie standard
         if (current->std_out != 1)
@@ -71,6 +71,15 @@ void close_fds(t_cmd *cmd_list)
             current->std_out = 1; // Réinitialise à la sortie standard
         }
 
+		// Ferme std_in si ce n'est pas l'entrée standard
+		if(current->std_in != 0)
+		{
+			close(current->std_in);
+			current->std_in = 0;
+		}
+
+		if(current->type == R_HEREDOC)
+			free(current->next->redir);
         // Ajoutez ici des vérifications similaires pour std_in si nécessaire
 
         current = current->next; // Passe à la commande suivante dans la liste
@@ -80,16 +89,16 @@ void close_fds(t_cmd *cmd_list)
 	void ft_exec(save_struct *t_struct, char **envp)
 	{
 		int cmd_size;
+		int return_value;
 
 		cmd_size = ft_lst_size(t_struct->cmd);
 		if (cmd_size == 1)
 		{
 			manage_heredoc(t_struct->cmd);
 			apply_redir(t_struct->cmd);
-			int return_value = ft_execve_single_cmd(t_struct->cmd, envp, t_struct);
-			dprintf(2, "return value single cmd = %d\n", return_value);
+			return_value = ft_execve_single_cmd(t_struct->cmd, envp, t_struct);
+			close_fds(t_struct->cmd);
 			//t_return_code(ft_itoa(return_value), &t_struct->envp);
-			return ;
 		}
 		else
 		{
@@ -98,3 +107,4 @@ void close_fds(t_cmd *cmd_list)
 			close_fds(t_struct->cmd);
 		}
 	}
+	

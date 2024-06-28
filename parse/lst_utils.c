@@ -219,27 +219,28 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	return (envp);
 }
 
-t_cmd	*create_cmd_node2(t_cmd *new_node, char *cmd)
+t_cmd	*create_cmd_node2(t_cmd *new_node, char **cmd)
 {
-	if (!ft_strcmp(cmd, "||"))
+	if (!ft_strcmp(*cmd, "||"))
 		new_node->type = OR;
-	else if (!ft_strcmp(cmd, "|"))
+	else if (!ft_strcmp(*cmd, "|"))
 		new_node->type = PIPE;
-	else if (!ft_strcmp(cmd, "&&"))
+	else if (!ft_strcmp(*cmd, "&&"))
 		new_node->type = AND;
-	else if (!ft_strcmp(cmd, "&"))
+	else if (!ft_strcmp(*cmd, "&"))
 		new_node->type = NO_TYPE;
-	else if (!ft_strcmp(cmd, "("))
+	else if (!ft_strcmp(*cmd, "("))
 		new_node->type = O_BRACKET;
-	else if (!ft_strcmp(cmd, ")"))
+	else if (!ft_strcmp(*cmd, ")"))
 		new_node->type = C_BRACKET;
 	else
 		new_node->type = WORD;
-	free(cmd);
+	if (*cmd)
+		free(*cmd);
 	return (new_node);
 }
 
-t_cmd	*create_cmd_node(t_redir *redir, char *cmd, char c)
+t_cmd	*create_cmd_node(t_redir *redir, char **cmd, char c)
 {
 	t_cmd	*new_node;
 
@@ -247,8 +248,8 @@ t_cmd	*create_cmd_node(t_redir *redir, char *cmd, char c)
 	if (!new_node)
 		return (NULL);
 	new_node->cmd = NULL;
-	if (cmd)
-		new_node->cmd = ft_split(cmd, " ");
+	if (*cmd)
+		new_node->cmd = ft_split(*cmd, " ");
 	new_node->redir = redir;
 	new_node->expand_flag = 0;
 	new_node->next = NULL;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/27 15:40:39 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/06/28 12:38:50 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void close_fds(t_cmd *cmd_list)
 	{
 		int cmd_size;
 		int return_value;
+		(void)return_value;
 
 		cmd_size = ft_lst_size(t_struct->cmd);
 		if (cmd_size == 1)

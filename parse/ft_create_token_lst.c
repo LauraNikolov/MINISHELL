@@ -144,9 +144,9 @@ static int	ft_get_symb(save_struct *t_struct, char *buff, char **cmd)
 	int	i;
 
 	len = 0;
-	i = 0;
+	i = 0;  
 	len = ft_check_double_symbols(buff, cmd);
-	add_to_lst(&(t_struct->cmd), create_cmd_node(NULL, *cmd, buff[-1]));
+	add_to_lst(&(t_struct->cmd), create_cmd_node(NULL, cmd, buff[-1]));
 	i = len;
 	while (i--)
 		strcat(t_struct->save_spaces, "0");
@@ -164,7 +164,6 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 	quote_flag = -1;
 	while (buffer[j])
 	{
-		cmd = NULL;
 		len = 0;
 		while (((buffer[j] && quote_flag == 1)) || ((buffer[j]
 					&& !ft_is_str(buffer[j], "|()&") && quote_flag == -1)))
@@ -175,7 +174,7 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 			len++;
 		}
 		add_to_lst(&(t_struct->cmd), create_cmd_node(ft_handle_quote(&buffer[j
-					- len], &cmd, len, t_struct), cmd, buffer[j - 1]));
+					- len], &cmd, len, t_struct), &cmd, buffer[j - 1]));
 		if (ft_is_str(buffer[j], "|()&"))
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}

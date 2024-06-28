@@ -9,7 +9,7 @@ void	ft_remove_null_node(t_cmd **lst)
 	while (curr)
 	{
 		next = curr->next;
-		if (curr->cmd[0] == NULL)
+		if (curr->cmd[0] == NULL && !curr->redir)
 		{
 			if (curr == *lst)
 			{

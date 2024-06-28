@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lauranicoloff <lauranicoloff@student.42    +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/26 15:21:06 by lauranicolo      ###   ########.fr       */
+/*   Updated: 2024/06/28 12:48:25 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <string.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
@@ -38,7 +39,7 @@ int		main(int argc, char **argv, char **envp);
 // libft TODO replace b the submodule
 
 // tokenisation
-t_cmd	*create_cmd_node(t_redir *redir, char *cmd, char c);
+t_cmd	*create_cmd_node(t_redir *redir, char **cmd, char c);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_quote_len(char *s, int len);

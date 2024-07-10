@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include "../minishell.h"
 
 int	ft_lst_size(t_cmd *cmd)
 {
@@ -103,15 +104,15 @@ void	ft_print_lst(t_cmd *node)
 			while (curr_redir)
 			{
 				printf("redir = %s | type = ", curr_redir->redir);
-				if (curr_redir->type == 4)
+				if (curr_redir->type == 6)
 					printf(" R_IN\n");
 				else if (curr_redir->type == 0)
 					printf("INFILE\n");
-				else if (curr_redir->type == 5)
-					printf(" R_OUT\n");
-				else if (curr_redir->type == 6)
-					printf("R_APPEND\n");
 				else if (curr_redir->type == 7)
+					printf(" R_OUT\n");
+				else if (curr_redir->type == 8)
+					printf("R_APPEND\n");
+				else if (curr_redir->type == 9)
 					printf("HEREDOC\n");
 				curr_redir = curr_redir->next;
 			}
@@ -211,7 +212,7 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	envp->var_name = ft_strndup(var, i);
 	if (!var[i])
 		envp->var_value = NULL;
-	else if (var[i + 1])
+	else if (var[i] == '=' && var[i + 1])
 		envp->var_value = ft_strdup(&var[i + 1]);
 	envp->print_flag = print_flag;
 	envp->next = NULL;

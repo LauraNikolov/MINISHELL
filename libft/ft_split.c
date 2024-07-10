@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 17:30:29 by melmarti          #+#    #+#             */
-/*   Updated: 2024/06/28 17:03:04 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/10 12:09:34 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char	**ft_split(char *s, char *sep)
 
 	i = 0;
 	n = 0;
-	if (!s)
+	if (!s || !s[0])
 		return (NULL);
 	strs = (char **)malloc(sizeof(char *) * (ft_count_words(s, sep) + 1));
 	if (!strs)

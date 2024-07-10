@@ -37,13 +37,13 @@ int	main(int ac, char **av, char **envp)
 		ft_memset(t_struct, 0, sizeof(*t_struct));
 		buffer = readline(CYAN "MINISHELL~ " RESET);
 		if (!buffer)
-			return (ft_free_envp_lst(&t_struct->envp), free(buffer),
-				ft_all_free(t_struct), 0);
+			return (ft_free_envp_lst(&env), free(buffer), ft_all_free(t_struct),
+				0);
 		add_history(buffer);
 		if (ft_tokenize(buffer, t_struct, &env) != -1)
 		{
+			ft_print_lst(t_struct->cmd);
 			ft_exec(t_struct, envp);
-			// ft_print_lst(t_struct->cmd);
 		}
 		free(buffer);
 		ft_all_free(t_struct);

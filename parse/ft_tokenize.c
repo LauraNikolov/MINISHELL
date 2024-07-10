@@ -25,5 +25,7 @@ int	ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env)
 	if (ft_exec_syntax_functions(&(t_struct->cmd), &(t_struct->envp)) == -1)
 		return (-1);
 	bool_bracket = 0;
+	if (!t_struct->cmd)
+		return(-1);
 	return (0);
 }

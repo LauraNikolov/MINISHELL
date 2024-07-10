@@ -3,29 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/06/27 12:49:04 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/07/10 16:28:00 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <errno.h>
-
-int	get_nbr_of_pipe(t_cmd *cmd)
-{
-	int	i;
-
-	i = 1;
-	while (cmd)
-	{
-		if (cmd->type == PIPE)
-			i++;
-		cmd = cmd->next;
-	}
-	return (i);
-}
 
 int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 {
@@ -33,7 +19,6 @@ int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 	pid_t	pid;
 	int		status;
 
-	(void)t_struct;
 	return_value = 0;
 	if ((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
 		return (return_value);
@@ -195,7 +180,7 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			apply_redir(cmd2);
 			return_value = ft_execve_pipe(cmd2, envp, root, t_struct,
 					save_root);
-			if (root == save_root)
+			if (root == save_root  || (root->parent == save_root && root->parent->cmd->type != PIPE))
 			{
 				pid = 0;
 				// int i = get_nbr_of_pipe(save_root->cmd);
@@ -416,7 +401,7 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 		apply_redir(root->right->cmd);
 		*return_value = ft_execve_pipe(root->right->cmd, envp, root, t_struct,
 				save_root);
-		if (root == save_root)
+		if (root == save_root || root->parent == save_root)
 		{
 			int status;
 			int pid;
@@ -479,8 +464,6 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		int return_value, save_struct *t_struct)
 {
-	dprintf(2, "CECI EST LE ROOT : \n");
-	print_ast(root, 0, ' ');
 	if (root == NULL)
 		return (return_value);
 	if (root->left->cmd->type == PIPE || root->left->cmd->type == AND

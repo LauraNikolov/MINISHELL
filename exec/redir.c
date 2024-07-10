@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/28 17:49:28 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/10 16:26:27 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void manage_heredoc(t_cmd *cmd)
 
     i = 0;
     current = cmd;
-    current_redir = current->redir;
     while(current)
     {
         current_redir = current->redir;
@@ -79,7 +78,6 @@ void manage_heredoc(t_cmd *cmd)
             current = current->next;
             continue ; 
         }
-
         else
         {
             while(current_redir && current_redir->type == R_HEREDOC)
@@ -98,7 +96,6 @@ void manage_heredoc(t_cmd *cmd)
 
 int redir_in(t_cmd *cmd)
 {
-    dprintf(2, "koukou\n");
     int fd;
     //char *last_redir;
     t_redir *current = cmd->redir;

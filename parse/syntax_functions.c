@@ -22,20 +22,24 @@ int	ft_check_pipe(t_cmd *node, t_envp **env)
 
 int	ft_check_redir(t_cmd *node, t_envp **env)
 {
+	t_redir	*tmp;
+
 	if (!node->redir)
 		return (0);
 	if (!node->redir->next || node->redir->type == WORD)
 	{
-		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'", 2,
-			NULL, 0);
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
+			2, NULL, 0);
 		return (ft_return_code("2", env));
 	}
-	while (node->redir->next)
-	{printf("cerfgdfs\n");
-		if ((node->redir->type >= 4 && node->redir->type <= 6) && (node->redir->next->type != WORD))
+	tmp = node->redir;
+	while (tmp->next)
+	{
+		if ((tmp->type >= 6 && tmp->type <= 9)
+			&& (tmp->next->type != WORD))
 			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
 				1, NULL, 0);
-		node->redir = node->redir->next;
+		tmp = tmp->next;
 	}
 	return (0);
 }
@@ -193,9 +197,10 @@ int	ft_check_op(t_cmd *node, t_envp **env)
 int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 {
 	t_cmd	*curr;
-	int		(*ft_tab[10])(t_cmd *, t_envp **);
+	int		(*ft_tab[6])(t_cmd *, t_envp **);
 
 	ft_init_ft_tab(ft_tab);
+	ft_print_lst(*cmd);
 	curr = *cmd;
 	while (curr)
 	{

@@ -29,7 +29,7 @@ int	ft_check_redir(t_cmd *node, t_envp **env)
 	tmp = node->redir;
 	if ((tmp->type >= 6 && tmp->type <= 9) && !tmp->next)
 	{
-		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
 			2, &tmp->redir, 0);
 		return (ft_return_code(ft_strdup("2"), env), -1);
 	}
@@ -50,8 +50,11 @@ int	ft_check_redir(t_cmd *node, t_envp **env)
 
 int	ft_check_word(t_cmd *node, t_envp **env)
 {
+	if (!node->cmd)
+		return (0);
 	if (!node->next)
 	{
+		printf("HELLOLAMIF\n");
 		ft_get_path(node);
 		if (!node->path)
 			node->path = ft_strdup(node->cmd[0]);

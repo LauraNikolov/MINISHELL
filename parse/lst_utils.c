@@ -48,9 +48,6 @@ void	ft_free_redir(t_redir *redir)
 
 void	ft_free_node(t_cmd *node)
 {
-	int	i;
-
-	i = 0;
 	if (node->cmd)
 		ft_free_tab(node->cmd);
 	free(node->path);

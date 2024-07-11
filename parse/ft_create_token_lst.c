@@ -52,7 +52,7 @@ t_redir	*ft_redir(char *s, int *i, int len)
 	j = 0;
 	infile = 0;
 	redir = NULL;
-	while (s[*i] && *i < len)
+	while (*i < len)
 	{
 		if (ft_is_str(s[*i], "><"))
 		{
@@ -62,18 +62,19 @@ t_redir	*ft_redir(char *s, int *i, int len)
 		}
 		while (*i < len && s[*i] == ' ')
 			(*i)++;
-		if (s[*i] && !ft_is_str(s[*i], "><"))
+		if (!ft_is_str(s[*i], "><"))
 		{
 			while (s[*i + infile] && !ft_is_str(s[*i + infile], "><") && s[*i
 				+ infile] != ' ')
 				infile++;
 			if (ft_safe_malloc(&cmd, infile + 1) == -1)
 				return (ft_free_redir(redir), NULL);
-			while (*i < len && s[*i] && j < infile)
+			while (j < infile)
 				cmd[j++] = s[(*i)++];
 			cmd[j] = '\0';
 			add_to_redir_lst(&redir, create_redir_node(cmd));
 			free(cmd);
+			(*i)--;
 			break ;
 		}
 	}

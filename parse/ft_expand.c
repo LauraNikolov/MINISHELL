@@ -82,7 +82,9 @@ int	ft_expand(t_cmd *node, t_envp **env)
 	while (node)
 	{
 		i = -1;
-		while (node->cmd[++i])
+		if(node->cmd)
+		{
+			while (node->cmd[++i])
 		{
 			if (ft_is_char(node->cmd[i], '$') && node->expand_flag)
 			{
@@ -93,6 +95,7 @@ int	ft_expand(t_cmd *node, t_envp **env)
 				node->cmd[i] = ft_strdup(exp);
 				free(exp);
 			}
+		}
 		}
 		node = node->next;
 	}

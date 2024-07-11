@@ -33,17 +33,26 @@ void	ft_free_envp_lst(t_envp **lst)
 	*lst = NULL;
 }
 
+void	ft_free_redir(t_redir *redir)
+{
+	t_redir	*tmp;
+
+	while (redir)
+	{
+		tmp = redir->next;
+		free(redir->redir);
+		free(redir);
+		redir = tmp;
+	}
+}
+
 void	ft_free_node(t_cmd *node)
 {
 	int	i;
 
 	i = 0;
-	while (node->cmd[i])
-	{
-		free(node->cmd[i]);
-		i++;
-	}
-	free(node->cmd);
+	if (node->cmd)
+		ft_free_tab(node->cmd);
 	free(node->path);
 	free(node);
 }
@@ -54,6 +63,8 @@ void	ft_free_lst(t_cmd *lst)
 	while (lst)
 	{
 		temp = lst->next;
+		if (lst->redir)
+			ft_free_redir(lst->redir);
 		ft_free_node(lst);
 		lst = temp;
 	}
@@ -90,11 +101,14 @@ void	ft_print_lst(t_cmd *node)
 	curr = node;
 	while (curr)
 	{
-		printf("\nCommande n%d = %s\n", command_num, curr->cmd[0]);
-		while (curr->cmd[i])
+		if (curr->cmd)
 		{
-			printf("Options n%d : %s\n", i, curr->cmd[i]);
-			i++;
+			printf("\nCommande n%d = %s\n", command_num, curr->cmd[0]);
+			while (curr->cmd[i])
+			{
+				printf("Options n%d : %s\n", i, curr->cmd[i]);
+				i++;
+			}
 		}
 		printf("Path = %s\n", curr->path);
 		if (curr->redir)
@@ -242,12 +256,17 @@ t_cmd	*create_cmd_node2(t_cmd *new_node, char **cmd)
 t_cmd	*create_cmd_node(t_redir *redir, char **cmd, char c)
 {
 	t_cmd	*new_node;
+	int		i;
 
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
 		return (NULL);
-	new_node->cmd = NULL;
-	if (*cmd)
+	i = 0;
+	while ((*cmd)[i] && (*cmd)[i] == ' ')
+		i++;
+	if (ft_strlen(*cmd) == (size_t)i)
+		new_node->cmd = NULL;
+	else
 		new_node->cmd = ft_split(*cmd, " ");
 	new_node->redir = redir;
 	new_node->expand_flag = 0;

@@ -106,7 +106,8 @@ int	ft_is_enum(t_cmd *node, char **error_node)
 {
 	if (!node)
 		return (0);
-	if (node->type == PIPE || node->type == R_HEREDOC || node->type == R_APPEND)
+	if (node->type == PIPE || node->type == R_HEREDOC || node->type == R_APPEND
+		|| node->type == C_BRACKET)
 		return (0);
 	else if (node->prev)
 		*error_node = node->cmd[0];
@@ -210,6 +211,7 @@ int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 		{
 			if (ft_check_redir(curr, env) != 0)
 				return (-1);
+			curr = curr->next;
 			continue ;
 		}
 		if (curr->type == NO_TYPE)

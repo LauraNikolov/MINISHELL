@@ -67,8 +67,8 @@ t_redir	*ft_redir(char *s, int *i, int len)
 			while (s[*i + infile] && !ft_is_str(s[*i + infile], "><") && s[*i
 				+ infile] != ' ')
 				infile++;
-			if (ft_safe_malloc(&cmd, infile) == -1)
-				return (NULL);
+			if (ft_safe_malloc(&cmd, infile + 1) == -1)
+				return (ft_free_redir(redir), NULL);
 			while (*i < len && s[*i] && j < infile)
 				cmd[j++] = s[(*i)++];
 			cmd[j] = '\0';
@@ -76,7 +76,6 @@ t_redir	*ft_redir(char *s, int *i, int len)
 			free(cmd);
 			break ;
 		}
-		(*i)++;
 	}
 	return (redir);
 }

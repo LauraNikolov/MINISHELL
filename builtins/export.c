@@ -51,11 +51,9 @@ static void	ft_add_var(t_envp **env, char *var)
 {
 	t_envp	*curr;
 	int		i;
-	//int		print_flag;
 	int		flag;
 
 	flag = 0;
-	//print_flag = 0;
 	i = ft_strchr(var, '=');
 	if (i == -1)
 		i = ft_strlen(var);
@@ -114,11 +112,11 @@ int	ft_export(char **var, t_envp **env)
 			ft_putstr_cmd_fd("Minishell : export: `", 2, NULL, 2);
 			ft_putstr_cmd_fd(var[i], 2, NULL, 2);
 			ft_putstr_cmd_fd("': not a valid identifier", 2, NULL, 0);
-			ft_return_code("1", env);
+			ft_return_code(ft_strdup("1"), env);
 		}
 		else
 			ft_add_var(env, var[i]);
 		i++;
 	}
-	return (ft_return_code("0", env));
+	return (ft_return_code(ft_strdup("0"), env));
 }

@@ -4,9 +4,9 @@ int	ft_check_pipe(t_cmd *node, t_envp **env)
 {
 	if (!node->prev || !node->next)
 	{
-		printf("Minishell: syntax error near unexpected token '%s'\n",
-			node->cmd[0]);
-		return (-1);
+		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `", 2,
+			&node->next->cmd[0], 0);
+		return (ft_return_code(ft_strdup("2"), env));
 	}
 	if (!(node->prev->type == WORD || node->prev->type == C_BRACKET)
 		&& (node->next->type == R_OUT || node->next->type == R_IN
@@ -26,16 +26,18 @@ int	ft_check_redir(t_cmd *node, t_envp **env)
 
 	if (!node->redir)
 		return (0);
-	if (!node->redir->next || node->redir->type == WORD)
+	tmp = node->redir;
+	if ((tmp->type >= 6 && tmp->type <= 9) && !tmp->next)
 	{
 		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
-			2, NULL, 0);
+			2, &tmp->redir, 0);
 		return (ft_return_code(ft_strdup("2"), env), -1);
 	}
-	tmp = node->redir;
 	while (tmp->next)
 	{
-		if ((tmp->type >= 6 && tmp->type <= 9) && tmp->next->type != WORD)
+		if ((tmp->type >= 6 && tmp->type <= 9) && (!tmp->next
+				|| (tmp->next->type >= 6 && tmp->next->type <= 9)
+				|| tmp->next->type != WORD || !tmp->next->redir[0]))
 		{
 			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
 				1, NULL, 0);
@@ -48,8 +50,6 @@ int	ft_check_redir(t_cmd *node, t_envp **env)
 
 int	ft_check_word(t_cmd *node, t_envp **env)
 {
-	if (ft_check_redir(node, env) == -1)
-		return (-1);
 	if (!node->next)
 	{
 		ft_get_path(node);
@@ -205,15 +205,10 @@ int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 
 	ft_init_ft_tab(ft_tab);
 	curr = *cmd;
+	if (ft_check_redir(curr, env) != 0)
+		return (-1);
 	while (curr)
 	{
-		if (!curr->cmd)
-		{
-			if (ft_check_redir(curr, env) != 0)
-				return (-1);
-			curr = curr->next;
-			continue ;
-		}
 		if (curr->type == NO_TYPE)
 		{
 			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",

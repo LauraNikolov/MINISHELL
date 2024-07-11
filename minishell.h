@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/11 15:53:21 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:29:10 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
 void	ft_init_ft_tab(int (*ft_tab[10])(t_cmd *, t_envp **));
 int		ft_get_path(t_cmd *node);
-t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct, int bufflen);
+t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct,
+			int bufflen);
 int		ft_putstr_cmd_fd(char *s, int fd, char **str, int flag);
 void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
@@ -76,6 +77,7 @@ void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
 void	ft_print_env(t_envp **env);
 void	ft_sort_env(t_envp **env);
+void	ft_free_redir(t_redir *redir);
 t_redir	*create_redir_node(char *s);
 
 // General utils

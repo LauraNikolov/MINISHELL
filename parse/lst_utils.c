@@ -1,5 +1,4 @@
 #include "../minishell.h"
-#include "../minishell.h"
 
 int	ft_lst_size(t_cmd *cmd)
 {
@@ -212,7 +211,7 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	envp->var_name = ft_strndup(var, i);
 	if (!var[i])
 		envp->var_value = NULL;
-	else if (var[i] == '=' && var[i + 1])
+	else
 		envp->var_value = ft_strdup(&var[i + 1]);
 	envp->print_flag = print_flag;
 	envp->next = NULL;
@@ -236,8 +235,7 @@ t_cmd	*create_cmd_node2(t_cmd *new_node, char **cmd)
 		new_node->type = C_BRACKET;
 	else
 		new_node->type = WORD;
-	if (*cmd)
-		free(*cmd);
+	free(*cmd);
 	return (new_node);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/06/28 12:48:25 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/11 12:32:43 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <string.h>
 # define CYAN "\x1b[36m"
 # define RESET "\x1b[0m"
 
@@ -46,7 +45,7 @@ int		ft_quote_len(char *s, int len);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
-int		ft_init_ft_tab(int (*ft_tab[10])(t_cmd *, t_envp **));
+void	ft_init_ft_tab(int (*ft_tab[10])(t_cmd *, t_envp **));
 int		ft_get_path(t_cmd *node);
 t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct);
 int		ft_putstr_cmd_fd(char *s, int fd, char **str, int flag);
@@ -103,10 +102,10 @@ int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			save_struct *t_struct);
 void	ft_parse_error(t_cmd *cmd);
 int		redir_out(t_cmd *cmd);
-int redir_in(t_cmd *cmd);
-void apply_redir(t_cmd *cmd);
-int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct);
-void manage_heredoc(t_cmd *cmd);
+int		redir_in(t_cmd *cmd);
+void	apply_redir(t_cmd *cmd);
+int		ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct);
+void	manage_heredoc(t_cmd *cmd);
 
 // BUILTINS
 int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);

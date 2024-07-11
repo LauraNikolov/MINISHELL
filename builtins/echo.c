@@ -25,7 +25,7 @@ int	ft_echo(char **cmd, t_envp **env)
 	if (!cmd[1] || !cmd || !*cmd)
 	{
 		ft_putchar_fd('\n', 2);
-		return (ft_return_code("127", env));
+		return (ft_return_code(ft_strdup("127"), env));
 	}
 	option = 0;
 	if (cmd[1][0] == '-' && cmd[1][1] == 'n')
@@ -38,5 +38,5 @@ int	ft_echo(char **cmd, t_envp **env)
 			option = 0;
 	}
 	ft_echo_str(cmd, option);
-	return (ft_return_code("0", env));
+	return (ft_return_code(ft_strdup("0"), env));
 }

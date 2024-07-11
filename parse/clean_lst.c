@@ -38,6 +38,7 @@ void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct)
 
 	curr = *lst;
 	k = 0;
+	printf("strlen(save_spaces) = %d\n", ft_strlen(t_struct->save_spaces));
 	while (curr)
 	{
 		i = -1;

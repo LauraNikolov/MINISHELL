@@ -13,8 +13,10 @@ int ft_return_code(char *code, t_envp **env)
         { 
             free(curr->var_value);
             curr->var_value = ft_strdup(code);
+            break ;
         }
         curr = curr->next;
     }
-    return (ft_atoi(code));
+    free(code);
+    return (ft_atoi(curr->var_value));
 }

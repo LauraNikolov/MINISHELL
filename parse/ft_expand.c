@@ -82,20 +82,21 @@ int	ft_expand(t_cmd *node, t_envp **env)
 	while (node)
 	{
 		i = -1;
-		if(node->cmd)
+		if (node->cmd)
 		{
 			while (node->cmd[++i])
-		{
-			if (ft_is_char(node->cmd[i], '$') && node->expand_flag)
 			{
-				ft_safe_malloc(&exp, ft_expand_len(node->cmd[i], NULL, 0, env) + 1);
-				exp[ft_expand_len(node->cmd[i], NULL, 0, env)] = '\0';
-				ft_expand_len(node->cmd[i], &exp, 1, env);
-				free(node->cmd[i]);
-				node->cmd[i] = ft_strdup(exp);
-				free(exp);
+				if (ft_is_char(node->cmd[i], '$') && node->expand_flag)
+				{
+					ft_safe_malloc(&exp, ft_expand_len(node->cmd[i], NULL, 0,
+							env) + 1);
+					exp[ft_expand_len(node->cmd[i], NULL, 0, env)] = '\0';
+					ft_expand_len(node->cmd[i], &exp, 1, env);
+					free(node->cmd[i]);
+					node->cmd[i] = ft_strdup(exp);
+					free(exp);
+				}
 			}
-		}
 		}
 		node = node->next;
 	}

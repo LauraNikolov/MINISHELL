@@ -27,20 +27,18 @@ int	ft_check_redir(t_cmd *node, t_envp **env)
 	if (!node->redir)
 		return (0);
 	tmp = node->redir;
-	if ((tmp->type >= 6 && tmp->type <= 9) && !tmp->next)
-	{
-		ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
-			2, &tmp->redir, 0);
-		return (ft_return_code(ft_strdup("2"), env), -1);
-	}
 	while (tmp->next)
 	{
 		if ((tmp->type >= 6 && tmp->type <= 9) && (!tmp->next
 				|| (tmp->next->type >= 6 && tmp->next->type <= 9)
 				|| tmp->next->type != WORD || !tmp->next->redir[0]))
 		{
-			ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
-				1, NULL, 0);
+			if (!(tmp->next->type >= 6 && tmp->next->type <= 9))
+				ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `newline'",
+					1, NULL, 0);
+			else
+				ft_putstr_cmd_fd("Minishell: syntax error near unexpected token `",
+					2, &tmp->next->redir, 0);
 			return (ft_return_code(ft_strdup("2"), env), -1);
 		}
 		tmp = tmp->next;
@@ -54,7 +52,6 @@ int	ft_check_word(t_cmd *node, t_envp **env)
 		return (0);
 	if (!node->next)
 	{
-		printf("HELLOLAMIF\n");
 		ft_get_path(node);
 		if (!node->path)
 			node->path = ft_strdup(node->cmd[0]);
@@ -208,8 +205,6 @@ int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 
 	ft_init_ft_tab(ft_tab);
 	curr = *cmd;
-	if (ft_check_redir(curr, env) != 0)
-		return (-1);
 	while (curr)
 	{
 		if (curr->type == NO_TYPE)
@@ -219,7 +214,12 @@ int	ft_exec_syntax_functions(t_cmd **cmd, t_envp **env)
 			ft_return_code(ft_strdup("2"), env);
 			return (-1);
 		}
-		if (ft_tab[curr->type](curr, env) != 0)
+		if (!curr->cmd && curr->redir)
+		{
+			if (ft_check_redir(curr, env) != 0)
+				return (-1);
+		}
+		else if (ft_tab[curr->type](curr, env) != 0)
 			return (-1);
 		curr = curr->next;
 	}

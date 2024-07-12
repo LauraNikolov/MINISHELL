@@ -6,7 +6,7 @@
 /*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/10 16:28:00 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/12 14:01:58 by melmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 	int		status;
 
 	return_value = 0;
-	if ((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
+	if ((return_value = ft_dispatch_builtin(cmd, t_struct)) != -1)
 		return (return_value);
 	pid = fork();
 	if (pid == -1)
@@ -105,7 +105,7 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 		// Fermer les descripteurs de pipe inutilisés dans le processus enfant
 		close(root->cmd->pipe[0]);
 		// ! check builting
-		if ((return_value = ft_dispatch_builtin(cmd->cmd, t_struct)) != -1)
+		if ((return_value = ft_dispatch_builtin(cmd, t_struct)) != -1)
 			exit(return_value);
 		else
 		{

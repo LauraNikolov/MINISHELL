@@ -28,13 +28,13 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 		if (s[i] == ' ')
 		{
 			(*cmd)[*cmd_index] = '%';
-			strcat(t_struct->save_spaces, "1");
+			ft_strcat(t_struct->save_spaces, "1");
 			(*cmd_index)++;
 		}
 		else
 		{
 			(*cmd)[*cmd_index] = s[i];
-			strcat(t_struct->save_spaces, "0");
+			ft_strcat(t_struct->save_spaces, "0");
 			(*cmd_index)++;
 		}
 		i++;
@@ -103,9 +103,9 @@ t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct, in
 		{
 			(*cmd)[cmd_index] = s[i];
 			if ((*cmd)[cmd_index] != ' ')
-				strcat(t_struct->save_spaces, "3");
+				ft_strcat(t_struct->save_spaces, "3");
 			else
-				strcat(t_struct->save_spaces, "2");
+				ft_strcat(t_struct->save_spaces, "2");
 			cmd_index++;
 		}
 	}
@@ -157,7 +157,7 @@ static int	ft_get_symb(save_struct *t_struct, char *buff, char **cmd)
 	add_to_lst(&(t_struct->cmd), create_cmd_node(NULL, cmd, buff[-1]));
 	i = len;
 	while (i--)
-		strcat(t_struct->save_spaces, "0");
+		ft_strcat(t_struct->save_spaces, "0");
 	return (len);
 }
 

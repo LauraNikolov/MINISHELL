@@ -30,7 +30,6 @@ void	ft_free_envp_lst(t_envp **lst)
 		free(curr);
 		curr = temp;
 	}
-	*lst = NULL;
 }
 
 void	ft_free_redir(t_redir *redir)
@@ -220,9 +219,8 @@ t_envp	*create_envp_node(char *var, int print_flag)
 	while (var[i] && var[i] != '=')
 		i++;
 	envp->var_name = ft_strndup(var, i);
-	if (!var[i])
-		envp->var_value = NULL;
-	else
+	envp->var_value = NULL;
+	if (var[i + 1])
 		envp->var_value = ft_strdup(&var[i + 1]);
 	envp->print_flag = print_flag;
 	envp->next = NULL;
@@ -247,6 +245,7 @@ t_cmd	*create_cmd_node2(t_cmd *new_node, char **cmd)
 	else
 		new_node->type = WORD;
 	free(*cmd);
+	cmd = NULL;
 	return (new_node);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: YOYO <YOYO@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/12 00:05:19 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/12 17:07:49 by YOYO             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,12 @@ int		ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct);
 void	manage_heredoc(t_cmd *cmd);
 
 // BUILTINS
-int		ft_dispatch_builtin(char **cmd, save_struct *t_struct);
+int		ft_dispatch_builtin(t_cmd *cmd, save_struct *t_struct);
 int		ft_export(char **var, t_envp **env);
 int		ft_unset(char **var, t_envp **env);
 int		ft_env(t_envp **envp);
-int		ft_echo(char **cmd, t_envp **env);
-int		ft_exit(char **code);
+int		ft_echo(t_cmd *cmd, t_envp **env);
+int		ft_exit(save_struct *t_struct, t_envp **envp);
 int		ft_print_envp(t_envp **envp);
 int		ft_pwd(t_envp **envp);
 int		ft_cd(save_struct *t_struct);

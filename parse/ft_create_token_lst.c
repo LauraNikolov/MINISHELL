@@ -188,3 +188,4 @@ void	ft_create_token_lst(char *buffer, save_struct *t_struct)
 			j += ft_get_symb(t_struct, &buffer[j], &cmd);
 	}
 }
+

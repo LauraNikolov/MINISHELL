@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/12 14:02:15 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/13 15:27:56 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ int recursive_free_ast(t_ast *ast)
 			t_struct->cmd->std_out = 1;
 			manage_heredoc(t_struct->cmd);
 			apply_redir(t_struct->cmd);
-			return_value = ft_execve_single_cmd(t_struct->cmd, envp, t_struct);
+			return_value = ft_execve_single_cmd(t_struct->cmd, &envp, t_struct);
 			close_fds(t_struct->cmd);
 			ft_return_code(ft_itoa(return_value), &t_struct->envp);
 			destroy_tmp_file(t_struct->cmd);

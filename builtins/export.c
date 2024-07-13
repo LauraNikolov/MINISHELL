@@ -94,11 +94,12 @@ static int	ft_fork_export(t_envp **env)
 	return (0);
 }
 
-int	ft_export(char **var, t_envp **env)
+int	ft_export(t_cmd *node, t_envp **env)
 {
 	int	i;
 	int	j;
 
+	char **var = node->cmd;
 	if (!env || !*var)
 		return (0);
 	if (!var[1])

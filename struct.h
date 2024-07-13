@@ -15,12 +15,12 @@ typedef enum s_token_type
 	R_OUT,
 	R_APPEND,
 	R_HEREDOC,
-	
 	NO_TYPE,
 }					t_token_type;
 
 typedef struct s_cmd
 {
+	pid_t           pid;
 	char			**cmd;
 	char			*path;
 	int				prev_fd;

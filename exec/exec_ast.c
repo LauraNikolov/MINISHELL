@@ -3,32 +3,97 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/12 14:01:58 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/13 16:50:16 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <errno.h>
 
-int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
+
+t_cmd *get_last_cmd(t_ast *node) {
+    if (node == NULL) {
+        return NULL; // Arbre vide ou fin de branche
+    }
+    if (node->left == NULL && node->right == NULL) {
+        return node->cmd; // Retourne la commande du nœud actuel
+    }
+    if (node->right != NULL) {
+        return get_last_cmd(node->right);
+    }
+    return get_last_cmd(node->left);
+}
+
+
+int get_return_code(t_cmd *cmd)
 {
-	int		return_value;
-	pid_t	pid;
-	int		status;
+	int return_value;
+	int status;
 
 	return_value = 0;
-	if ((return_value = ft_dispatch_builtin(cmd, t_struct)) != -1)
-		return (return_value);
-	pid = fork();
-	if (pid == -1)
+	status = 0;
+	waitpid(cmd->pid, &status, 0);
+	if (WIFEXITED(status))
+		return_value = WEXITSTATUS(status);
+	while(wait(&status) > 0);
+	return (return_value);
+}
+
+int	get_nbr_of_pipe(t_cmd *cmd)
+{
+	int	i;
+
+	i = 1;
+	while (cmd)
+	{
+		if (cmd->type == PIPE)
+			i++;
+		cmd = cmd->next;
+	}
+	return (i);
+}
+
+int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
+{
+	int		return_value;
+	int		status;
+	int 	test;
+	char **new_envp;
+
+	(void)t_struct;
+	return_value = 0;
+	if ((test = ft_dispatch_builtin(cmd, t_struct)) != -1)
+	{
+		//int i = 0;
+		//char **current = *envp;
+		//while(current[i])
+		//{
+			//dprintf(2, "char **%s\n", current[i]);
+			//i++;
+		//}//
+		//dprintf(2, "new env\n");
+		//ft_print_envp(&t_struct->envp);
+		//dprintf(2, "\n\n");
+		new_envp = ft_envp_to_char(t_struct->envp);
+		if (new_envp == NULL)
+        {
+            // Gérer l'erreur de conversion
+            return (-1);
+        }
+		ft_free_tab(*envp);
+		*envp = new_envp;
+		return (test);
+	}
+	cmd->pid = fork();
+	if (cmd->pid == -1)
 	{
 		perror("fork");
 		return (1);
 	}
-	if (pid == 0)
+	if (cmd->pid == 0)
 	{
 		if (cmd->std_in != STDIN_FILENO)
 		{
@@ -40,16 +105,19 @@ int	ft_execve_single_cmd(t_cmd *cmd, char **envp, save_struct *t_struct)
 			dup2(cmd->std_out, STDOUT_FILENO);
 			close(cmd->std_out);
 		}
-		if (execve(cmd->path, cmd->cmd, envp) == -1)
-			ft_parse_error(cmd);
-		exit(0);
+		execve(cmd->path, cmd->cmd, *envp);		
+		exit(-1);
 	}
 	else
 	{
 		status = 0;
-		waitpid(pid, &status, 0);
+		waitpid(cmd->pid, &status, 0);
 		if (WIFEXITED(status))
+		{
+			if(status == -1)
+				ft_parse_error(cmd);
 			return_value = WEXITSTATUS(status);
+		}
 	}
 	return (return_value);
 }
@@ -80,17 +148,17 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 		t_ast *save_root)
 {
 	int		return_value;
-	pid_t	pid;
+	int test;
 
 	(void)save_root;
 	return_value = 0;
-	pid = fork();
-	if (pid == -1)
+	cmd->pid = fork();
+	if (cmd->pid == -1)
 	{
 		perror("fork");
 		return (1);
 	}
-	if (pid == 0)
+	if (cmd->pid == 0)
 	{
 		if (cmd->std_in != STDIN_FILENO)
 		{
@@ -104,15 +172,14 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 		}
 		// Fermer les descripteurs de pipe inutilisés dans le processus enfant
 		close(root->cmd->pipe[0]);
-		// ! check builting
-		if ((return_value = ft_dispatch_builtin(cmd, t_struct)) != -1)
-			exit(return_value);
+		if ((test = ft_dispatch_builtin(cmd, t_struct)) != -1)
+			exit(test);
 		else
 		{
 			if (execve(cmd->path, cmd->cmd, envp) == -1)
 				ft_parse_error(cmd);
 			else
-				exit(0);
+				exit(-1);
 		}
 	}
 	else
@@ -132,8 +199,6 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 {
 	t_cmd	*cmd1;
 	t_cmd	*cmd2;
-	int		pid;
-				int status;
 
 	// int		i;
 	if (root->cmd->type == WORD)
@@ -180,50 +245,37 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			apply_redir(cmd2);
 			return_value = ft_execve_pipe(cmd2, envp, root, t_struct,
 					save_root);
-			if (root == save_root  || (root->parent == save_root && root->parent->cmd->type != PIPE))
+			if (root == save_root || root->parent->cmd->type == OR || root->parent->cmd->type == AND)
 			{
-				pid = 0;
-				// int i = get_nbr_of_pipe(save_root->cmd);
-				while (pid != -1)
-				{
-					pid = wait(&status);
-					if (WIFEXITED(status))
-						return_value = WEXITSTATUS(status);
-				}
+				if(root->cmd->prev_fd != -1)
+					close(root->cmd->prev_fd);
+				return_value = get_return_code(cmd2);
 			}
 		}
-		if (root->cmd->type == AND)
+		else if (root->cmd->type == AND)
 		{
 			apply_redir(cmd1);
-			return_value = ft_execve_single_cmd(cmd1, envp, t_struct);
+			return_value = ft_execve_single_cmd(cmd1, &envp, t_struct);
 			if (return_value == 0)
 			{
 				apply_redir(cmd2);
-				return_value = ft_execve_single_cmd(cmd2, envp, t_struct);
+				return_value = ft_execve_single_cmd(cmd2, &envp, t_struct);
 			}
 		}
-		if (root->cmd->type == OR)
+		else if (root->cmd->type == OR)
 		{
 			apply_redir(cmd1);
-			return_value = ft_execve_single_cmd(cmd1, envp, t_struct);
+			return_value = ft_execve_single_cmd(cmd1, &envp, t_struct);
 			if (return_value != 0)
 			{
 				apply_redir(cmd2);
-				return_value = ft_execve_single_cmd(cmd2, envp, t_struct);
+				return_value = ft_execve_single_cmd(cmd2, &envp, t_struct);
 			}
 		}
 	}
 	return (return_value);
 }
-void	read_pipe(int fd)
-{
-	char	buffer[1024];
-	ssize_t	bytes_read;
 
-	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
-		write(STDOUT_FILENO, buffer, bytes_read);
-	close(fd);
-}
 int	ft_pipe_recursive(t_ast *root, char **envp, t_ast *save_root,
 		int return_value, save_struct *t_struct)
 {
@@ -272,7 +324,7 @@ int	ft_and_recursive(t_ast *root, char **envp, t_ast *save_root,
 		if (return_value == 0)
 		{
 			apply_redir(root->right->cmd);
-			return_value = ft_execve_single_cmd(root->right->cmd, envp,
+			return_value = ft_execve_single_cmd(root->right->cmd, &envp,
 					t_struct);
 		}
 		else
@@ -306,7 +358,7 @@ int	ft_or_recursive(t_ast *root, char **envp, t_ast *save_root,
 		if (return_value != 0)
 		{
 			apply_redir(root->right->cmd);
-			return_value = ft_execve_single_cmd(root->right->cmd, envp,
+			return_value = ft_execve_single_cmd(root->right->cmd, &envp,
 					t_struct);
 		}
 		else
@@ -329,26 +381,31 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		if(root->left->cmd->type == WORD)
 		{
 			apply_redir(root->left->cmd);
-			*return_value = ft_execve_single_cmd(root->left->cmd, envp, t_struct);
+			*return_value = ft_execve_single_cmd(root->left->cmd, &envp, t_struct);
 		}	
 	}
 
 	if (root->cmd->type == AND)
 	{
 		// read_pipe(root->left->cmd->prev_fd);
-		if (root->left->cmd->type == PIPE)
-		{
-			int status;
-			int pid;
-			pid = 0;
-			status = 0;
-			while (pid != -1)
-			{
-				pid = wait(&status);
-				if (WIFEXITED(status))
-					*return_value = WEXITSTATUS(status);
-			}
-		}
+		// if (root->left->cmd->type == PIPE || root->left->cmd->type == PIPE)
+		// {
+		// 	print_ast(root, 0, '|');
+		// 	dprintf(2, "icicrecusrive\n");
+		// 	if(root->cmd->prev_fd != -1)
+		// 			close(root->cmd->prev_fd);
+		// 	*return_value = get_return_code(get_last_cmd(root->left));
+		// 	// int status;
+		// 	// int pid;
+		// 	// pid = 0;
+		// 	// status = 0;
+		// 	// while (pid != -1)
+		// 	// {
+		// 	// 	pid = wait(&status);
+		// 	// 	if (WIFEXITED(status))
+		// 	// 		*return_value = WEXITSTATUS(status);
+		// 	// }
+		// }
 		if (*return_value == 0)
 			*return_value = exec_ast_recursive(root->right, envp, save_root,
 					*return_value, t_struct);
@@ -357,19 +414,12 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 	}
 	else if (root->cmd->type == OR)
 	{
-		if (root->left->cmd->type == PIPE)
-		{
-			int status;
-			int pid;
-			pid = 0;
-			status = 0;
-			while (pid != -1)
-			{
-				pid = wait(&status);
-				if (WIFEXITED(status))
-					*return_value = WEXITSTATUS(status);
-			}
-		}
+		// if (root->left->cmd->type == PIPE || root->right->cmd->type == PIPE)
+		// {
+		// 	if(root->cmd->prev_fd != -1)
+		// 			close(root->cmd->prev_fd);
+		// 	*return_value = get_return_code(get_last_cmd(root->left));
+		// }
 		// read_pipe(root->left->cmd->prev_fd);
 		if (*return_value != 0)
 			*return_value = exec_ast_recursive(root->right, envp, save_root,
@@ -388,7 +438,7 @@ void	ft_handle_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 		int *return_value, save_struct *t_struct)
 {
-
+	//dprintf(2, "root->cmd->type == %d\n", root->cmd->type);
 	if (root->cmd->type == PIPE)
 	{
 		pipe(root->cmd->pipe);
@@ -401,69 +451,90 @@ void	ft_handle_exec(t_ast *root, char **envp, t_ast *save_root,
 		apply_redir(root->right->cmd);
 		*return_value = ft_execve_pipe(root->right->cmd, envp, root, t_struct,
 				save_root);
-		if (root == save_root || root->parent == save_root)
+		if(root == save_root || root->parent->cmd->type == OR || root->parent->cmd->type == AND)
 		{
-			int status;
-			int pid;
-			pid = 0;
-			status = 0;
-			while (pid != -1)
-			{
-				pid = wait(&status);
-				if (WIFEXITED(status))
-					*return_value = WEXITSTATUS(status);
-			}
+			//print_ast(root, 0, '|');
+			if(root->cmd->prev_fd != -1)
+					close(root->cmd->prev_fd);
+			*return_value = get_return_code(get_last_cmd(root));
 		}
+		// if (root == save_root)
+		// {
+
+		// 	if(root->cmd->prev_fd != -1)
+		// 			close(root->cmd->prev_fd);
+		// 	int status;
+		// 	int pid;
+		// 	pid = 0;
+		// 	status = 0;
+		// 	while (pid != -1)
+		// 	{
+		// 		pid = wait(&status);
+		// 		if (WIFEXITED(status))
+		// 			*return_value = WEXITSTATUS(status);
+		// 	}
+		// }
 	}
 	else if (root->cmd->type == AND)
 	{
-		if (root->left->cmd->type == PIPE)
-		{
-			int status;
-			int pid;
-			pid = 0;
-			status = 0;
-			while (pid != -1)
-			{
-				pid = wait(&status);
-				if (WIFEXITED(status))
-					*return_value = WEXITSTATUS(status);
-			}
-		}
+		// if (root->left->cmd->type == PIPE || root->right->cmd->type == PIPE)
+		// {
+		// 	if(root->cmd->prev_fd != -1)
+		// 			close(root->cmd->prev_fd);
+		// 	*return_value = get_return_code(get_last_cmd(root->left));
+		// 	// int status;
+		// 	// int pid;
+		// 	// pid = 0;
+		// 	// status = 0;
+		// 	// while (pid != -1)
+		// 	// {
+		// 	// 	pid = wait(&status);
+		// 	// 	if (WIFEXITED(status))
+		// 	// 		*return_value = WEXITSTATUS(status);
+		// 	// 	dprintf(2, "return_value === %d\n", *return_value);
+		// 	// }
+		// }
 		if (*return_value == 0)
 		{
 			apply_redir(root->right->cmd);
-			*return_value = ft_execve_single_cmd(root->right->cmd, envp,
+			*return_value = ft_execve_single_cmd(root->right->cmd, &envp,
 					t_struct);
 		}
 	}
 	else if (root->cmd->type == OR)
 	{
-		if (root->left->cmd->type == PIPE)
-		{
-			int status;
-			int pid;
-			pid = 0;
-			status = 0;
-			while (pid != -1)
-			{
-				pid = wait(&status);
-				if (WIFEXITED(status))
-					*return_value = WEXITSTATUS(status);
-			}
+		// if (root->left->cmd->type == PIPE || root->right->cmd->type == PIPE)
+		// {
+		// 	if(root->cmd->prev_fd != -1)
+		// 			close(root->cmd->prev_fd);
+		// 	*return_value = get_return_code(get_last_cmd(root->left));
+		// 	// int status;
+		// 	// int pid;
+		// 	// pid = 0;
+		// 	// status = 0;
+		// 	// while (pid != -1)
+		// 	// {
+		// 	// 	pid = wait(&status);
+		// 	// 	if (WIFEXITED(status))
+		// 	// 		*return_value = WEXITSTATUS(status);
+		// 	}
+		// 	dprintf(2, "%d\n", *return_value);
 			if (*return_value != 0)
 			{
 				apply_redir(root->right->cmd);
-				*return_value = ft_execve_single_cmd(root->right->cmd, envp,
+				*return_value = ft_execve_single_cmd(root->right->cmd, &envp,
 						t_struct);
 			}
 		}
-	}
 }
+
+
+	
 
 int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 		int return_value, save_struct *t_struct)
 {
+	//print_ast(root, 0, '|');
 	if (root == NULL)
 		return (return_value);
 	if (root->left->cmd->type == PIPE || root->left->cmd->type == AND
@@ -476,10 +547,16 @@ int	exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 	{
 		if (root->right->cmd->type == PIPE || root->right->cmd->type == AND
 			|| root->right->cmd->type == OR)
+		{
+			//dprintf(2, "ici\n");
 			ft_handle_ast_recursive(root, envp, save_root, &return_value,
 				t_struct);
+		}
 		else
+		{	
+			//dprintf(2, "la\n");
 			ft_handle_exec(root, envp, save_root, &return_value, t_struct);
+		}
 	}
 	return (return_value);
 }

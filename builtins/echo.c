@@ -73,6 +73,13 @@ int	ft_echo(t_cmd *cmd, t_envp **env)
 	int	i;
 	int	j;
 
+	// printf("\nJe passe dans echo\n");
+	// printf("\nJ expand\n\n");
+	// ft_expand(cmd, env);
+	// ft_print_envp(env);
+
+	// printf("cmd juste avant d'echo\n");
+	// ft_print_lst(cmd);
 	if (!cmd->cmd[1])
 	{
 		ft_putchar_fd('\n', 2);

@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 12:59:48 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/12 00:45:12 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/13 14:43:11 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ int ft_exec_tree(t_ast *root)
     i = 0;
     
     (void)root;
-    // printf("CECI EST LE ROOT : \n");
-    // print_ast(root, 0 ,' ');
     return(i);
 }
 
@@ -52,7 +50,6 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
     end = t_struct->cmd;
     t_struct->cmd = start;
     t_struct->ast = build_ast_recursive(start, end, NULL);
-    // print_ast(t_struct->ast, 0, ' ');
     start = t_struct->cmd;
     while(start)
     {
@@ -64,7 +61,7 @@ void ft_exec_multi_cmds(save_struct *t_struct, char **envp)
     }
     //set_exec_struct(&exec);
     return_value = exec_ast_recursive(t_struct->ast, envp, t_struct->ast, return_value, t_struct);
-    //ft_return_code(ft_itoa(return_value), &t_struct->envp);
+    ft_return_code(ft_itoa(return_value), &t_struct->envp);
     //set la valeur de retour dans la liste chainee envp (fqire un itoa)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 }

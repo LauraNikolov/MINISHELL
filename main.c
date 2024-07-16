@@ -35,7 +35,7 @@ int	main(int ac, char **av, char **envp)
 		if (!t_struct)
 			return (ft_free_envp_lst(&env), 0);
 		ft_memset(t_struct, 0, sizeof(*t_struct));
-		buffer = readline("Minishell : ");
+		buffer = readline("minishell : ");
 		if (!buffer)
 			return (ft_free_envp_lst(&t_struct->envp), free(buffer), ft_all_free(t_struct),
 				0);

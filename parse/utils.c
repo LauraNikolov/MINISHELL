@@ -1,5 +1,14 @@
 #include "../minishell.h"
 
+void ft_safe_free(char **s)
+{
+	if (*s)
+	{
+		free(*s);
+		*s = NULL;
+	}
+}
+
 int	ft_safe_malloc(char **s, int size)
 {
 	if (!s)

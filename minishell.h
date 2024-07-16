@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/15 17:50:01 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/07/16 20:57:13 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_redir	*create_redir_node(char *s);
 
 // General utils
 int		ft_safe_malloc(char **s, int size);
+void ft_safe_free(char **s);
 void	ft_override_content(char **s1, char *s2);
 void	ft_swap_content(char **s1, char **s2);
 int		ft_is_str(char c, char *s);
@@ -89,7 +90,7 @@ char	**ft_envp_to_char(t_envp *env);
 int		ft_var_len(char *s, int brace_flag);
 
 // expand
-int		ft_expand(t_cmd *node, t_envp **env);
+void 	ft_expand(t_cmd *node, t_envp **env);
 // exec
 void	ft_exec(save_struct *t_struct, char **envp);
 int		ft_exec_single_cmd(save_struct *t_struct, char **envp);

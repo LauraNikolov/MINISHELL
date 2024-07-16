@@ -11,7 +11,7 @@ int ft_return_code(char *code, t_envp **env)
     {
         if (!ft_strcmp(curr->var_name, "?"))
         { 
-            free(curr->var_value);
+            ft_safe_free(&curr->var_value);
             curr->var_value = ft_strdup(code);
             break ;
         }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/12 14:09:39 by melmarti         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:51:37 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,13 +172,13 @@ int	check_redir_out(t_redir *redir)
 	}
 	return (1);
 }
-void	apply_redir(t_cmd *cmd)
+int	apply_redir(t_cmd *cmd)
 {
 	t_redir	*current;
 	int		fd_in = -1, fd_out;
 
 	if (!cmd->redir)
-		return ;
+		return (0);
 	current = cmd->redir;
 	fd_in = -1, fd_out = -1;
 	while (current && current->next)
@@ -191,7 +191,7 @@ void	apply_redir(t_cmd *cmd)
 			if (fd_in == -1)
 			{
 				perror("minishell");
-				return ;
+				return (-1);
 			}
 		}
 		else if (current->type == R_OUT)
@@ -203,7 +203,7 @@ void	apply_redir(t_cmd *cmd)
 			if (fd_out == -1)
 			{
 				perror("minishell");
-				return ;
+				return (-1);
 			}
 		}
 		else if (current->type == R_APPEND)
@@ -215,7 +215,7 @@ void	apply_redir(t_cmd *cmd)
 			if (fd_out == -1)
 			{
 				perror("minishell");
-				return ;
+				return (-1);
 			}
 		}
 		current = current->next ? current->next->next : NULL;
@@ -232,4 +232,5 @@ void	apply_redir(t_cmd *cmd)
             close(cmd->std_in);
 		cmd->std_out = fd_out;
     }
+	return(0);
 }

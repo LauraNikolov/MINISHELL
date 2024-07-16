@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/13 16:50:16 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/15 18:01:34 by lnicolof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,10 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 	}
 	if (cmd->pid == 0)
 	{
+		if(apply_redir(cmd) == -1)
+		{
+			exit(1);
+		}
 		if (cmd->std_in != STDIN_FILENO)
 		{
 			dup2(cmd->std_in, STDIN_FILENO);
@@ -160,6 +164,8 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 	}
 	if (cmd->pid == 0)
 	{
+		if(apply_redir(cmd) == -1)
+			exit(1);
 		if (cmd->std_in != STDIN_FILENO)
 		{
 			dup2(cmd->std_in, STDIN_FILENO);
@@ -220,7 +226,7 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			else
 				cmd1->std_in = root->cmd->prev_fd;
 			cmd1->std_out = root->cmd->pipe[1];
-			apply_redir(cmd1);
+			//apply_redir(cmd1);
 			return_value = ft_execve_pipe(cmd1, envp, root, t_struct,
 					save_root);
 			// cmd2: stdin est la sortie du pipe précédent,
@@ -242,7 +248,7 @@ int	exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 					|| root->parent->cmd->type == AND)
 					cmd2->std_out = STDOUT_FILENO;
 			}
-			apply_redir(cmd2);
+			//apply_redir(cmd2);
 			return_value = ft_execve_pipe(cmd2, envp, root, t_struct,
 					save_root);
 			if (root == save_root || root->parent->cmd->type == OR || root->parent->cmd->type == AND)

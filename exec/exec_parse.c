@@ -6,23 +6,25 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/16 13:03:04 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/16 22:56:54 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <sys/wait.h>
 
-void ft_parse_error(t_cmd *cmd)
+void ft_parse_error(t_cmd *cmd, t_envp **env)
 {
 	if(ft_strchr(cmd->cmd[0], '/') == -1)
 	{
-		dprintf(2, "%s: command not found\n", cmd->cmd[0]);
+		ft_putstr_cmd_fd("command not found\n", 2, &cmd->cmd[0], 0);
+		ft_return_code(ft_strdup("127"), env);
 		exit(127);
 	}
 	else
 	{
-		dprintf(2 ,"minishell: %s: No such file or directory\n", cmd->cmd[0]);
+		ft_putstr_cmd_fd(": No such file or directory\n", 2, &cmd->cmd[0], 0);
+		ft_return_code(ft_strdup("126"), env);
 		exit(126);
 	}
 }
@@ -46,7 +48,7 @@ int	ft_exec_single_cmd(save_struct *t_struct, char **envp)
 	if (pid == 0)
 	{
 		if(execve(t_struct->cmd->path, t_struct->cmd->cmd, envp) == -1)
-			ft_parse_error(t_struct->cmd);
+			ft_parse_error(t_struct->cmd, &t_struct->envp);
 	}
 	else
 	{

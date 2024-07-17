@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/16 20:57:13 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/16 22:40:54 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int		exec_ast_recursive(t_ast *root, char **envp, t_ast *save_root,
 int		ft_exec_tree(t_ast *root);
 int		exec_leaf(t_ast *root, char **envp, t_ast *save_root, int return_value,
 			save_struct *t_struct);
-void	ft_parse_error(t_cmd *cmd);
+void	ft_parse_error(t_cmd *cmd, t_envp **env);
 int		redir_out(t_cmd *cmd);
 int		redir_in(t_cmd *cmd);
 int	apply_redir(t_cmd *cmd);
@@ -118,7 +118,7 @@ int		ft_env(t_envp **envp);
 int		ft_echo(t_cmd *cmd, t_envp **env);
 int		ft_exit(save_struct *t_struct, t_envp **envp);
 int		ft_print_envp(t_envp **envp);
-int		ft_pwd(t_envp **envp);
+int	    ft_pwd(char **cmd, t_envp **envp);
 int		ft_cd(save_struct *t_struct);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,

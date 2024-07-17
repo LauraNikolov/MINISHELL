@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/15 18:01:34 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/07/16 23:13:28 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ t_cmd *get_last_cmd(t_ast *node) {
     }
     return get_last_cmd(node->left);
 }
-
 
 int get_return_code(t_cmd *cmd)
 {
@@ -63,7 +62,6 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 	int 	test;
 	char **new_envp;
 
-	(void)t_struct;
 	return_value = 0;
 	if ((test = ft_dispatch_builtin(cmd, t_struct)) != -1)
 	{
@@ -119,7 +117,7 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 		if (WIFEXITED(status))
 		{
 			if(status == -1)
-				ft_parse_error(cmd);
+				ft_parse_error(cmd, &t_struct->envp);
 			return_value = WEXITSTATUS(status);
 		}
 	}
@@ -183,7 +181,7 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 		else
 		{
 			if (execve(cmd->path, cmd->cmd, envp) == -1)
-				ft_parse_error(cmd);
+				ft_parse_error(cmd, &t_struct->envp);
 			else
 				exit(-1);
 		}

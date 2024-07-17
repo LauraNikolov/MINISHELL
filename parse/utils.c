@@ -81,13 +81,11 @@ int	ft_str_is_alpha(char *s)
 	return (0);
 }
 
-int	ft_putstr_cmd_fd(char *s, int fd, char **str, int flag)
+int	ft_putstr_cmd_fd (char *s, int fd, char **str, int flag)
 {
 	int	i;
 
 	i = -1;
-	if (!s)
-		return (-1);
 	if (flag == 2)
 	{
 		write(fd, s, ft_strlen(s));

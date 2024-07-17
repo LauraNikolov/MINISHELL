@@ -62,6 +62,8 @@ t_redir	*ft_redir(char *s, int *i, int len)
 		}
 		while (*i < len && s[*i] == ' ')
 			(*i)++;
+		if (s[*i] == '\"' || s[*i] == '\'')
+				(*i)++;
 		if (!ft_is_str(s[*i], "><"))
 		{
 			while (s[*i + infile] && !ft_is_str(s[*i + infile], "><") && s[*i

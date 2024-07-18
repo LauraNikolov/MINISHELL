@@ -72,3 +72,5 @@ char	**ft_envp_to_char(t_envp *env)
 	envp[j] = NULL;
 	return (envp);
 }
+
+

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnicolof <lnicolof@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 20:43:21 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/15 17:51:37 by lnicolof         ###   ########.fr       */
+/*   Updated: 2024/07/17 21:36:16 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	redir_in(t_cmd *cmd)
 
 	current = cmd->redir;
 	save = cmd->redir;
-	fd = -1;
+	fd = 0;
 	if (!cmd->redir)
 		return (-1);
 	else
@@ -190,6 +190,7 @@ int	apply_redir(t_cmd *cmd)
 			fd_in = open(current->next->redir, O_RDONLY);
 			if (fd_in == -1)
 			{
+				access(current->next->redir, R_OK);
 				perror("minishell");
 				return (-1);
 			}
@@ -202,6 +203,7 @@ int	apply_redir(t_cmd *cmd)
 					0644);
 			if (fd_out == -1)
 			{
+				access(current->next->redir, R_OK);
 				perror("minishell");
 				return (-1);
 			}
@@ -214,6 +216,7 @@ int	apply_redir(t_cmd *cmd)
 					0644);
 			if (fd_out == -1)
 			{
+				access(current->next->redir, R_OK);
 				perror("minishell");
 				return (-1);
 			}

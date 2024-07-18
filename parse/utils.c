@@ -113,3 +113,5 @@ void	ft_all_free(save_struct *t_struct)
 	free(t_struct->save_spaces);
 	free(t_struct);
 }
+
+

@@ -28,13 +28,15 @@ int	ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct)
 		if (s[i] == ' ')
 		{
 			(*cmd)[*cmd_index] = '%';
-			ft_strcat(t_struct->save_spaces, "1");
+			if(t_struct)
+				ft_strcat(t_struct->save_spaces, "1");
 			(*cmd_index)++;
 		}
 		else
 		{
 			(*cmd)[*cmd_index] = s[i];
-			ft_strcat(t_struct->save_spaces, "0");
+			if (t_struct)
+				ft_strcat(t_struct->save_spaces, "0");
 			(*cmd_index)++;
 		}
 		i++;
@@ -47,9 +49,7 @@ t_redir	*ft_redir(char *s, int *i, int len)
 	t_redir	*redir;
 	char	*cmd;
 	int		infile;
-	int		j;
 
-	j = 0;
 	infile = 0;
 	redir = NULL;
 	while (*i < len)
@@ -58,25 +58,19 @@ t_redir	*ft_redir(char *s, int *i, int len)
 		{
 			*i += ft_check_double_symbols(&s[*i], &cmd);
 			add_to_redir_lst(&redir, create_redir_node(cmd));
-			free(cmd);
+			ft_safe_free(&cmd);
 		}
 		while (*i < len && s[*i] == ' ')
 			(*i)++;
-		if (s[*i] == '\"' || s[*i] == '\'')
-				(*i)++;
 		if (!ft_is_str(s[*i], "><"))
 		{
 			while (s[*i + infile] && !ft_is_str(s[*i + infile], "><") && s[*i
 				+ infile] != ' ')
 				infile++;
-			if (ft_safe_malloc(&cmd, infile + 1) == -1)
-				return (ft_free_redir(redir), NULL);
-			while (j < infile)
-				cmd[j++] = s[(*i)++];
-			cmd[j] = '\0';
+			ft_handle_quote(&s[*i], &cmd, infile, NULL, 0);
 			add_to_redir_lst(&redir, create_redir_node(cmd));
-			free(cmd);
-			(*i)--;
+			ft_safe_free(&cmd);
+			(*i) += infile - 1;
 			break ;
 		}
 	}
@@ -90,7 +84,8 @@ t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct, in
 	t_redir	*redir;
 
 	redir = NULL;
-	if (!t_struct->save_spaces)
+
+	if (t_struct && !t_struct->save_spaces)
 		ft_safe_malloc(&(t_struct->save_spaces), bufflen + 1);
 	ft_safe_malloc(cmd, ft_quote_len(s, len) + 1);
 	cmd_index = 0;
@@ -104,9 +99,9 @@ t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct, in
 		else
 		{
 			(*cmd)[cmd_index] = s[i];
-			if ((*cmd)[cmd_index] != ' ')
+			if (t_struct && (*cmd)[cmd_index] != ' ')
 				ft_strcat(t_struct->save_spaces, "3");
-			else
+			else if (t_struct)
 				ft_strcat(t_struct->save_spaces, "2");
 			cmd_index++;
 		}

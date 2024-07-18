@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/16 23:13:28 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/17 21:38:34 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_cmd *get_last_cmd(t_ast *node) {
     }
     return get_last_cmd(node->left);
 }
+
 
 int get_return_code(t_cmd *cmd)
 {
@@ -62,28 +63,27 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 	int 	test;
 	char **new_envp;
 
+	(void)t_struct;
 	return_value = 0;
-	if ((test = ft_dispatch_builtin(cmd, t_struct)) != -1)
+	if(is_it_builtin(cmd) == 1)
 	{
-		//int i = 0;
-		//char **current = *envp;
-		//while(current[i])
-		//{
-			//dprintf(2, "char **%s\n", current[i]);
-			//i++;
-		//}//
-		//dprintf(2, "new env\n");
-		//ft_print_envp(&t_struct->envp);
-		//dprintf(2, "\n\n");
-		new_envp = ft_envp_to_char(t_struct->envp);
-		if (new_envp == NULL)
-        {
-            // Gérer l'erreur de conversion
-            return (-1);
-        }
-		ft_free_tab(*envp);
-		*envp = new_envp;
-		return (test);
+		if(apply_redir(cmd) == -1)
+			return(ft_return_code("1", &t_struct->envp));
+		//dprintf(2, "in == %d\n", cmd->std_in);
+		//dprintf(2, "out == %d\n", cmd->std_out);
+		if ((test = ft_dispatch_builtin(cmd, t_struct)) != -1)
+		{
+
+			new_envp = ft_envp_to_char(t_struct->envp);
+			if (new_envp == NULL)
+        	{
+            	// Gérer l'erreur de conversion
+            	return (-1);
+        	}
+			//ft_free_tab(*envp); echo hi >>./outfiles/outfile01 | echo bye 
+			*envp = new_envp;
+			return (test);
+		}
 	}
 	cmd->pid = fork();
 	if (cmd->pid == -1)
@@ -94,9 +94,7 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 	if (cmd->pid == 0)
 	{
 		if(apply_redir(cmd) == -1)
-		{
 			exit(1);
-		}
 		if (cmd->std_in != STDIN_FILENO)
 		{
 			dup2(cmd->std_in, STDIN_FILENO);
@@ -107,7 +105,11 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 			dup2(cmd->std_out, STDOUT_FILENO);
 			close(cmd->std_out);
 		}
-		execve(cmd->path, cmd->cmd, *envp);		
+		if(cmd->cmd)
+		{
+			if(execve(cmd->path, cmd->cmd, *envp) == -1)
+			ft_parse_error(cmd, &t_struct->envp);	
+		}
 		exit(-1);
 	}
 	else
@@ -115,11 +117,7 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 		status = 0;
 		waitpid(cmd->pid, &status, 0);
 		if (WIFEXITED(status))
-		{
-			if(status == -1)
-				ft_parse_error(cmd, &t_struct->envp);
 			return_value = WEXITSTATUS(status);
-		}
 	}
 	return (return_value);
 }
@@ -163,7 +161,15 @@ int	ft_execve_pipe(t_cmd *cmd, char **envp, t_ast *root, save_struct *t_struct,
 	if (cmd->pid == 0)
 	{
 		if(apply_redir(cmd) == -1)
+		{
+			if(cmd->std_in != STDIN_FILENO)
+				close(cmd->std_in);
+			if(cmd->std_out != STDOUT_FILENO)
+				close(cmd->std_out);
+			close(root->cmd->pipe[0]);
+			close(root->cmd->pipe[1]);
 			exit(1);
+		}
 		if (cmd->std_in != STDIN_FILENO)
 		{
 			dup2(cmd->std_in, STDIN_FILENO);

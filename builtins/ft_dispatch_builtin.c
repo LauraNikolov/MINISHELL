@@ -21,3 +21,25 @@ int	ft_dispatch_builtin(t_cmd *cmd, save_struct *t_struct)
 		return (ft_cd(t_struct));
 	return (-1);
 }
+
+int is_it_builtin(t_cmd *cmd)
+{
+	if(!cmd->cmd || !cmd->cmd[0])
+		return(0);
+	if (!ft_strcmp(cmd->cmd[0], "echo"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "exit"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "pwd"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "env"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "unset"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "cd"))
+		return(1);
+	else if (!ft_strcmp(cmd->cmd[0], "export"))
+		return(1);
+	else
+		return(0);
+}

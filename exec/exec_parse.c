@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/16 22:56:54 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/17 22:53:49 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,19 @@ void ft_parse_error(t_cmd *cmd, t_envp **env)
 {
 	if(ft_strchr(cmd->cmd[0], '/') == -1)
 	{
-		ft_putstr_cmd_fd("command not found\n", 2, &cmd->cmd[0], 0);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->cmd[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		ft_return_code(ft_strdup("127"), env);
 		exit(127);
 	}
 	else
 	{
-		ft_putstr_cmd_fd(": No such file or directory\n", 2, &cmd->cmd[0], 0);
-		ft_return_code(ft_strdup("126"), env);
-		exit(126);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->cmd[0], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_return_code(ft_strdup("127"), env);
+		exit(127);
 	}
 }
 
@@ -64,7 +68,7 @@ void close_fds(t_cmd *cmd_list)
 {
     t_cmd *current = cmd_list; // Remplacez t_cmd par le type de votre structure de commande
 
-    while (current != NULL && current->next)
+    while (current)
     {
         // Ferme std_out si ce n'est pas la sortie standard
         if (current->std_out != 1)
@@ -87,6 +91,7 @@ void close_fds(t_cmd *cmd_list)
         current = current->next; // Passe à la commande suivante dans la liste
 	}
 }
+
 
 void destroy_tmp_file(t_cmd *cmd)
 {
@@ -150,7 +155,7 @@ int recursive_free_ast(t_ast *ast)
 			t_struct->cmd->std_in = 0;
 			t_struct->cmd->std_out = 1;
 			manage_heredoc(t_struct->cmd);
-			apply_redir(t_struct->cmd);
+			//apply_redir(t_struct->cmd);
 			return_value = ft_execve_single_cmd(t_struct->cmd, &envp, t_struct);
 			close_fds(t_struct->cmd);
 			ft_return_code(ft_itoa(return_value), &t_struct->envp);

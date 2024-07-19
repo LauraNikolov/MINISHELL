@@ -66,8 +66,6 @@ int	ft_check_word(t_cmd *node, t_envp **env)
 	if (!node->next)
 	{
 		ft_get_path(node);
-		if (!node->path)
-			node->path = ft_strdup(node->cmd[0]);
 		if (ft_check_redir(node, env) != 0)
 			return (-1);
 		return (0);
@@ -88,8 +86,6 @@ int	ft_check_word(t_cmd *node, t_envp **env)
 		}
 	}
 	ft_get_path(node);
-	if (!node->path)
-		node->path = ft_strdup(node->cmd[0]);
 	if (ft_check_redir(node, env) != 0)
 		return (-1);
 	return (0);

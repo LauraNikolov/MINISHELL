@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 11:56:13 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/17 22:53:49 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/18 22:25:09 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ int recursive_free_ast(t_ast *ast)
 		int return_value;
 		(void)return_value;
 
+		ft_signal(0);
 		cmd_size = ft_nbr_of_cmd(t_struct->cmd);
 		if (cmd_size == 1)
 		{

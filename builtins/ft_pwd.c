@@ -12,7 +12,7 @@ int	ft_pwd(char **cmd, t_envp **envp)
 			ft_putstr_fd("minishell: pwd: ", 2);
 			ft_putstr_fd(cmd[1], 2);
 			ft_putstr_fd(": invalid option\n", 2);
-			return (ft_return_code(ft_strdup("1"), envp));
+			return (ft_return_code(ft_strdup("2"), envp));
 		}
 	}
 	path = ft_search_var("PWD", envp);

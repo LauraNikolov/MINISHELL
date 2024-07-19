@@ -1,22 +1,41 @@
 #include "minishell.h"
 
+int g_signal;
+
 void	ft_handler_signals(int signal)
 {
 	if (signal == SIGINT)
 	{
-		ft_putchar_fd('\n', 2);
-	}
-	else if (signal == SIGQUIT)
-	{
-		ft_putstr_fd("\b\b  \b\b", 1);
+		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("minishell : ", 1);
 	}
 }
 
-// int ft_signals()
-//{
-// signal(SIGQUIT, SIG_IGN);
-// signal(SIGINT, ft_handler_signals);
-//}
+void ft_handler_child_signals(int signal)
+{
+	if (signal == SIGQUIT)
+	{
+		ft_putstr_fd("Quit (core dumped)\n", 1);
+		exit(131);
+	}
+	if (signal == SIGINT)
+		ft_putstr_fd("\n", 1);
+}
+
+int ft_signal(int pid)
+{
+	if (pid != 0)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, ft_handler_signals);
+	}
+	else 
+	{
+		signal(SIGQUIT, ft_handler_child_signals);
+		signal(SIGINT, ft_handler_child_signals);
+	}
+	return (0);
+}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -27,10 +46,10 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	(void)ac;
 	env = NULL;
-	// ft_signal();
 	ft_save_envp(envp, &env);
 	while (1)
 	{
+		ft_signal(1);
 		t_struct = malloc(sizeof(save_struct));
 		if (!t_struct)
 			return (ft_free_envp_lst(&env), 0);

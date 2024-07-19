@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 18:33:30 by lnicolof          #+#    #+#             */
-/*   Updated: 2024/07/17 21:38:34 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/18 12:36:39 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,8 @@ int	ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct)
 	int 	test;
 	char **new_envp;
 
-	(void)t_struct;
 	return_value = 0;
-	if(is_it_builtin(cmd) == 1)
+	if(is_it_builtin(cmd, &t_struct->envp) == 1)
 	{
 		if(apply_redir(cmd) == -1)
 			return(ft_return_code("1", &t_struct->envp));

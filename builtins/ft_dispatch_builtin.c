@@ -22,10 +22,13 @@ int	ft_dispatch_builtin(t_cmd *cmd, save_struct *t_struct)
 	return (-1);
 }
 
-int is_it_builtin(t_cmd *cmd)
+int is_it_builtin(t_cmd *cmd, t_envp **env)
 {
 	if(!cmd->cmd || !cmd->cmd[0])
 		return(0);
+	ft_expand(cmd, env);
+	ft_get_path(cmd);
+	ft_remove_null_node(&cmd);
 	if (!ft_strcmp(cmd->cmd[0], "echo"))
 		return(1);
 	else if (!ft_strcmp(cmd->cmd[0], "exit"))

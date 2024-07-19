@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/17 21:39:20 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/18 22:23:47 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ t_redir	*create_redir_node(char *s);
 
 // General utils
 int		ft_safe_malloc(char **s, int size);
-void ft_safe_free(char **s);
+void    ft_safe_free(char **s);
 void	ft_override_content(char **s1, char *s2);
 void	ft_swap_content(char **s1, char **s2);
 int		ft_is_str(char c, char *s);
@@ -109,7 +109,7 @@ int		redir_in(t_cmd *cmd);
 int	    apply_redir(t_cmd *cmd);
 int		ft_execve_single_cmd(t_cmd *cmd, char ***envp, save_struct *t_struct);
 void	manage_heredoc(t_cmd *cmd);
-int     is_it_builtin(t_cmd *cmd);
+int     is_it_builtin(t_cmd *cmd, t_envp **env);
 
 // BUILTINS
 int		ft_dispatch_builtin(t_cmd *cmd, save_struct *t_struct);
@@ -121,6 +121,11 @@ int		ft_exit(save_struct *t_struct, t_envp **envp);
 int		ft_print_envp(t_envp **envp);
 int	    ft_pwd(char **cmd, t_envp **envp);
 int		ft_cd(save_struct *t_struct);
+
+// signal 
+int ft_signal(int pid);
+void ft_handler_child_signals(int signal);
+void	ft_handler_signals(int signal);
 
 // Faire appel a la fonction ft_get_path avant ou pendant l execution,
 // y rajouter une fonction pour la gestion d erreurs ?

@@ -6,7 +6,7 @@
 /*   By: renard <renard@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:41:19 by lauranicolo       #+#    #+#             */
-/*   Updated: 2024/07/18 22:23:47 by renard           ###   ########.fr       */
+/*   Updated: 2024/07/20 23:06:03 by renard           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,28 @@ t_cmd	*create_cmd_node(t_redir *redir, char **cmd, char c);
 char	**ft_strdup_array(char **cmd);
 int		ft_str_is_alpha(char *s);
 int		ft_quote_len(char *s, int len);
+int		ft_inside_quote(char *s, char **cmd, int *cmd_index, save_struct *t_struct);
 int		ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env);
 int		ft_check_double_symbols(char *s, char **cmd);
 int		ft_exec_syntax_functions(t_cmd **cmd, t_envp **env);
 void	ft_init_ft_tab(int (*ft_tab[6])(t_cmd *, t_envp **));
-int		ft_get_path(t_cmd *node);
+void		ft_get_path(t_cmd *node);
 t_redir	*ft_handle_quote(char *s, char **cmd, int len, save_struct *t_struct,
 			int bufflen);
 int		ft_putstr_cmd_fd(char *s, int fd, char **str, int flag);
 void	ft_clean_cmd_lst(t_cmd **lst, save_struct *t_struct);
 char	*ft_search_var(char *var, t_envp **env);
-
-// Parsing
+int		ft_bad_expression(t_cmd *node);
+int		ft_is_enum(t_cmd *node, char **error_node);
+int		ft_is_enum2(t_cmd *node, char **error_node);
+int		ft_check_word(t_cmd *node, t_envp **env);
+int		ft_check_redir(t_cmd *node, t_envp **env);
+int		ft_check_redir2(t_cmd *node, t_envp **env);
+int		ft_check_pipe(t_cmd *node, t_envp **env);
+int		ft_check_Cbracket(t_cmd *node, t_envp **env);
+t_redir	*ft_redir(char *s, int *i, int len);
 void	ft_wildcard(t_cmd **cmd);
+
 
 // lst_proto
 void	ft_save_envp(char **envp_tab, t_envp **envp_lst);
@@ -72,7 +81,7 @@ t_envp	*create_envp_node(char *var_name, int print_flag);
 void	ft_print_lst(t_cmd *node); // A SUPP A LA FIN
 void	ft_free_tab(char **split);
 void	ft_free_lst(t_cmd *lst);
-void	ft_free_envp_lst(t_envp **lst);
+void	ft_free_envp_lst(t_envp **lst, t_envp **env);
 void	ft_all_free(save_struct *t_struct);
 int		ft_lst_size(t_cmd *cmd);
 void	ft_print_env(t_envp **env);
@@ -123,11 +132,9 @@ int	    ft_pwd(char **cmd, t_envp **envp);
 int		ft_cd(save_struct *t_struct);
 
 // signal 
-int ft_signal(int pid);
-void ft_handler_child_signals(int signal);
+void	ft_signal(int pid);
+void	ft_handler_child_signals(int signal);
 void	ft_handler_signals(int signal);
 
-// Faire appel a la fonction ft_get_path avant ou pendant l execution,
-// y rajouter une fonction pour la gestion d erreurs ?
 
 #endif

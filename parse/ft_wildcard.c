@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	ft_match(char *cmd, char *dir)
+static int	ft_match(char *cmd, char *dir)
 {
 	int	i;
 	int	j;
@@ -48,32 +48,36 @@ static int	get_wild_len(char *s)
 	return (len);
 }
 
-static char	**ft_cpy_match(int i, char **new_tab, char **cmd)
+static void	ft_readdir(char ***new_tab, char **cmd, int *j, int i)
 {
 	struct dirent	*entry;
 	DIR				*dir;
-	int				index;
-	int				j;
 
-	j = 0;
+	dir = opendir(".");
+	entry = readdir(dir);
+	while (entry)
+	{
+		if (entry->d_name[0] != '.')
+		{
+			if (ft_match(cmd[i], entry->d_name))
+				(*new_tab)[(*j)++] = ft_strdup(entry->d_name);
+		}
+		entry = readdir(dir);
+	}
+	closedir(dir);
+}
+
+static char	**ft_cpy_match(int i, char **new_tab, char **cmd)
+{
+	int 			j;
+	int				index;
+
 	index = -1;
+	j = 0;
 	while (cmd[++index])
 	{
 		if (index == i)
-		{
-			dir = opendir(".");
-			entry = readdir(dir);
-			while (entry)
-			{
-				if (entry->d_name[0] != '.')
-				{
-					if (ft_match(cmd[i], entry->d_name))
-						new_tab[j++] = ft_strdup(entry->d_name);
-				}
-				entry = readdir(dir);
-			}
-			closedir(dir);
-		}
+			ft_readdir(&new_tab, cmd, &j, i);
 		else
 			new_tab[j++] = ft_strdup(cmd[index]);
 	}
@@ -95,16 +99,13 @@ char	**ft_new_args(char **cmd)
 		{
 			wild_len = get_wild_len(cmd[i]);
 			len = ft_count_tab(cmd) + wild_len;
-			if (wild_len)
-			{
-				new_tab = ft_calloc(sizeof(char *), len + wild_len);
-				if (!new_tab)
-					return (NULL);
-				new_tab = ft_cpy_match(i, new_tab, cmd);
-				ft_free_tab(cmd);
-				cmd = ft_strdup_array(new_tab);
-				ft_free_tab(new_tab);
-			}
+			new_tab = ft_calloc(sizeof(char *), len + wild_len);
+			if (!new_tab)
+				return (NULL);
+			new_tab = ft_cpy_match(i, new_tab, cmd);
+			ft_free_tab(cmd);
+			cmd = ft_strdup_array(new_tab);
+			ft_free_tab(new_tab);
 		}
 	}
 	return (cmd);
@@ -121,5 +122,4 @@ void	ft_wildcard(t_cmd **lst)
 			curr->cmd = ft_new_args(curr->cmd);
 		curr = curr->next;
 	}
-	
 }

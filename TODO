@@ -2,3 +2,14 @@
 2 - gerer les caractere &
 3 - ranger les infiles
 parenthe juste une a la fin pas bon
+
+
+minishell : echo "hello c est moi            %% " ' coucou $USER '
+hello c est moi            %%   coucou $USER 
+minishell : echo "hello c est moi            %% " ' coucou $USER '    
+hello c est moi            %%   coucou renard 
+minishell : echo "hello c est moi            %% " ' coucou $USER '
+hello c est moi            %%   coucou $USER 
+minishell : echo "hello c est moi            %% " ' coucou $USER '
+
+segfault (( )

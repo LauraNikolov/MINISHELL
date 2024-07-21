@@ -1,5 +1,15 @@
 #include "../minishell.h"
 
+static int ft_odd_quote(char *buff)
+{
+	if (ft_quote_len(buff, ft_strlen(buff)) == -1)
+	{
+		ft_putstr_fd("Minishell: Quote not valid\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
 int	ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env)
 {
 	t_cmd	*curr;
@@ -7,11 +17,8 @@ int	ft_tokenize(char *buffer, save_struct *t_struct, t_envp **env)
 
 	bool_bracket = 0;
 	t_struct->envp = *env;
-	if (ft_quote_len(buffer, ft_strlen(buffer)) == -1)
-	{
-		ft_putstr_fd("Minishell: Quote not valid\n", 2);
+	if (ft_odd_quote(buffer))
 		return (-1);
-	}
 	ft_create_token_lst(buffer, t_struct);
 	curr = t_struct->cmd;
 	while (curr)

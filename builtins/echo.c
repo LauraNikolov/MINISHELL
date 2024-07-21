@@ -73,6 +73,7 @@ int	ft_echo(t_cmd *cmd, t_envp **env)
 	int	i;
 	int	j;
 
+	printf("RETOUR DE ECHO\n");
 	if (!cmd->cmd[1])
 	{
 		ft_putchar_fd('\n', 2);

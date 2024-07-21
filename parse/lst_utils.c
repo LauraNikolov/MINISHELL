@@ -16,11 +16,13 @@ int	ft_lst_size(t_cmd *cmd)
 	return (i);
 }
 
-void	ft_free_envp_lst(t_envp **lst)
+void	ft_free_envp_lst(t_envp **lst, t_envp **env)
 {
 	t_envp	*curr;
 	t_envp	*temp;
 
+	if (!*lst)
+		ft_free_envp_lst(env, NULL);
 	curr = *lst;
 	while (curr)
 	{
@@ -272,6 +274,7 @@ t_cmd	*create_cmd_node(t_redir *redir, char **cmd, char c)
 	new_node->bool_bracket = NULL;
 	if (c != '\'')
 		new_node->expand_flag = 1;
+	printf("%d, %c\n", new_node->expand_flag, c);
 	create_cmd_node2(new_node, cmd);
 	return (new_node);
 }
